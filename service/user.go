@@ -6,6 +6,17 @@ import (
 	"database/sql"
 )
 
+func CheckPassword(user modle.User) (error, bool) {
+	err, check := dao.CheckPassword(user)
+	if err != nil {
+		return err, false
+	}
+	if check.Password != user.Password {
+		return err, false
+	}
+	return err, true
+}
+
 func CheckUsername(user modle.User) (error, bool) {
 	err := dao.CheckUsername(user)
 	if err != nil {
