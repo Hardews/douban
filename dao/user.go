@@ -15,7 +15,7 @@ func CheckPassword(user modle.User) (error, modle.User) {
 func CheckUsername(user modle.User) error {
 	var username string
 	sqlStr := "select username from userBaseData where username = ?"
-	err := dB.QueryRow(sqlStr, user.Username).Scan(username)
+	err := dB.QueryRow(sqlStr, user.Username).Scan(&username)
 	if err != nil {
 		return err
 	}
