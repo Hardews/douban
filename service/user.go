@@ -10,6 +10,7 @@ func CheckUsername(user modle.User) (error, bool) {
 	err := dao.CheckUsername(user)
 	if err != nil {
 		if err == sql.ErrNoRows {
+			err = nil
 			return err, true
 		}
 		return err, false
