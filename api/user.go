@@ -49,6 +49,13 @@ func Register(ctx *gin.Context) {
 		return
 	}
 
+	err, user.Password = service.Encryption(user.Password)
+	if err != nil {
+		tool.RespInternetError(ctx)
+		fmt.Println("encryption failed , err :", err)
+		return
+	}
+
 	err = service.WriteIn(user)
 	if err != nil {
 		tool.RespInternetError(ctx)
