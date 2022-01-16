@@ -9,6 +9,39 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func ChangePassword(ctx *gin.Context) {
+	var user modle.User
+	iUsername, _ := ctx.Get("username")
+	user.Username = iUsername.(string)
+	user.Password = ctx.PostForm("oldPassword")
+	newPassword := ctx.PostForm("newPassword")
+
+	err, res := service.CheckPassword(user)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			tool.RespErrorWithDate(ctx, "无此账号")
+			return
+		}
+		fmt.Println(err)
+		tool.RespInternetError(ctx)
+		return
+	}
+	if res {
+		user.Password = newPassword
+		err = service.ChangePassword(user)
+		if err != nil {
+			tool.RespInternetError(ctx)
+			fmt.Println("change password failed,err:", err)
+			return
+		}
+		tool.RespSuccessful(ctx)
+	} else {
+		tool.RespErrorWithDate(ctx, "旧密码错误")
+		return
+	}
+
+}
+
 func Login(ctx *gin.Context) {
 	var user modle.User
 	user.Username = ctx.PostForm("username")

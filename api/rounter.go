@@ -8,5 +8,10 @@ func InitEngine() {
 	engine.POST("register", Register)
 	engine.POST("login", Login)
 
+	userGroup := engine.Group("/user")
+	{
+		userGroup.POST("/change", auth, ChangePassword)
+	}
+
 	engine.Run()
 }

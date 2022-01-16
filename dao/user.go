@@ -5,6 +5,15 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+func ChangePassword(user modle.User) error {
+	sqlStr := "update userBaseData set password = ? where username = ?"
+	_, err := dB.Exec(sqlStr, user.Password, user.Password)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
 func CheckPassword(user modle.User) (error, modle.User) {
 	var check modle.User
 	sqlStr := "select username,password from userBaseData where username = ?"
