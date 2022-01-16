@@ -1,6 +1,9 @@
 package dao
 
-import "JD/modle"
+import (
+	"JD/modle"
+	_ "github.com/go-sql-driver/mysql"
+)
 
 func CheckPassword(user modle.User) (error, modle.User) {
 	var check modle.User

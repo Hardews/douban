@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	api.InitEngine()
 	dao.InitDB()
+	api.InitEngine()
 }
