@@ -23,7 +23,7 @@ func CheckUsername(user modle.User) error {
 }
 
 func WriteIn(user modle.User) error {
-	sqlStr := "insert into user (username,password) values (?,?)"
+	sqlStr := "insert into userBaseData (username,password) values (?,?)"
 	_, err := dB.Exec(sqlStr, user.Username, user.Password)
 	if err != nil {
 		return err
