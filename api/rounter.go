@@ -13,5 +13,14 @@ func InitEngine() {
 		userGroup.POST("/change", auth, ChangePassword)
 	}
 
+	home := engine.Group("/home")
+	{
+		movie := home.Group("/info")
+		{
+			movie.GET("/base", MovieBaseInfo)
+			movie.GET("/all", MovieInfo)
+		}
+	}
+
 	engine.Run()
 }
