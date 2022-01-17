@@ -11,6 +11,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func SetIntroduce(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+	introduce := c.PostForm("introduce")
+
+	flag := service.CheckSensitiveWords(introduce)
+	if !flag {
+		tool.RespErrorWithDate(c, "自我介绍含有敏感词汇")
+		return
+	}
+
+	err := service.SetIntroduce(username, introduce)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("set introduce failed,err:", err)
+		return
+	}
+	tool.RespSuccessful(c)
+}
+
 func GetUserInfo(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)

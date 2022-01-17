@@ -5,6 +5,15 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+func SetIntroduce(username, introduce string) error {
+	sqlStr := "update userMenuInfo set introduce = ? where username = ?"
+	_, err := dB.Exec(sqlStr, introduce, username)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
 func UserMenuInfo(username string) (error, modle.UserInfoMenu) {
 	var user modle.UserInfoMenu
 	sqlStr := "select * from userMenuInfo where username = ?"

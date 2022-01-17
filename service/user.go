@@ -6,6 +6,14 @@ import (
 	"douban/modle"
 )
 
+func SetIntroduce(username, introduce string) error {
+	err := dao.SetIntroduce(username, introduce)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
 func GetUserMenu(username string) (error, modle.UserInfoMenu) {
 	err, user := dao.UserMenuInfo(username)
 	if err != nil {
