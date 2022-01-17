@@ -28,12 +28,20 @@ func ChangePassword(ctx *gin.Context) {
 	}
 	if res {
 		user.Password = newPassword
+
+		res = service.CheckLength(user.Password)
+		if !res {
+			tool.RespErrorWithDate(ctx, "密码长度不合法")
+			return
+		}
+
 		err = service.ChangePassword(user)
 		if err != nil {
 			tool.RespInternetError(ctx)
 			fmt.Println("change password failed,err:", err)
 			return
 		}
+
 		tool.RespSuccessful(ctx)
 	} else {
 		tool.RespErrorWithDate(ctx, "旧密码错误")
@@ -71,6 +79,12 @@ func Register(ctx *gin.Context) {
 	user.Username = ctx.PostForm("username")
 	user.Password = ctx.PostForm("password")
 
+	res := service.CheckSensitiveWords(user.Username)
+	if !res {
+		tool.RespErrorWithDate(ctx, "用户名含有敏感词汇")
+		return
+	}
+
 	err, flag := service.CheckUsername(user)
 	if err != nil {
 		tool.RespInternetError(ctx)
@@ -79,6 +93,12 @@ func Register(ctx *gin.Context) {
 	}
 	if flag == false {
 		tool.RespErrorWithDate(ctx, "用户名已存在!")
+		return
+	}
+
+	res = service.CheckLength(user.Password)
+	if !res {
+		tool.RespErrorWithDate(ctx, "密码长度不合法")
 		return
 	}
 
