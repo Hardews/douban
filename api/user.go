@@ -1,11 +1,13 @@
 package api
 
 import (
-	"JD/modle"
-	"JD/service"
-	"JD/tool"
+	"douban/modle"
+	"douban/service"
+	"douban/tool"
+
 	"database/sql"
 	"fmt"
+
 	"github.com/gin-gonic/gin"
 )
 

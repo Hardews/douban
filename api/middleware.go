@@ -1,7 +1,7 @@
 package api
 
 import (
-	"JD/tool"
+	"douban/tool"
 	"github.com/gin-gonic/gin"
 )
 

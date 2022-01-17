@@ -1,8 +1,8 @@
 package main
 
 import (
-	"JD/api"
-	"JD/dao"
+	"douban/api"
+	"douban/dao"
 )
 
 func main() {

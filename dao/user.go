@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"JD/modle"
+	"douban/modle"
 	_ "github.com/go-sql-driver/mysql"
 )
 

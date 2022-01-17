@@ -1,9 +1,9 @@
 package service
 
 import (
-	"JD/dao"
-	"JD/modle"
 	"database/sql"
+	"douban/dao"
+	"douban/modle"
 )
 
 func ChangePassword(user modle.User) error {
