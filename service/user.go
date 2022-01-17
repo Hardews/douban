@@ -6,6 +6,14 @@ import (
 	"douban/modle"
 )
 
+func GetUserMenu(username string) (error, modle.UserInfoMenu) {
+	err, user := dao.UserMenuInfo(username)
+	if err != nil {
+		return err, user
+	}
+	return err, user
+}
+
 func ChangePassword(user modle.User) error {
 	var err error
 	err, user.Password = Encryption(user.Password)

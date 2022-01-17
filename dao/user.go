@@ -5,6 +5,16 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+func UserMenuInfo(username string) (error, modle.UserInfoMenu) {
+	var user modle.UserInfoMenu
+	sqlStr := "select * from userMenuInfo where username = ?"
+	err := dB.QueryRow(sqlStr, username).Scan(&username, &user.Introduce, &user.FilmCritics, &user.Seen, &user.WantSee)
+	if err != nil {
+		return err, user
+	}
+	return err, user
+}
+
 func ChangePassword(user modle.User) error {
 	sqlStr := "update userBaseData set password = ? where username = ?"
 	_, err := dB.Exec(sqlStr, user.Password, user.Password)

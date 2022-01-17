@@ -11,6 +11,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetUserInfo(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+
+	err, user := service.GetUserMenu(username)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("get menu info failed, err :", err)
+		return
+	}
+	c.JSON(200, gin.H{
+		"introduce":   user.Introduce,
+		"wantSee":     user.WantSee,
+		"filmCritics": user.FilmCritics,
+		"seen":        user.Seen,
+	})
+}
+
 func ChangePassword(ctx *gin.Context) {
 	var user modle.User
 	iUsername, _ := ctx.Get("username")
