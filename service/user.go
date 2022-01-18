@@ -6,6 +6,22 @@ import (
 	"douban/modle"
 )
 
+func UserWantSee(username, movieName string, movieNum int) error {
+	err := dao.UserWantSee(username, movieName, movieNum)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func FindMovieNumByName(movieName string) (error, int) {
+	err, movieNum := dao.FindMovieNumByName(movieName)
+	if err != nil {
+		return err, movieNum
+	}
+	return err, movieNum
+}
+
 func SetIntroduce(username, introduce string) error {
 	err := dao.SetIntroduce(username, introduce)
 	if err != nil {

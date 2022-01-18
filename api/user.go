@@ -11,6 +11,27 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func WantSee(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+	wantSee := c.PostForm("wantSee")
+
+	err, movieNum := service.FindMovieNumByName(wantSee)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("get movieNum failed,err:", err)
+		return
+	}
+
+	err = service.UserWantSee(username, wantSee, movieNum)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("set movie wantSee failed,err:", err)
+		return
+	}
+	tool.RespSuccessful(c)
+}
+
 func SetIntroduce(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)

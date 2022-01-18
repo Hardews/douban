@@ -5,6 +5,25 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+func UserWantSee(username, movieName string, movieNum int) error {
+	sqlStr := "insert userWantSee (username,wantSee,num) values (?,?,?)"
+	_, err := dB.Exec(sqlStr, username, movieName, movieNum)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func FindMovieNumByName(movieName string) (error, int) {
+	var movieNum int
+	sqlStr := "select num from movieBaseInfo where movieName = ?"
+	err := dB.QueryRow(sqlStr, movieName).Scan(&movieNum)
+	if err != nil {
+		return err, movieNum
+	}
+	return err, movieNum
+}
+
 func SetIntroduce(username, introduce string) error {
 	sqlStr := "update userMenuInfo set introduce = ? where username = ?"
 	_, err := dB.Exec(sqlStr, introduce, username)

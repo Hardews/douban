@@ -13,6 +13,7 @@ func InitEngine() {
 		userGroup.POST("/change", auth, ChangePassword)
 		userGroup.GET("/menu/:username", auth, GetUserInfo)
 		userGroup.POST("/menu/:username/introduce", auth, SetIntroduce)
+		userGroup.POST("/wantSee", auth, WantSee)
 	}
 
 	home := engine.Group("/home")
