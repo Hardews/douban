@@ -16,7 +16,7 @@ func UserWantSee(username, movieName string, movieNum int) error {
 
 func FindMovieNumByName(movieName string) (error, int) {
 	var movieNum int
-	sqlStr := "select num from movieBaseInfo where movieName = ?"
+	sqlStr := "select num from movieBaseData where movieName = ?"
 	err := dB.QueryRow(sqlStr, movieName).Scan(&movieNum)
 	if err != nil {
 		return err, movieNum
@@ -25,7 +25,7 @@ func FindMovieNumByName(movieName string) (error, int) {
 }
 
 func SetIntroduce(username, introduce string) error {
-	sqlStr := "update userMenuInfo set introduce = ? where username = ?"
+	sqlStr := "update userMenu set introduce = ? where username = ?"
 	_, err := dB.Exec(sqlStr, introduce, username)
 	if err != nil {
 		return err
@@ -35,7 +35,7 @@ func SetIntroduce(username, introduce string) error {
 
 func UserMenuInfo(username string) (error, modle.UserInfoMenu) {
 	var user modle.UserInfoMenu
-	sqlStr := "select * from userMenuInfo where username = ?"
+	sqlStr := "select * from userMenu where username = ?"
 	err := dB.QueryRow(sqlStr, username).Scan(&username, &user.Introduce, &user.FilmCritics, &user.Seen, &user.WantSee)
 	if err != nil {
 		return err, user
@@ -75,6 +75,11 @@ func CheckUsername(user modle.User) error {
 func WriteIn(user modle.User) error {
 	sqlStr := "insert into userBaseData (username,password) values (?,?)"
 	_, err := dB.Exec(sqlStr, user.Username, user.Password)
+	if err != nil {
+		return err
+	}
+	sqlStr = "insert into userMenu (username) values (?)"
+	_, err = dB.Exec(sqlStr, user.Username)
 	if err != nil {
 		return err
 	}

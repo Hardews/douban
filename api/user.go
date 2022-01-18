@@ -37,6 +37,13 @@ func SetIntroduce(c *gin.Context) {
 	username := iUsername.(string)
 	introduce := c.PostForm("introduce")
 
+	AUsername := c.Param("username")
+	if username != AUsername {
+		tool.RespInternetError(c)
+		fmt.Println("menu failed ")
+		return
+	}
+
 	flag := service.CheckSensitiveWords(introduce)
 	if !flag {
 		tool.RespErrorWithDate(c, "自我介绍含有敏感词汇")
@@ -55,6 +62,12 @@ func SetIntroduce(c *gin.Context) {
 func GetUserInfo(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
+	AUsername := c.Param("username")
+	if username != AUsername {
+		tool.RespInternetError(c)
+		fmt.Println("menu failed ")
+		return
+	}
 
 	err, user := service.GetUserMenu(username)
 	if err != nil {
