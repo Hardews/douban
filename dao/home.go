@@ -24,7 +24,7 @@ func GetMovieBaseInfo() (error, []modle.MovieInfo) {
 func GetMovieAllInfo() (error, []modle.MovieInfo) {
 	var infos []modle.MovieInfo
 
-	sqlStr := "select * from movieBaseInfo and movieInfo"
+	sqlStr := "select * from movieBaseInfo, movieInfo where movieBaseInfo.num = movieInfo.num "
 	rows, err := dB.Query(sqlStr)
 	if err != nil {
 		return err, infos
