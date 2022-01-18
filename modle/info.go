@@ -1,13 +1,14 @@
 package modle
 
 type MovieInfo struct {
-	Name     string
-	Score    string //评分
-	Area     string
-	Year     int    //出版年份
-	Time     string //时长
-	Starring string //主演
-	Director string //导演
+	Name      string
+	OtherName string
+	Score     string //评分
+	Area      string
+	Year      int    //出版年份
+	Time      string //时长
+	Starring  string //主演
+	Director  string //导演
 
 	Introduce  string //简介
 	CommentNum int

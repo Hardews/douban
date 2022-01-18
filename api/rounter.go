@@ -21,8 +21,12 @@ func InitEngine() {
 		movie := home.Group("/info")
 		{
 			movie.GET("/base", MovieBaseInfo)
-			movie.GET("/all", MovieInfo)
 		}
+	}
+
+	movie := engine.Group("/movie")
+	{
+		movie.GET("/:movieNum", GetAMovieInfo)
 	}
 
 	engine.Run()
