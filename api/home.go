@@ -93,5 +93,4 @@ func Recommend(c *gin.Context) {
 			"types":     infos.Types,
 		})
 	}
-
 }

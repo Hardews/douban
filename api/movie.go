@@ -40,6 +40,35 @@ func GetAMovieInfo(c *gin.Context) {
 	})
 }
 
+func Comment(c *gin.Context) {
+	num := c.Param("movieNum")
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+	commentTxt := c.PostForm("comment")
+
+	movieNum, _ := strconv.Atoi(num)
+	err := service.Comment(commentTxt, username, movieNum)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("comment failed,err:", err)
+		return
+	}
+
+	flag := service.CheckSensitiveWords(commentTxt)
+	if !flag {
+		tool.RespErrorWithDate(c, "短评含有敏感词汇")
+		return
+	}
+	flag = service.CheckTxtLength(commentTxt)
+	if !flag {
+		tool.RespErrorWithDate(c, "长度不合法")
+		return
+	}
+
+	tool.RespSuccessful(c)
+
+}
+
 func GetMovieComment(c *gin.Context) {
 
 }

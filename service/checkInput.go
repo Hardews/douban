@@ -9,6 +9,13 @@ func CheckLength(word string) bool {
 	return true
 }
 
+func CheckTxtLength(word string) bool {
+	if len(word) < 6 || len(word) > 70 {
+		return false
+	}
+	return true
+}
+
 var SensitiveWords = make([]string, 0) //敏感词汇切片
 
 func CheckSensitiveWords(word string) bool {

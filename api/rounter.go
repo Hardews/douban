@@ -19,12 +19,13 @@ func InitEngine() {
 	home := engine.Group("/home")
 	{
 		home.GET("/research=:find", Find)
-		home.GET("recommend", Recommend)
+		home.GET("/recommend", Recommend)
 		home.GET("/:category", FindWithCategory)
 	}
 
 	movie := engine.Group("/movie")
 	{
+		movie.POST("/num=:movieNum/comment", auth, Comment)
 		movie.GET("/:movieNum", GetAMovieInfo)
 		movie.GET("/:movieNum/movieComment", GetMovieComment)
 	}

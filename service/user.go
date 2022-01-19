@@ -6,6 +6,14 @@ import (
 	"douban/modle"
 )
 
+func Comment(Txt, username string, movieNum int) error {
+	err := dao.Comment(Txt, username, movieNum)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
 func UserWantSee(username, movieName string, movieNum int) error {
 	err := dao.UserWantSee(username, movieName, movieNum)
 	if err != nil {

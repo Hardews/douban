@@ -2,6 +2,15 @@ package dao
 
 import "douban/modle"
 
+func Comment(Txt, username string, movieNum int) error {
+	sqlStr := "insert movieComment (num,FUsername,FilmCritics) values (?,?,?)"
+	_, err := dB.Exec(sqlStr, movieNum, username, Txt)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
 func FindWithCategory(category string) (error, []modle.MovieInfo) {
 	var movies []modle.MovieInfo
 	sqlStr := "select ChineseName,otherName,score,area,year,starring,director,types from movieBaseInfo where movieBaseInfo.types like ?"
