@@ -14,14 +14,6 @@ func UserWantSee(username, movieName string, movieNum int) error {
 	return err
 }
 
-func FindMovieNumByName(movieName string) (error, int) {
-	err, movieNum := dao.FindMovieNumByName(movieName)
-	if err != nil {
-		return err, movieNum
-	}
-	return err, movieNum
-}
-
 func SetIntroduce(username, introduce string) error {
 	err := dao.SetIntroduce(username, introduce)
 	if err != nil {

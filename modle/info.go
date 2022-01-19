@@ -1,6 +1,8 @@
 package modle
 
 type MovieInfo struct {
+	Num int //编号
+
 	Name      string
 	OtherName string
 	Score     string //评分
@@ -9,6 +11,7 @@ type MovieInfo struct {
 	Time      string //时长
 	Starring  string //主演
 	Director  string //导演
+	Types     string //类型
 
 	Introduce  string //简介
 	CommentNum int

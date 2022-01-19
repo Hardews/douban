@@ -14,16 +14,6 @@ func UserWantSee(username, movieName string, movieNum int) error {
 	return err
 }
 
-func FindMovieNumByName(movieName string) (error, int) {
-	var movieNum int
-	sqlStr := "select num from movieBaseData where movieName = ?"
-	err := dB.QueryRow(sqlStr, movieName).Scan(&movieNum)
-	if err != nil {
-		return err, movieNum
-	}
-	return err, movieNum
-}
-
 func SetIntroduce(username, introduce string) error {
 	sqlStr := "update userMenu set introduce = ? where username = ?"
 	_, err := dB.Exec(sqlStr, introduce, username)

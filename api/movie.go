@@ -5,17 +5,17 @@ import (
 	"douban/tool"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"strconv"
 )
 
 func GetAMovieInfo(c *gin.Context) {
-	movieName := c.PostForm("movieName")
-	err, movieNum := service.FindMovieNumByName(movieName)
+	Num := c.Param("movieNum")
+
+	movieNum, err := strconv.Atoi(Num)
 	if err != nil {
-		tool.RespInternetError(c)
-		fmt.Println("get movieNum failed,err:", err)
+		fmt.Println(err)
 		return
 	}
-
 	err, movieInfo := service.GetAMovieInfo(movieNum)
 	if err != nil {
 		tool.RespInternetError(c)
@@ -38,4 +38,8 @@ func GetAMovieInfo(c *gin.Context) {
 		"WantSee":    movieInfo.WantSee,
 		"Seen":       movieInfo.Seen,
 	})
+}
+
+func GetMovieComment(c *gin.Context) {
+
 }
