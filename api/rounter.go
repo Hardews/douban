@@ -18,7 +18,7 @@ func InitEngine() {
 
 	home := engine.Group("/home")
 	{
-		home.POST("/find", Find)
+		home.GET("/research=:find", Find)
 		home.GET("recommend", Recommend)
 		home.GET("/:category", FindWithCategory)
 	}
