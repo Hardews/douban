@@ -59,7 +59,36 @@ func Comment(c *gin.Context) {
 		tool.RespErrorWithDate(c, "短评含有敏感词汇")
 		return
 	}
-	flag = service.CheckTxtLength(commentTxt)
+	flag = service.CheckTxtLengthS(commentTxt)
+	if !flag {
+		tool.RespErrorWithDate(c, "长度不合法")
+		return
+	}
+
+	tool.RespSuccessful(c)
+
+}
+
+func CommentMovie(c *gin.Context) {
+	num := c.Param("movieNum")
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+	commentTxt := c.PostForm("comment")
+
+	movieNum, _ := strconv.Atoi(num)
+	err := service.CommentMovie(commentTxt, username, movieNum)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("comment failed,err:", err)
+		return
+	}
+
+	flag := service.CheckSensitiveWords(commentTxt)
+	if !flag {
+		tool.RespErrorWithDate(c, "影评评含有敏感词汇")
+		return
+	}
+	flag = service.CheckTxtLengthL(commentTxt)
 	if !flag {
 		tool.RespErrorWithDate(c, "长度不合法")
 		return

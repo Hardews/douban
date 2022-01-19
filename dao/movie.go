@@ -11,6 +11,15 @@ func Comment(Txt, username string, movieNum int) error {
 	return err
 }
 
+func CommentMovie(Txt, username string, movieNum int) error {
+	sqlStr := "insert movieComment (num,EUsername,Essay) values (?,?,?)"
+	_, err := dB.Exec(sqlStr, movieNum, username, Txt)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
 func FindWithCategory(category string) (error, []modle.MovieInfo) {
 	var movies []modle.MovieInfo
 	sqlStr := "select ChineseName,otherName,score,area,year,starring,director,types from movieBaseInfo where movieBaseInfo.types like ?"
