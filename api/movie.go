@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"douban/service"
 	"douban/tool"
 	"fmt"
@@ -44,7 +45,7 @@ func Comment(c *gin.Context) {
 	num := c.Param("movieNum")
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
-	commentTxt := c.PostForm("comment")
+	commentTxt := c.PostForm("ShortComment")
 
 	movieNum, _ := strconv.Atoi(num)
 	err := service.Comment(commentTxt, username, movieNum)
@@ -73,7 +74,7 @@ func CommentMovie(c *gin.Context) {
 	num := c.Param("movieNum")
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
-	commentTxt := c.PostForm("comment")
+	commentTxt := c.PostForm("LongComment")
 
 	movieNum, _ := strconv.Atoi(num)
 	err := service.CommentMovie(commentTxt, username, movieNum)
@@ -99,5 +100,53 @@ func CommentMovie(c *gin.Context) {
 }
 
 func GetMovieComment(c *gin.Context) {
+	num := c.Param("movieNum")
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
 
+	movieNum, _ := strconv.Atoi(num)
+	err, comments := service.GetMovieComment(username, movieNum)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			tool.RespErrorWithDate(c, "无影评")
+			return
+		}
+		tool.RespInternetError(c)
+		fmt.Println("get comment failed,err:", err)
+		return
+	}
+
+	for i, _ := range comments {
+		c.JSON(200, gin.H{
+			"username": username,
+			"txt":      comments[i].Txt,
+			"time":     comments[i].Time,
+		})
+	}
+}
+
+func GetComment(c *gin.Context) {
+	num := c.Param("movieNum")
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+
+	movieNum, _ := strconv.Atoi(num)
+	err, comments := service.GetComment(username, movieNum)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			tool.RespErrorWithDate(c, "无短评")
+			return
+		}
+		tool.RespInternetError(c)
+		fmt.Println("get comment failed,err:", err)
+		return
+	}
+
+	for i, _ := range comments {
+		c.JSON(200, gin.H{
+			"username": username,
+			"txt":      comments[i].Txt,
+			"time":     comments[i].Time,
+		})
+	}
 }

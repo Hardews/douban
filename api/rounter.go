@@ -28,7 +28,8 @@ func InitEngine() {
 		movie.POST("/num=:movieNum/commentMovie", auth, CommentMovie)
 		movie.POST("/num=:movieNum/comment", auth, Comment)
 		movie.GET("/:movieNum", GetAMovieInfo)
-		movie.GET("/:movieNum/movieComment", GetMovieComment)
+		movie.GET("/GetNum=:movieNum/shortComment", GetComment)
+		movie.GET("/GetNum=:movieNum/longComment", GetMovieComment)
 	}
 
 	engine.Run()

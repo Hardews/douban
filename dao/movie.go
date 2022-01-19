@@ -2,6 +2,46 @@ package dao
 
 import "douban/modle"
 
+func GetComment(username string, num int) (error, []modle.UserComment) {
+	var comments []modle.UserComment
+	sqlStr := "select Essay,time from movieComment where EUsername = ? and num = ?"
+	rows, err := dB.Query(sqlStr, username, num)
+	if err != nil {
+		return err, comments
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var comment modle.UserComment
+		err = rows.Scan(&comment.Txt, &comment.Time)
+		if err != nil {
+			return err, comments
+		}
+		comments = append(comments, comment)
+	}
+	return err, comments
+}
+
+func GetMovieComment(username string, num int) (error, []modle.UserComment) {
+	var comments []modle.UserComment
+	sqlStr := "select FilmCritics,time from movieComment where FUsername = ? and num = ?"
+	rows, err := dB.Query(sqlStr, username, num)
+	if err != nil {
+		return err, comments
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var comment modle.UserComment
+		err = rows.Scan(&comment.Txt, &comment.Time)
+		if err != nil {
+			return err, comments
+		}
+		comments = append(comments, comment)
+	}
+	return err, comments
+}
+
 func Comment(Txt, username string, movieNum int) error {
 	sqlStr := "insert movieComment (num,FUsername,FilmCritics) values (?,?,?)"
 	_, err := dB.Exec(sqlStr, movieNum, username, Txt)
