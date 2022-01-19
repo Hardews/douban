@@ -6,6 +6,8 @@ import (
 	"douban/tool"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"math/rand"
+	"time"
 )
 
 func Find(c *gin.Context) {
@@ -49,6 +51,7 @@ func FindWithCategory(c *gin.Context) {
 	for i, _ := range infos {
 		c.JSON(200, gin.H{
 			"name":      infos[i].Name,
+			"otherName": infos[i].OtherName,
 			"score":     infos[i].Score,
 			"year":      infos[i].Year,
 			"area":      infos[i].Area,
@@ -63,5 +66,32 @@ func FindWithCategory(c *gin.Context) {
 }
 
 func Recommend(c *gin.Context) {
+	rand.Seed(time.Now().UnixMicro())
+	var nums []int
+	for i := 0; i < 7; i++ {
+		num := rand.Intn(100) + 1
+		nums = append(nums, num)
+	}
+
+	for _, num := range nums {
+		err, infos := service.GetAMovieInfo(num)
+		if err != nil {
+			tool.RespInternetError(c)
+			fmt.Println("get recommend movie failed,err:", err)
+			return
+		}
+		c.JSON(200, gin.H{
+			"name":      infos.Name,
+			"otherName": infos.OtherName,
+			"score":     infos.Score,
+			"year":      infos.Year,
+			"area":      infos.Area,
+			"director":  infos.Director,
+			"starring":  infos.Starring,
+			"Introduce": infos.Introduce,
+			"Language":  infos.Language,
+			"types":     infos.Types,
+		})
+	}
 
 }
