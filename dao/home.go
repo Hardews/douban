@@ -4,10 +4,10 @@ import "douban/modle"
 
 func Find(keyWord string) (error, []modle.MovieInfo) {
 	var movies []modle.MovieInfo
-	sqlStr := "select * from movieBaseInfo where ChineseName like ?"
+	sqlStr := "select * from movieBaseInfo where ChineseName like ? or otherName like ? or Starring like ?"
 	keyWord = "%" + keyWord + "%"
 
-	rows, err := dB.Query(sqlStr, keyWord)
+	rows, err := dB.Query(sqlStr, keyWord, keyWord, keyWord)
 	if err != nil {
 		return err, movies
 	}

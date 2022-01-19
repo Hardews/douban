@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"douban/service"
 	"douban/tool"
 	"fmt"
@@ -12,6 +13,10 @@ func Find(c *gin.Context) {
 
 	err, infos := service.Find(Want)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			tool.RespErrorWithDate(c, "抱歉，暂时没有您想要的电影")
+			return
+		}
 		fmt.Println("find movie failed,err:", err)
 		tool.RespInternetError(c)
 		return
