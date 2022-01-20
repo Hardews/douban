@@ -5,6 +5,41 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+func GetUserComment(username string) (error, []modle.UserComment, []modle.UserComment) {
+	var shortComments, longComments []modle.UserComment
+	sqlStr := "select movieNum,FilmCritics,time from shortComment where username = ?"
+	rows, err := dB.Query(sqlStr, username)
+	if err != nil {
+		return err, shortComments, longComments
+	}
+
+	for rows.Next() {
+		var shortComment modle.UserComment
+		err := rows.Scan(&shortComment.MovieNum, &shortComment.Txt, &shortComment.Time)
+		if err != nil {
+			return err, shortComments, longComments
+		}
+		shortComments = append(shortComments, shortComment)
+	}
+
+	sqlStr = "select movieNum,Essay,time from longComment where username = ?"
+	rows, err = dB.Query(sqlStr, username)
+	if err != nil {
+		return err, shortComments, longComments
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var longComment modle.UserComment
+		err := rows.Scan(&longComment.MovieNum, &longComment.Txt, &longComment.Time)
+		if err != nil {
+			return err, shortComments, longComments
+		}
+		longComments = append(longComments, longComment)
+	}
+	return err, shortComments, longComments
+}
+
 func UserWantSee(username, movieName string, movieNum int) error {
 	sqlStr := "insert userWantSee (username,wantSee,num) values (?,?,?)"
 	_, err := dB.Exec(sqlStr, username, movieName, movieNum)

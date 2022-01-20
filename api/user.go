@@ -13,7 +13,32 @@ import (
 )
 
 func GetUserComment(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+	err, shortComments, longComments := service.GetUserComment(username)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			tool.RespErrorWithDate(c, "无评论")
+			return
+		}
+	}
 
+	for i, _ := range shortComments {
+		c.JSON(200, gin.H{
+			"movieNum": shortComments[i].MovieNum,
+			"username": username,
+			"txt":      shortComments[i].Txt,
+			"time":     shortComments[i].Time,
+		})
+	}
+	for i, _ := range longComments {
+		c.JSON(200, gin.H{
+			"movieNum": longComments[i].MovieNum,
+			"username": username,
+			"txt":      longComments[i].Txt,
+			"time":     longComments[i].Time,
+		})
+	}
 }
 
 func WantSee(c *gin.Context) {

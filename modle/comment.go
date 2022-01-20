@@ -1,8 +1,10 @@
 package modle
 
 type UserComment struct {
-	Username string
-	Txt      string
-	Time     string
-	LikeNum  int
+	MovieNum  int
+	MovieName string
+	Username  string
+	Txt       string
+	Time      string
+	LikeNum   int
 }
