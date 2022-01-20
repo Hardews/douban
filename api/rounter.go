@@ -10,10 +10,12 @@ func InitEngine() {
 
 	userGroup := engine.Group("/user")
 	{
-		userGroup.POST("/change", auth, ChangePassword)
-		userGroup.GET("/menu/:username", auth, GetUserInfo)
-		userGroup.POST("/menu/:username/introduce", auth, SetIntroduce)
-		userGroup.POST("/wantSee", auth, WantSee)
+		userGroup.Use(auth)
+		userGroup.POST("/change", ChangePassword)
+		userGroup.GET("/menu/:username", GetUserInfo) //用户的信息（包括自我介绍
+		userGroup.POST("/menu/:username/introduce", SetIntroduce)
+		userGroup.POST("/:movieNum/wantSee", WantSee)       //用户想看
+		userGroup.GET("/:username/Comment", GetUserComment) //获取用户的影评和短评
 	}
 
 	home := engine.Group("/home")
@@ -25,11 +27,11 @@ func InitEngine() {
 
 	movie := engine.Group("/movie")
 	{
-		movie.POST("/num=:movieNum/commentMovie", auth, CommentMovie)
-		movie.POST("/num=:movieNum/comment", auth, Comment)
 		movie.GET("/:movieNum", GetAMovieInfo)
-		movie.GET("/GetNum=:movieNum/shortComment", GetComment)
-		movie.GET("/GetNum=:movieNum/longComment", GetMovieComment)
+		movie.POST("/num=:movieNum/longComment", auth, LongComment)   //影评
+		movie.POST("/num=:movieNum/shortComment", auth, ShortComment) //短评
+		movie.GET("/GetNum=:movieNum/shortComment", GetShortComment)
+		movie.GET("/GetNum=:movieNum/longComment", GetLongComment)
 	}
 
 	engine.Run()

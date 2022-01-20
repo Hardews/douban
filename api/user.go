@@ -4,6 +4,7 @@ import (
 	"douban/modle"
 	"douban/service"
 	"douban/tool"
+	"strconv"
 
 	"database/sql"
 	"fmt"
@@ -11,19 +12,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetUserComment(c *gin.Context) {
+
+}
+
 func WantSee(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
 	wantSee := c.PostForm("wantSee")
+	Num := c.Param("movieNum")
 
-	err, movieNum := service.FindMovieNumByName(wantSee)
-	if err != nil {
-		tool.RespInternetError(c)
-		fmt.Println("get movieNum failed,err:", err)
-		return
-	}
+	movieNum, _ := strconv.Atoi(Num)
 
-	err = service.UserWantSee(username, wantSee, movieNum)
+	err := service.UserWantSee(username, wantSee, movieNum)
 	if err != nil {
 		tool.RespInternetError(c)
 		fmt.Println("set movie wantSee failed,err:", err)
@@ -47,6 +48,11 @@ func SetIntroduce(c *gin.Context) {
 	flag := service.CheckSensitiveWords(introduce)
 	if !flag {
 		tool.RespErrorWithDate(c, "自我介绍含有敏感词汇")
+		return
+	}
+	res := service.CheckTxtLengthS(introduce)
+	if !res {
+		tool.RespErrorWithDate(c, "长度不合法")
 		return
 	}
 

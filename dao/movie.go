@@ -2,10 +2,10 @@ package dao
 
 import "douban/modle"
 
-func GetComment(username string, num int) (error, []modle.UserComment) {
+func GetComment(num int) (error, []modle.UserComment) {
 	var comments []modle.UserComment
-	sqlStr := "select Essay,time from movieComment where EUsername = ? and num = ?"
-	rows, err := dB.Query(sqlStr, username, num)
+	sqlStr := "select Username,Essay,TIME from movieComment where movieNum = ?"
+	rows, err := dB.Query(sqlStr, num)
 	if err != nil {
 		return err, comments
 	}
@@ -13,7 +13,7 @@ func GetComment(username string, num int) (error, []modle.UserComment) {
 
 	for rows.Next() {
 		var comment modle.UserComment
-		err = rows.Scan(&comment.Txt, &comment.Time)
+		err = rows.Scan(&comment.Username, &comment.Txt, &comment.Time)
 		if err != nil {
 			return err, comments
 		}
@@ -22,10 +22,10 @@ func GetComment(username string, num int) (error, []modle.UserComment) {
 	return err, comments
 }
 
-func GetMovieComment(username string, num int) (error, []modle.UserComment) {
+func GetMovieComment(num int) (error, []modle.UserComment) {
 	var comments []modle.UserComment
-	sqlStr := "select FilmCritics,time from movieComment where FUsername = ? and num = ?"
-	rows, err := dB.Query(sqlStr, username, num)
+	sqlStr := "select Username,FilmCritics,time from shortComment where movieNum = ?"
+	rows, err := dB.Query(sqlStr, num)
 	if err != nil {
 		return err, comments
 	}
@@ -33,7 +33,7 @@ func GetMovieComment(username string, num int) (error, []modle.UserComment) {
 
 	for rows.Next() {
 		var comment modle.UserComment
-		err = rows.Scan(&comment.Txt, &comment.Time)
+		err = rows.Scan(&comment.Username, &comment.Txt, &comment.Time)
 		if err != nil {
 			return err, comments
 		}
@@ -43,7 +43,7 @@ func GetMovieComment(username string, num int) (error, []modle.UserComment) {
 }
 
 func Comment(Txt, username string, movieNum int) error {
-	sqlStr := "insert movieComment (num,FUsername,FilmCritics) values (?,?,?)"
+	sqlStr := "insert shortComment (movieNum,Username,FilmCritics) values (?,?,?)"
 	_, err := dB.Exec(sqlStr, movieNum, username, Txt)
 	if err != nil {
 		return err
@@ -52,7 +52,7 @@ func Comment(Txt, username string, movieNum int) error {
 }
 
 func CommentMovie(Txt, username string, movieNum int) error {
-	sqlStr := "insert movieComment (num,EUsername,Essay) values (?,?,?)"
+	sqlStr := "insert movieComment (movieNum,Username,Essay) values (?,?,?)"
 	_, err := dB.Exec(sqlStr, movieNum, username, Txt)
 	if err != nil {
 		return err
@@ -90,14 +90,4 @@ func GetAMovieInfo(movieNum int) (error, modle.MovieInfo) {
 		return err, movie
 	}
 	return err, movie
-}
-
-func FindMovieNumByName(movieName string) (error, int) {
-	var movieNum int
-	sqlStr := "select num from movieBaseInfo where chineseName = ?"
-	err := dB.QueryRow(sqlStr, movieName).Scan(&movieNum)
-	if err != nil {
-		return err, movieNum
-	}
-	return err, movieNum
 }

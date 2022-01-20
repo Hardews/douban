@@ -10,14 +10,14 @@ func CheckLength(word string) bool {
 }
 
 func CheckTxtLengthS(word string) bool {
-	if len(word) < 6 || len(word) > 50 {
+	if len(word) > 100 {
 		return false
 	}
 	return true
 }
 
 func CheckTxtLengthL(word string) bool {
-	if len(word) < 10 || len(word) > 150 {
+	if len(word) > 150 {
 		return false
 	}
 	return true

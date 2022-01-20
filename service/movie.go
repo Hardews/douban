@@ -5,16 +5,16 @@ import (
 	"douban/modle"
 )
 
-func GetComment(username string, num int) (error, []modle.UserComment) {
-	err, comments := dao.GetComment(username, num)
+func GetComment(num int) (error, []modle.UserComment) {
+	err, comments := dao.GetComment(num)
 	if err != nil {
 		return err, comments
 	}
 	return err, comments
 }
 
-func GetMovieComment(username string, num int) (error, []modle.UserComment) {
-	err, comments := dao.GetMovieComment(username, num)
+func GetMovieComment(num int) (error, []modle.UserComment) {
+	err, comments := dao.GetMovieComment(num)
 	if err != nil {
 		return err, comments
 	}
@@ -27,14 +27,6 @@ func FindWithCategory(category string) (error, []modle.MovieInfo) {
 		return err, movies
 	}
 	return err, movies
-}
-
-func FindMovieNumByName(movieName string) (error, int) {
-	err, movieNum := dao.FindMovieNumByName(movieName)
-	if err != nil {
-		return err, movieNum
-	}
-	return err, movieNum
 }
 
 func GetAMovieInfo(movieNum int) (error, modle.MovieInfo) {

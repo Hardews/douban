@@ -41,17 +41,16 @@ func GetAMovieInfo(c *gin.Context) {
 	})
 }
 
-func Comment(c *gin.Context) {
+func ShortComment(c *gin.Context) {
 	num := c.Param("movieNum")
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
 	commentTxt := c.PostForm("ShortComment")
 
-	movieNum, _ := strconv.Atoi(num)
-	err := service.Comment(commentTxt, username, movieNum)
+	movieNum, err := strconv.Atoi(num)
 	if err != nil {
 		tool.RespInternetError(c)
-		fmt.Println("comment failed,err:", err)
+		fmt.Println(err)
 		return
 	}
 
@@ -60,9 +59,16 @@ func Comment(c *gin.Context) {
 		tool.RespErrorWithDate(c, "短评含有敏感词汇")
 		return
 	}
-	flag = service.CheckTxtLengthS(commentTxt)
-	if !flag {
+	res := service.CheckTxtLengthS(commentTxt)
+	if !res {
 		tool.RespErrorWithDate(c, "长度不合法")
+		return
+	}
+
+	err = service.Comment(commentTxt, username, movieNum)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("comment failed,err:", err)
 		return
 	}
 
@@ -70,19 +76,11 @@ func Comment(c *gin.Context) {
 
 }
 
-func CommentMovie(c *gin.Context) {
+func LongComment(c *gin.Context) {
 	num := c.Param("movieNum")
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
 	commentTxt := c.PostForm("LongComment")
-
-	movieNum, _ := strconv.Atoi(num)
-	err := service.CommentMovie(commentTxt, username, movieNum)
-	if err != nil {
-		tool.RespInternetError(c)
-		fmt.Println("comment failed,err:", err)
-		return
-	}
 
 	flag := service.CheckSensitiveWords(commentTxt)
 	if !flag {
@@ -95,17 +93,23 @@ func CommentMovie(c *gin.Context) {
 		return
 	}
 
+	movieNum, _ := strconv.Atoi(num)
+	err := service.CommentMovie(commentTxt, username, movieNum)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("comment failed,err:", err)
+		return
+	}
+
 	tool.RespSuccessful(c)
 
 }
 
-func GetMovieComment(c *gin.Context) {
+func GetLongComment(c *gin.Context) {
 	num := c.Param("movieNum")
-	iUsername, _ := c.Get("username")
-	username := iUsername.(string)
 
 	movieNum, _ := strconv.Atoi(num)
-	err, comments := service.GetMovieComment(username, movieNum)
+	err, comments := service.GetComment(movieNum)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			tool.RespErrorWithDate(c, "无影评")
@@ -118,20 +122,18 @@ func GetMovieComment(c *gin.Context) {
 
 	for i, _ := range comments {
 		c.JSON(200, gin.H{
-			"username": username,
+			"username": comments[i].Username,
 			"txt":      comments[i].Txt,
 			"time":     comments[i].Time,
 		})
 	}
 }
 
-func GetComment(c *gin.Context) {
+func GetShortComment(c *gin.Context) {
 	num := c.Param("movieNum")
-	iUsername, _ := c.Get("username")
-	username := iUsername.(string)
 
 	movieNum, _ := strconv.Atoi(num)
-	err, comments := service.GetComment(username, movieNum)
+	err, comments := service.GetMovieComment(movieNum)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			tool.RespErrorWithDate(c, "无短评")
@@ -144,7 +146,7 @@ func GetComment(c *gin.Context) {
 
 	for i, _ := range comments {
 		c.JSON(200, gin.H{
-			"username": username,
+			"username": comments[i].Username,
 			"txt":      comments[i].Txt,
 			"time":     comments[i].Time,
 		})
