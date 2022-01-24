@@ -13,9 +13,8 @@ type MovieInfo struct {
 	Director  string //导演
 	Types     string //类型
 
-	Introduce  string //简介
-	CommentNum int
-	Language   string
+	Introduce string //简介
+	Language  string
 
 	FUsername   string
 	FTime       string
@@ -23,6 +22,8 @@ type MovieInfo struct {
 	EUsername   string
 	ETime       string
 	Essay       string //短评
-	WantSee     int
-	Seen        int //看过
+
+	CommentNum int
+	WantSee    int
+	Seen       int //看过
 }
