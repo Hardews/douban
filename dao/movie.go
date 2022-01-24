@@ -62,7 +62,7 @@ func CommentMovie(Txt, username string, movieNum int) error {
 
 func FindWithCategory(category string) (error, []modle.MovieInfo) {
 	var movies []modle.MovieInfo
-	sqlStr := "select ChineseName,otherName,score,area,year,starring,director,types from movieBaseInfo where movieBaseInfo.types like ?"
+	sqlStr := "select ChineseName,otherName,score,area,year,types,starring,director,commentNum,introduce,language from movieBaseInfo where movieBaseInfo.types like ?"
 	category = "%" + category + "%"
 	rows, err := dB.Query(sqlStr, category)
 	if err != nil {
@@ -72,7 +72,8 @@ func FindWithCategory(category string) (error, []modle.MovieInfo) {
 
 	for rows.Next() {
 		var movie modle.MovieInfo
-		err := rows.Scan(&movie.Name, &movie.OtherName, &movie.Score, &movie.Area, &movie.Year, &movie.Starring, &movie.Director, &movie.Types)
+		err := rows.Scan(&movie.Name, &movie.OtherName, &movie.Score, &movie.Area,
+			&movie.Year, &movie.Types, &movie.Starring, &movie.Director, &movie.CommentNum, &movie.Introduce, &movie.Language)
 		if err != nil {
 			return err, movies
 		}
@@ -83,7 +84,7 @@ func FindWithCategory(category string) (error, []modle.MovieInfo) {
 
 func GetAMovieInfo(movieNum int) (error, modle.MovieInfo) {
 	var movie modle.MovieInfo
-	sqlStr := "select ChineseName,otherName,score,area,year,types,starring,director,commentNum,introduce,writer,language from movieBaseInfo,movieExtraInfo where movieBaseInfo.num = ? and movieExtraInfo.num = ?"
+	sqlStr := "select ChineseName,otherName,score,area,year,types,starring,director,commentNum,introduce,language from movieBaseInfo,movieExtraInfo where movieBaseInfo.num = ? and movieExtraInfo.num = ?"
 	err := dB.QueryRow(sqlStr, movieNum, movieNum).Scan(&movie.Name, &movie.OtherName, &movie.Score, &movie.Area,
 		&movie.Year, &movie.Types, &movie.Starring, &movie.Director, &movie.CommentNum, &movie.Introduce, &movie.Language)
 	if err != nil {

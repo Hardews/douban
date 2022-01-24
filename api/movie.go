@@ -11,6 +11,42 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func WantSee(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+	comment := c.PostForm("comment") //简短评论，为甚想看
+	label := c.PostForm("label")     //用户输入存储标签
+	Num := c.Param("movieNum")
+
+	movieNum, _ := strconv.Atoi(Num)
+
+	err := service.UserWantSee(username, comment, label, movieNum)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("set movie wantSee failed,err:", err)
+		return
+	}
+	tool.RespSuccessful(c)
+}
+
+func Seen(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+	comment := c.PostForm("comment") //简短评论，看过之后的感想（非影评短评
+	label := c.PostForm("label")     //用户输入存储标签
+	Num := c.Param("movieNum")
+
+	movieNum, _ := strconv.Atoi(Num)
+
+	err := service.UserSeen(username, comment, label, movieNum)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("set movie wantSee failed,err:", err)
+		return
+	}
+	tool.RespSuccessful(c)
+}
+
 func GetAMovieInfo(c *gin.Context) {
 	Num := c.Param("movieNum")
 

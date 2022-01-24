@@ -6,6 +6,22 @@ import (
 	"douban/modle"
 )
 
+func UserSeen(username, comment, label string, movieNum int) error {
+	err := dao.UserSeen(username, comment, label, movieNum)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func UserWantSee(username, comment, label string, movieNum int) error {
+	err := dao.UserWantSee(username, comment, label, movieNum)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
 func GetUserComment(username string) (error, []modle.UserComment, []modle.UserComment) {
 	err, shortComments, longComments := dao.GetUserComment(username)
 	if err != nil {
@@ -24,14 +40,6 @@ func CommentMovie(Txt, username string, movieNum int) error {
 
 func Comment(Txt, username string, movieNum int) error {
 	err := dao.Comment(Txt, username, movieNum)
-	if err != nil {
-		return err
-	}
-	return err
-}
-
-func UserWantSee(username, movieName string, movieNum int) error {
-	err := dao.UserWantSee(username, movieName, movieNum)
 	if err != nil {
 		return err
 	}
