@@ -4,6 +4,7 @@ import (
 	"douban/modle"
 	"douban/service"
 	"github.com/gin-gonic/gin"
+	"strconv"
 )
 
 func RespMovieInfo(ctx *gin.Context, movieInfo modle.MovieInfo) {
@@ -47,7 +48,9 @@ func RespMovieInfos(ctx *gin.Context, infos []modle.MovieInfo) {
 }
 
 func WantSee(c *gin.Context, infos []modle.UserHistory, username string) error {
+	var num = 0
 	for i, _ := range infos {
+		num++
 		err, movieInfo := service.GetAMovieInfo(infos[i].MovieNum)
 		if err != nil {
 			return err
@@ -60,5 +63,32 @@ func WantSee(c *gin.Context, infos []modle.UserHistory, username string) error {
 			"label":    infos[i].Label,
 		})
 	}
+	n := strconv.Itoa(num)
+	c.JSON(200, gin.H{
+		"num": n + "部看过",
+	})
+	return nil
+}
+
+func Seen(c *gin.Context, infos []modle.UserHistory, username string) error {
+	var num = 0
+	for i, _ := range infos {
+		num++
+		err, movieInfo := service.GetAMovieInfo(infos[i].MovieNum)
+		if err != nil {
+			return err
+		}
+		RespMovieInfo(c, movieInfo)
+		c.JSON(200, gin.H{
+			"username": username,
+			"comment":  infos[i].Comment,
+			"movieNum": infos[i].MovieNum,
+			"label":    infos[i].Label,
+		})
+	}
+	n := strconv.Itoa(num)
+	c.JSON(200, gin.H{
+		"num": n + "部看过",
+	})
 	return nil
 }

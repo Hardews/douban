@@ -42,7 +42,7 @@ func Seen(c *gin.Context) {
 		return
 	}
 
-	err = tool.WantSee(c, seen, username)
+	err = tool.Seen(c, seen, username)
 	if err != nil {
 		tool.RespInternetError(c)
 		fmt.Println("get wantSee failed ,err:", err)

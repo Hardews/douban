@@ -1,10 +1,8 @@
 package dao
 
-import "douban/modle"
-
-func Find(keyWord string) (error, []modle.MovieInfo) {
-	var movies []modle.MovieInfo
-	sqlStr := "select * from movieBaseInfo where ChineseName like ? or otherName like ? or Starring like ?"
+func Find(keyWord string) (error, []int) {
+	var movies []int
+	sqlStr := "select Num from movieBaseInfo where ChineseName like ? or otherName like ? or types like ? "
 	keyWord = "%" + keyWord + "%"
 
 	rows, err := dB.Query(sqlStr, keyWord, keyWord, keyWord)
@@ -14,8 +12,8 @@ func Find(keyWord string) (error, []modle.MovieInfo) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var movie modle.MovieInfo
-		err := rows.Scan(&movie.Num, &movie.Name, &movie.OtherName, &movie.Score, &movie.Area, &movie.Year, &movie.Starring, &movie.Director, &movie.Types)
+		var movie int
+		err := rows.Scan(&movie)
 		if err != nil {
 			return err, movies
 		}

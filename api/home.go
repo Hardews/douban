@@ -15,7 +15,7 @@ import (
 func Find(c *gin.Context) {
 	Want := c.Param("find")
 
-	err, infos := service.Find(Want)
+	err, nums := service.Find(Want)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			tool.RespErrorWithDate(c, "抱歉，暂时没有您想要的电影")
@@ -26,7 +26,15 @@ func Find(c *gin.Context) {
 		return
 	}
 
-	tool.RespMovieInfos(c, infos)
+	for i, _ := range nums {
+		err, info := service.GetAMovieInfo(nums[i])
+		if err != nil {
+			fmt.Println("find movie failed,err:", err)
+			tool.RespInternetError(c)
+			return
+		}
+		tool.RespMovieInfo(c, info)
+	}
 }
 
 func FindWithCategory(c *gin.Context) {
