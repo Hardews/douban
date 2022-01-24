@@ -1,13 +1,15 @@
 package api
 
 import (
-	"database/sql"
 	"douban/service"
 	"douban/tool"
+
+	"database/sql"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"math/rand"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func Find(c *gin.Context) {
@@ -24,19 +26,7 @@ func Find(c *gin.Context) {
 		return
 	}
 
-	for i, _ := range infos {
-		c.JSON(200, gin.H{
-			"name":      infos[i].Name,
-			"score":     infos[i].Score,
-			"year":      infos[i].Year,
-			"area":      infos[i].Area,
-			"director":  infos[i].Director,
-			"starring":  infos[i].Starring,
-			"Introduce": infos[i].Introduce,
-			"Language":  infos[i].Language,
-			"types":     infos[i].Types,
-		})
-	}
+	tool.RespMovieInfos(c, infos)
 }
 
 func FindWithCategory(c *gin.Context) {
@@ -48,20 +38,7 @@ func FindWithCategory(c *gin.Context) {
 		return
 	}
 
-	for i, _ := range infos {
-		c.JSON(200, gin.H{
-			"name":      infos[i].Name,
-			"otherName": infos[i].OtherName,
-			"score":     infos[i].Score,
-			"year":      infos[i].Year,
-			"area":      infos[i].Area,
-			"director":  infos[i].Director,
-			"starring":  infos[i].Starring,
-			"Introduce": infos[i].Introduce,
-			"Language":  infos[i].Language,
-			"types":     infos[i].Types,
-		})
-	}
+	tool.RespMovieInfos(c, infos)
 
 }
 
@@ -80,17 +57,6 @@ func Recommend(c *gin.Context) {
 			fmt.Println("get recommend movie failed,err:", err)
 			return
 		}
-		c.JSON(200, gin.H{
-			"name":      infos.Name,
-			"otherName": infos.OtherName,
-			"score":     infos.Score,
-			"year":      infos.Year,
-			"area":      infos.Area,
-			"director":  infos.Director,
-			"starring":  infos.Starring,
-			"Introduce": infos.Introduce,
-			"Language":  infos.Language,
-			"types":     infos.Types,
-		})
+		tool.RespMovieInfo(c, infos)
 	}
 }

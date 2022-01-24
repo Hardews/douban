@@ -1,6 +1,7 @@
 package tool
 
 import (
+	"douban/modle"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -21,4 +22,39 @@ func RespErrorWithDate(ctx *gin.Context, Date interface{}) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"date": Date,
 	})
+}
+
+func RespMovieInfo(ctx *gin.Context, movieInfo modle.MovieInfo) {
+	ctx.JSON(200, gin.H{
+		"name":       movieInfo.Name,
+		"otherName":  movieInfo.OtherName,
+		"score":      movieInfo.Score,
+		"year":       movieInfo.Year,
+		"time":       movieInfo.Time,
+		"area":       movieInfo.Area,
+		"director":   movieInfo.Director,
+		"starring":   movieInfo.Starring,
+		"CommentNum": movieInfo.CommentNum,
+		"Introduce":  movieInfo.Introduce,
+		"Language":   movieInfo.Language,
+		"WantSee":    movieInfo.WantSee,
+		"Seen":       movieInfo.Seen,
+	})
+}
+
+func RespMovieInfos(ctx *gin.Context, infos []modle.MovieInfo) {
+	for i, _ := range infos {
+		ctx.JSON(200, gin.H{
+			"name":      infos[i].Name,
+			"otherName": infos[i].OtherName,
+			"score":     infos[i].Score,
+			"year":      infos[i].Year,
+			"area":      infos[i].Area,
+			"director":  infos[i].Director,
+			"starring":  infos[i].Starring,
+			"Introduce": infos[i].Introduce,
+			"Language":  infos[i].Language,
+			"types":     infos[i].Types,
+		})
+	}
 }

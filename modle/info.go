@@ -15,9 +15,7 @@ type MovieInfo struct {
 
 	Introduce  string //简介
 	CommentNum int
-	Writer     string //编剧
 	Language   string
-	Cast       string //演员名单
 
 	FUsername   string
 	FTime       string

@@ -27,7 +27,7 @@ func InitEngine() {
 
 	movie := engine.Group("/movie")
 	{
-		movie.GET("/:movieNum", GetAMovieInfo)
+		movie.GET("/num=:movieNum", GetAMovieInfo)
 		movie.POST("/num=:movieNum/longComment", auth, LongComment)   //影评
 		movie.POST("/num=:movieNum/shortComment", auth, ShortComment) //短评
 		movie.GET("/GetNum=:movieNum/shortComment", GetShortComment)

@@ -1,12 +1,14 @@
 package api
 
 import (
-	"database/sql"
 	"douban/service"
 	"douban/tool"
+
+	"database/sql"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 func GetAMovieInfo(c *gin.Context) {
@@ -24,21 +26,7 @@ func GetAMovieInfo(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{
-		"name":       movieInfo.Name,
-		"score":      movieInfo.Score,
-		"year":       movieInfo.Year,
-		"time":       movieInfo.Time,
-		"area":       movieInfo.Area,
-		"director":   movieInfo.Director,
-		"starring":   movieInfo.Starring,
-		"Writer":     movieInfo.Writer,
-		"CommentNum": movieInfo.CommentNum,
-		"Introduce":  movieInfo.Introduce,
-		"Language":   movieInfo.Language,
-		"WantSee":    movieInfo.WantSee,
-		"Seen":       movieInfo.Seen,
-	})
+	tool.RespMovieInfo(c, movieInfo)
 }
 
 func ShortComment(c *gin.Context) {
