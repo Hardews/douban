@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func WantSee(c *gin.Context) {
+func userWantSee(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
 	comment := c.PostForm("comment") //简短评论，为甚想看
@@ -29,7 +29,7 @@ func WantSee(c *gin.Context) {
 	tool.RespSuccessful(c)
 }
 
-func Seen(c *gin.Context) {
+func userSeen(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
 	comment := c.PostForm("comment") //简短评论，看过之后的感想（非影评短评

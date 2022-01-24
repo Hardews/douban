@@ -6,8 +6,11 @@ type User struct {
 }
 
 type UserInfoMenu struct {
-	Introduce   string
-	FilmCritics string
-	WantSee     string
-	Seen        string
+	Introduce string
+}
+
+type UserHistory struct {
+	MovieNum int
+	Comment  string
+	Label    string
 }

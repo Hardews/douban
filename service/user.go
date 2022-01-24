@@ -6,6 +6,22 @@ import (
 	"douban/modle"
 )
 
+func GetUserWantSee(username string) (error, []modle.UserHistory) {
+	err, wantSee := dao.GetWantSee(username)
+	if err != nil {
+		return err, wantSee
+	}
+	return err, wantSee
+}
+
+func GetUserSeen(username string) (error, []modle.UserHistory) {
+	err, seen := dao.GetSeen(username)
+	if err != nil {
+		return err, seen
+	}
+	return err, seen
+}
+
 func UserSeen(username, comment, label string, movieNum int) error {
 	err := dao.UserSeen(username, comment, label, movieNum)
 	if err != nil {
