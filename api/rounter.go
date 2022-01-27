@@ -35,6 +35,11 @@ func InitEngine() {
 		movie.POST("/num=:movieNum/shortComment", auth, ShortComment) //短评
 		movie.GET("/GetNum=:movieNum/shortComment", GetShortComment)
 		movie.GET("/GetNum=:movieNum/longComment", GetLongComment)
+		movie.POST("/SetNum=:movieNum/commentArea", auth, SetCommentArea)                   //发表讨论区话题
+		movie.GET("/GetNum=:movieNum/commentArea", GetCommentArea)                          //获取讨论区信息
+		movie.POST("/CommentNum=:movieNum/commentAreaNum=:num", auth, GiveComment)          //评论某个话题
+		movie.POST("/LikeNum=:movieNum/commentAreaNum=:num", auth, GiveTopicLike)           //给某个话题点赞
+		movie.POST("/LikeComment-Num=:movieNum/commentAreaNum=:num", auth, GiveCommentLike) //给某个评论点赞
 	}
 
 	engine.Run()

@@ -5,6 +5,14 @@ import (
 	"douban/modle"
 )
 
+func SetCommentArea(username, topic string, movieNum int) error {
+	err := dao.SetCommentArea(username, topic, movieNum)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
 func GetComment(num int) (error, []modle.UserComment) {
 	err, comments := dao.GetComment(num)
 	if err != nil {

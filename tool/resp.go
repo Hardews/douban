@@ -22,3 +22,9 @@ func RespErrorWithDate(ctx *gin.Context, Date interface{}) {
 		"date": Date,
 	})
 }
+
+func RespSuccessfulWithDate(c *gin.Context, date interface{}) {
+	c.JSON(http.StatusOK, gin.H{
+		"date": date,
+	})
+}
