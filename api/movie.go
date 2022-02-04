@@ -11,6 +11,84 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func deleteLongComment(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+	num := c.Param("movieNum")
+	movieNum, err := strconv.Atoi(num)
+	if err != nil {
+		fmt.Println("translate num failed , err:", err)
+		tool.RespInternetError(c)
+		return
+	}
+
+	err, flag := service.DeleteLongComment(username, movieNum)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("delete long comment failed,err: ", err)
+		return
+	}
+	if !flag {
+		tool.RespErrorWithDate(c, "影评不存在")
+		return
+	}
+	tool.RespSuccessfulWithDate(c, "删除成功!")
+}
+
+func deleteShortComment(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+	num := c.Param("movieNum")
+	movieNum, err := strconv.Atoi(num)
+	if err != nil {
+		fmt.Println("translate num failed , err:", err)
+		tool.RespInternetError(c)
+		return
+	}
+
+	err, flag := service.DeleteLongComment(username, movieNum)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("delete short comment failed,err: ", err)
+		return
+	}
+	if !flag {
+		tool.RespErrorWithDate(c, "短评不存在")
+		return
+	}
+	tool.RespSuccessfulWithDate(c, "删除成功!")
+}
+
+func deleteUserSeen(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+	label := c.Param("label") //用户存储标签
+	Num := c.Param("movieNum")
+
+	movieNum, _ := strconv.Atoi(Num)
+
+	err := service.DeleteSeen(movieNum, label, username)
+	if err != nil {
+		return
+	}
+	tool.RespSuccessfulWithDate(c, "删除成功")
+}
+
+func deleteUserWantSee(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+	label := c.Param("label") //用户存储标签
+	Num := c.Param("movieNum")
+
+	movieNum, _ := strconv.Atoi(Num)
+
+	err := service.DeleteWantSee(movieNum, label, username)
+	if err != nil {
+		return
+	}
+	tool.RespSuccessfulWithDate(c, "删除成功")
+}
+
 func userWantSee(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)

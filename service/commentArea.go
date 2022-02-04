@@ -5,12 +5,20 @@ import (
 	"douban/modle"
 )
 
-func GiveTopicLike(username string, movieNum, num int) error {
-	err := dao.GiveTopicLike(username, movieNum, num)
+func GiveCommentLike(username string, movieNum, areaNum, commentNum int) (error, bool) {
+	err, flag := dao.GiveCommentLike(username, movieNum, areaNum, commentNum)
 	if err != nil {
-		return err
+		return err, flag
 	}
-	return err
+	return err, flag
+}
+
+func GiveTopicLike(username string, movieNum, num int) (error, bool) {
+	err, flag := dao.GiveTopicLike(username, movieNum, num)
+	if err != nil {
+		return err, flag
+	}
+	return err, flag
 }
 
 func GetCommentArea(movieNum int) (error, []modle.CommentArea) {

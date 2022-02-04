@@ -1,32 +1,74 @@
 package dao
 
-import "douban/modle"
+import (
+	"database/sql"
+	"douban/modle"
+)
 
-func GiveCommentLike(username string, movieNum, areaNum, num int) {
+func GiveCommentLike(username string, movieNum, areaNum, commentNum int) (error, bool) {
+	var iUsername string
+	sqlStr := "select username from commentLike where commentNum = ? and movieNum = ? and topicNum = ? and username = ?"
+	err := dB.QueryRow(sqlStr, commentNum, movieNum, areaNum, username).Scan(&iUsername)
+	if err != nil {
+		if err != sql.ErrNoRows {
+			return nil, false
+		}
+		return err, false
+	}
 
+	sqlStr = "insert commentLike (username,movieNum,topicNum,commentNum) values (?,?,?,?)"
+	_, err = dB.Exec(sqlStr, username, movieNum, areaNum, commentNum)
+	if err != nil {
+		return err, false
+	}
+
+	var likeNum int
+	sqlStr = "select likeNum from comment where movieNum = ? and num = ? and no = ?"
+	err = dB.QueryRow(sqlStr, movieNum, areaNum, commentNum).Scan(&likeNum)
+	if err != nil {
+		return err, false
+	}
+	likeNum = likeNum + 1
+
+	sqlStr = "update comment set likeNum = ?"
+	_, err = dB.Exec(sqlStr, likeNum)
+	if err != nil {
+		return err, false
+	}
+	return err, true
 }
 
-func GiveTopicLike(username string, movieNum, num int) error {
-	sqlStr := "insert commentLike (username,movieNum,topicNum) values (?,?,?)"
-	_, err := dB.Exec(sqlStr, username, movieNum, num)
+func GiveTopicLike(username string, movieNum, num int) (error, bool) {
+	var iUsername string
+	sqlStr := "select username from topicLike where username = ? and movieNum = ? and topicNum = ?"
+	err := dB.QueryRow(sqlStr, username, movieNum, num).Scan(&iUsername)
 	if err != nil {
-		return err
+		if err != sql.ErrNoRows {
+			return nil, false
+		}
+		return err, false
+	}
+
+	sqlStr = "insert topicLike (username,movieNum,topicNum) values (?,?,?)"
+	_, err = dB.Exec(sqlStr, username, movieNum, num)
+	if err != nil {
+		return err, false
 	}
 
 	var likeNum int
 	sqlStr = "select likeNum from commentArea where movieNum = ? and num = ?"
 	err = dB.QueryRow(sqlStr, movieNum, num).Scan(&likeNum)
 	if err != nil {
-		return err
+		return err, false
 	}
 	likeNum = likeNum + 1
 
-	sqlStr = "update commentArea set commentLike = ?"
+	sqlStr = "update commentArea set LikeNum = ?"
 	_, err = dB.Exec(sqlStr, likeNum)
 	if err != nil {
-		return err
+		return err, false
 	}
-	return err
+	return err, true
 }
 
 func GiveComment(comment modle.CommentArea) error {

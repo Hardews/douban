@@ -1,9 +1,50 @@
 package service
 
 import (
+	"database/sql"
 	"douban/dao"
 	"douban/modle"
 )
+
+func DeleteShortComment(username string, movieNum int) (error, bool) {
+	err := dao.DeleteShortComment(username, movieNum)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			err = nil
+			return err, false
+		}
+		return err, false
+	}
+	return err, true
+}
+
+func DeleteLongComment(username string, movieNum int) (error, bool) {
+	err := dao.DeleteLongComment(username, movieNum)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			err = nil
+			return err, false
+		}
+		return err, false
+	}
+	return err, true
+}
+
+func DeleteSeen(movieNum int, label, username string) error {
+	err := dao.DeleteSeen(movieNum, label, username)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func DeleteWantSee(movieNum int, label, username string) error {
+	err := dao.DeleteWantSee(movieNum, label, username)
+	if err != nil {
+		return err
+	}
+	return err
+}
 
 func SetCommentArea(username, topic string, movieNum int) error {
 	err := dao.SetCommentArea(username, topic, movieNum)

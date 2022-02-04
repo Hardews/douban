@@ -10,6 +10,22 @@ import (
 	"strconv"
 )
 
+func doNotLikeComment(c *gin.Context) {
+
+}
+
+func doNotLike(c *gin.Context) {
+
+}
+
+func deleteComment(c *gin.Context) {
+
+}
+
+func deleteCommentArea(c *gin.Context) {
+
+}
+
 func GetCommentArea(c *gin.Context) {
 	num := c.Param("movieNum")
 	movieNum, err := strconv.Atoi(num)
@@ -69,10 +85,14 @@ func GiveTopicLike(c *gin.Context) {
 		return
 	}
 
-	err = service.GiveTopicLike(Username, MovieNum, areaNum)
+	err, flag := service.GiveTopicLike(Username, MovieNum, areaNum)
 	if err != nil {
 		fmt.Println("give like failed,err,", err)
 		tool.RespInternetError(c)
+		return
+	}
+	if !flag {
+		tool.RespErrorWithDate(c, "您已经点过赞了！")
 		return
 	}
 	tool.RespSuccessfulWithDate(c, "点赞成功!")
@@ -106,7 +126,32 @@ func GiveComment(c *gin.Context) {
 }
 
 func GiveCommentLike(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	Username := iUsername.(string)
 
+	Num1 := c.Param("movieNum")
+	Num2 := c.Param("num")
+	Num3 := c.Param("commentNum")
+	MovieNum, err := strconv.Atoi(Num1)
+	areaNum, err := strconv.Atoi(Num2)
+	commentNum, err := strconv.Atoi(Num3)
+	if err != nil {
+		fmt.Println("shift num failed,err,", err)
+		tool.RespInternetError(c)
+		return
+	}
+
+	err, flag := service.GiveCommentLike(Username, MovieNum, areaNum, commentNum)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("give comment like failed ,err:", err)
+		return
+	}
+	if !flag {
+		tool.RespErrorWithDate(c, "您已经点过赞了")
+		return
+	}
+	tool.RespSuccessfulWithDate(c, "点赞成功！")
 }
 
 func SetCommentArea(c *gin.Context) {

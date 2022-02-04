@@ -2,6 +2,60 @@ package dao
 
 import "douban/modle"
 
+func DeleteShortComment(username string, movieNum int) error {
+	var iUsername string
+	sqlStr := "select FilmCritics from shortComment where username = ? and movieNum = ?"
+	err := dB.QueryRow(sqlStr, username, movieNum).Scan(&iUsername)
+	if err != nil {
+		return err
+	}
+
+	username = username + "已删除"
+	sqlStr = "update shortComment set username = ? where username = ? and movieNum = ?"
+	_, err = dB.Exec(sqlStr, username, iUsername, movieNum)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func DeleteLongComment(username string, movieNum int) error {
+	var iUsername string
+	sqlStr := "select essay from movieComment where username = ? and movieNum = ?"
+	err := dB.QueryRow(sqlStr, username, movieNum).Scan(&iUsername)
+	if err != nil {
+		return err
+	}
+
+	username = username + "已删除"
+	sqlStr = "update essay set username = ? where username = ? and movieNum = ?"
+	_, err = dB.Exec(sqlStr, username, iUsername, movieNum)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func DeleteSeen(movieNum int, label, username string) error {
+	username = username + "已删除"
+	sqlStr := "update userSeen set username = ? where movieNum = ? and label = ?"
+	_, err := dB.Exec(sqlStr, username, movieNum, label)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func DeleteWantSee(movieNum int, label, username string) error {
+	username = username + "已删除"
+	sqlStr := "update userWantSee set username = ? where movieNum = ? and label = ?"
+	_, err := dB.Exec(sqlStr, username, movieNum, label)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
 func GetComment(num int) (error, []modle.UserComment) {
 	var comments []modle.UserComment
 	sqlStr := "select Username,Essay,TIME from movieComment where movieNum = ?"
