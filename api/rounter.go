@@ -44,9 +44,9 @@ func InitEngine() {
 
 		movie.POST("/SetNum=:movieNum/commentArea", auth, SetCommentArea) //发表讨论区话题
 		movie.DELETE("/Num=:movieNum/commentAreaNum=:num", auth, deleteCommentArea)
-		movie.GET("/GetNum=:movieNum/commentArea", GetCommentArea)                 //获取讨论区信息
+		movie.GET("/GetNum=:movieNum/areaNum=:commentArea", GetCommentArea)        //获取讨论区信息
 		movie.POST("/CommentNum=:movieNum/commentAreaNum=:num", auth, GiveComment) //评论某个话题
-		movie.DELETE("/CommentNum=:movieNum/commentAreaNum=:num", auth, deleteComment)
+		movie.DELETE("/movieNum=:movieNum/commentAreaNum=:areaNum/commentNum=:num", auth, deleteComment)
 		movie.POST("/LikeNum=:movieNum/commentAreaNum=:num", auth, GiveTopicLike) //给某个话题点赞
 		movie.POST("/Num=:movieNum/commentAreaNum=:num", auth, doNotLike)
 		movie.POST("/LikeComment-Num=:movieNum/commentAreaNum=:num/:commentNum", auth, GiveCommentLike) //给某个评论点赞

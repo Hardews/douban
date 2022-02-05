@@ -11,19 +11,107 @@ import (
 )
 
 func doNotLikeComment(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	Username := iUsername.(string)
+	num2 := c.Param("areaNum")
+	num3 := c.Param("num")
 
+	areaNum, err := strconv.Atoi(num2)
+	commentNum, err := strconv.Atoi(num3)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println(err)
+		return
+	}
+
+	err = service.DoNotLikeComment(Username, areaNum, commentNum)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			tool.RespErrorWithDate(c, "无此点赞内容")
+			return
+		}
+		fmt.Println("delete like failed,err:", err)
+		tool.RespInternetError(c)
+		return
+	}
+	tool.RespSuccessfulWithDate(c, "取消点赞成功")
 }
 
 func doNotLike(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	Username := iUsername.(string)
+	num := c.Param("areaNum")
 
+	areaNum, err := strconv.Atoi(num)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println(err)
+		return
+	}
+
+	err = service.DoNotLikeTopic(Username, areaNum)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			tool.RespErrorWithDate(c, "无此点赞内容")
+			return
+		}
+		fmt.Println("delete like failed,err:", err)
+		tool.RespInternetError(c)
+		return
+	}
+	tool.RespSuccessfulWithDate(c, "取消点赞成功")
 }
 
 func deleteComment(c *gin.Context) {
+	num1 := c.Param("movieNum")
+	num2 := c.Param("areaNum")
+	num3 := c.Param("num")
 
+	movieNum, err := strconv.Atoi(num1)
+	areaNum, err := strconv.Atoi(num2)
+	commentNum, err := strconv.Atoi(num3)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println(err)
+		return
+	}
+
+	err, flag := service.DeleteComment(movieNum, areaNum, commentNum)
+	if err != nil {
+		fmt.Println("delete comment failed,err :", err)
+		tool.RespInternetError(c)
+		return
+	}
+	if !flag {
+		tool.RespErrorWithDate(c, "没有这个评论")
+		return
+	}
+	tool.RespSuccessfulWithDate(c, "删除成功")
 }
 
 func deleteCommentArea(c *gin.Context) {
+	num1 := c.Param("movieNum")
+	num2 := c.Param("areaNum")
 
+	movieNum, err := strconv.Atoi(num1)
+	areaNum, err := strconv.Atoi(num2)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println(err)
+		return
+	}
+
+	err, flag := service.DeleteCommentArea(movieNum, areaNum)
+	if err != nil {
+		fmt.Println("delete comment area failed,err:", err)
+		tool.RespInternetError(c)
+		return
+	}
+	if !flag {
+		tool.RespErrorWithDate(c, "无此讨论标题")
+		return
+	}
+	tool.RespSuccessfulWithDate(c, "删除成功!")
 }
 
 func GetCommentArea(c *gin.Context) {

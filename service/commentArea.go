@@ -1,9 +1,50 @@
 package service
 
 import (
+	"database/sql"
 	"douban/dao"
 	"douban/modle"
 )
+
+func DoNotLikeTopic(username string, areaNum int) error {
+	err := dao.DoNotLikeTopic(username, areaNum)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func DoNotLikeComment(username string, areaNum, commentNum int) error {
+	err := dao.DoNotLikeComment(username, areaNum, commentNum)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func DeleteComment(movieNum, areaNum, commentNum int) (error, bool) {
+	err := dao.DeleteComment(movieNum, areaNum, commentNum)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			err = nil
+			return err, false
+		}
+		return err, false
+	}
+	return err, true
+}
+
+func DeleteCommentArea(movieNum, areaNum int) (error, bool) {
+	err := dao.DeleteCommentArea(movieNum, areaNum)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			err = nil
+			return err, false
+		}
+		return err, false
+	}
+	return err, true
+}
 
 func GiveCommentLike(username string, movieNum, areaNum, commentNum int) (error, bool) {
 	err, flag := dao.GiveCommentLike(username, movieNum, areaNum, commentNum)
