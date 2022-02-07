@@ -62,8 +62,8 @@ func GiveTopicLike(username string, movieNum, num int) (error, bool) {
 	return err, flag
 }
 
-func GetCommentArea(movieNum int) (error, []modle.CommentArea) {
-	err, commentAreas := dao.GetCommentArea(movieNum)
+func GetCommentArea(movieNum, areaNum int) (error, modle.CommentArea) {
+	err, commentAreas := dao.GetCommentArea(movieNum, areaNum)
 	if err != nil {
 		return err, commentAreas
 	}

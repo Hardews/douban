@@ -116,14 +116,16 @@ func deleteCommentArea(c *gin.Context) {
 
 func GetCommentArea(c *gin.Context) {
 	num := c.Param("movieNum")
+	num1 := c.Param("commentArea")
 	movieNum, err := strconv.Atoi(num)
+	areaNum, err := strconv.Atoi(num1)
 	if err != nil {
 		fmt.Println("shift num failed,err =", err)
 		tool.RespInternetError(c)
 		return
 	}
 
-	err, commentArea := service.GetCommentArea(movieNum)
+	err, commentArea := service.GetCommentArea(movieNum, areaNum)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			tool.RespErrorWithDate(c, "无话题")
@@ -134,21 +136,26 @@ func GetCommentArea(c *gin.Context) {
 		return
 	}
 
-	for i, _ := range commentArea {
-		c.JSON(200, gin.H{
-			"username":   commentArea[i].Username,
-			"topic":      commentArea[i].Topic,
-			"time":       commentArea[i].Time,
-			"commentNum": commentArea[i].CommentNum,
-			"likeNum":    commentArea[i].LikeNum,
-		})
+	c.JSON(200, gin.H{
+		"username":   commentArea.Username,
+		"topic":      commentArea.Topic,
+		"time":       commentArea.Time,
+		"commentNum": commentArea.CommentNum,
+		"likeNum":    commentArea.LikeNum,
+	})
 
-		err, comment := service.GetCommentByNum(movieNum, commentArea[i].Num)
-		if err != nil {
-			fmt.Println("get comment failed ,err:", err)
-			tool.RespInternetError(c)
-			return
-		}
+	if commentArea.CommentNum == 0 {
+		tool.RespSuccessfulWithDate(c, "无评论")
+		return
+	}
+
+	err, comment := service.GetCommentByNum(movieNum, areaNum)
+	if err != nil {
+		fmt.Println("get comment failed ,err:", err)
+		tool.RespInternetError(c)
+		return
+	}
+	for i, _ := range comment {
 		c.JSON(200, gin.H{
 			"username": comment[i].Username,
 			"comment":  comment[i].Comment,
