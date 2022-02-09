@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	"douban/middleware"
 	"douban/modle"
 	"douban/service"
 	"douban/tool"
@@ -15,6 +16,7 @@ func ChangePassword(ctx *gin.Context) {
 	var user modle.User
 	iUsername, _ := ctx.Get("username")
 	user.Username = iUsername.(string)
+	fmt.Println(user.Username)
 	user.Password = ctx.PostForm("oldPassword")
 	newPassword := ctx.PostForm("newPassword")
 
@@ -31,7 +33,7 @@ func ChangePassword(ctx *gin.Context) {
 	if res {
 		user.Password = newPassword
 
-		res = service.CheckLength(user.Password)
+		res = service.CheckLength(newPassword)
 		if !res {
 			tool.RespErrorWithDate(ctx, "密码长度不合法")
 			return
@@ -67,7 +69,14 @@ func Login(ctx *gin.Context) {
 		return
 	}
 	if res {
-		ctx.SetCookie("user_login", user.Username, 600, "/", "", false, true)
+		token, flag := middleware.SetToken(user.Username)
+		if !flag {
+			tool.RespInternetError(ctx)
+			return
+		}
+		ctx.JSON(200, gin.H{
+			"msg": token,
+		})
 		tool.RespSuccessful(ctx)
 	} else {
 		tool.RespErrorWithDate(ctx, "密码错误")

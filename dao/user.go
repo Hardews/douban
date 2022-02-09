@@ -7,7 +7,7 @@ import (
 
 func ChangePassword(user modle.User) error {
 	sqlStr := "update userBaseData set password = ? where username = ?"
-	_, err := dB.Exec(sqlStr, user.Password, user.Password)
+	_, err := dB.Exec(sqlStr, user.Password, user.Username)
 	if err != nil {
 		return err
 	}
