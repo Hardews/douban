@@ -51,7 +51,7 @@ func FindWithCategory(c *gin.Context) {
 }
 
 func Recommend(c *gin.Context) {
-	rand.Seed(time.Now().UnixMicro())
+	rand.Seed(time.Now().UnixNano())
 	var nums []int
 	for i := 0; i < 7; i++ {
 		num := rand.Intn(100) + 1
