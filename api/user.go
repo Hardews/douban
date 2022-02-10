@@ -13,13 +13,26 @@ import (
 )
 
 func SetQuestion(c *gin.Context) {
+	var user modle.User
 	iUsername, _ := c.Get("username")
-	username := iUsername.(string)
+	user.Username = iUsername.(string)
 
+	user.Password = c.PostForm("password")
 	question := c.PostForm("question")
 	answer := c.PostForm("answer")
 
-	err, flag := service.SetQuestion(username, question, answer)
+	err, flag := service.CheckPassword(user)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("check password failed,err:", err)
+		return
+	}
+	if !flag {
+		tool.RespErrorWithDate(c, "密码错误")
+		return
+	}
+
+	err, flag = service.SetQuestion(user.Username, question, answer)
 	if err != nil {
 		fmt.Println("set question failed,err:", err)
 		tool.RespInternetError(c)
@@ -38,7 +51,7 @@ func Retrieve(c *gin.Context) {
 	question, err := service.SelectQuestion(username)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			tool.RespErrorWithDate(c, "该账号无密保，可通过申诉找回")
+			tool.RespErrorWithDate(c, "该账号无密保，可通过申诉找回") //发我邮箱，我帮你查（滑稽
 			return
 		}
 		fmt.Println("select question failed,err:", err)
