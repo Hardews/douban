@@ -41,3 +41,17 @@ func CheckSensitiveWords(word string) bool {
 	}
 	return true
 }
+
+var administrators = make([]string, 0) //管理员账号切片
+
+func CheckAdministratorUsername(username string) bool {
+	administrators = append(administrators, "1225101127")
+
+	for i, _ := range administrators {
+		flag := strings.Compare(username, administrators[i])
+		if flag != 0 {
+			return false
+		}
+	}
+	return true
+}

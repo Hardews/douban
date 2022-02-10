@@ -114,14 +114,13 @@ func ChangePassword(ctx *gin.Context) {
 
 func Login(ctx *gin.Context) {
 	var user modle.User
-	var identity string
+	var identity = "用户"
 	user.Username = ctx.PostForm("username")
 	user.Password = ctx.PostForm("password")
 
-	if user.Username == "1225101127" {
+	flag := service.CheckAdministratorUsername(user.Username)
+	if flag {
 		identity = "管理员"
-	} else {
-		identity = "用户"
 	}
 
 	err, res := service.CheckPassword(user)
