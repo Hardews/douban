@@ -29,5 +29,4 @@ func NewMovie(c *gin.Context) {
 	}
 
 	tool.RespSuccessfulWithDate(c, movieNum)
-
 }

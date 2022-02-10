@@ -1,9 +1,11 @@
 package dao
 
-import "douban/modle"
+import (
+	"douban/modle"
+)
 
 func NewMovie(movie modle.MovieInfo) (error, int) {
-	sqlStr := "insert movieBaseInfo (chineseName,otherName,score,area,year,starring,director,types,) values (?,?,?,?,?,?,?,?);"
+	sqlStr := "insert movieBaseInfo (chineseName,otherName,score,area,year,starring,director,types) values (?,?,?,?,?,?,?,?)"
 	_, err := dB.Exec(sqlStr, movie.Name, movie.OtherName, movie.Score, movie.Area, movie.Year, movie.Starring, movie.Director, movie.Types)
 	if err != nil {
 		return err, 0
@@ -16,7 +18,6 @@ func NewMovie(movie modle.MovieInfo) (error, int) {
 		return err, 0
 	}
 
-	movieNum += 1
 	sqlStr = "insert movieExtraInfo (num,movieName,introduce,howLong) values (?,?,?,?) "
 	_, err = dB.Exec(sqlStr, movieNum, movie.Name, movie.Introduce, movie.Time)
 	if err != nil {

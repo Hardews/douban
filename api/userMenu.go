@@ -118,6 +118,8 @@ func GetUserInfo(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
+		"username":  username,
+		"nickName":  user.NickName,
 		"introduce": user.Introduce,
 	})
 }

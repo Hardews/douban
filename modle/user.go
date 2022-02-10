@@ -1,11 +1,9 @@
 package modle
 
 type User struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
-type UserInfoMenu struct {
+	NickName  string `json:"nick_name"`
+	Username  string `json:"username"`
+	Password  string `json:"password"`
 	Introduce string
 }
 

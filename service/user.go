@@ -126,7 +126,7 @@ func SetIntroduce(username, introduce string) error {
 	return err
 }
 
-func GetUserMenu(username string) (error, modle.UserInfoMenu) {
+func GetUserMenu(username string) (error, modle.User) {
 	err, user := dao.UserMenuInfo(username)
 	if err != nil {
 		return err, user

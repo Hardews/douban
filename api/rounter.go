@@ -75,6 +75,7 @@ func InitEngine() {
 
 	administrator := engine.Group("/administrator")
 	{
+		administrator.Use(middleware.JwtToken)
 		administrator.Use(middleware.AdministratorToken)
 
 		administrator.POST("/setNewMovie", NewMovie)

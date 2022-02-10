@@ -104,12 +104,19 @@ func SetIntroduce(username, introduce string) error {
 	return err
 }
 
-func UserMenuInfo(username string) (error, modle.UserInfoMenu) {
-	var user modle.UserInfoMenu
-	sqlStr := "select * from userMenu where username = ?"
+func UserMenuInfo(username string) (error, modle.User) {
+	var user modle.User
+	sqlStr := "select username,introduce from userMenu where username = ?"
 	err := dB.QueryRow(sqlStr, username).Scan(&username, &user.Introduce)
 	if err != nil {
 		return err, user
 	}
+
+	sqlStr = "select nickName from userBaseData where username = ?"
+	err = dB.QueryRow(sqlStr, username).Scan(&user.NickName)
+	if err != nil {
+		return err, user
+	}
+
 	return err, user
 }

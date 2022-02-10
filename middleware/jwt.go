@@ -99,35 +99,15 @@ func JwtToken(c *gin.Context) {
 }
 
 func AdministratorToken(c *gin.Context) {
-	var code string
 	tokenHeader := c.Request.Header.Get("Authorization")
-	if tokenHeader == "" {
-		code = "token 不存在"
-		c.JSON(200, gin.H{
-			"code": code,
-			"msg":  "请登陆后再操作",
-		})
-		c.Abort()
-		return
-	}
-	checkToken := strings.SplitN(tokenHeader, "", 2)
-	if len(checkToken) != 2 && checkToken[0] != "Bearer" {
-		code = "token格式错误"
-		c.JSON(200, gin.H{
-			"msg": code,
-		})
-		c.Abort()
-		return
-	}
-
-	//解析token
 	token, err := jwt.ParseWithClaims(tokenHeader, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
-
-	//获取token中的字段
-	username := token.Claims.(*MyClaims).Username
-	Time := token.Claims.(*MyClaims).ExpiresAt
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("check token failed ,err:", err)
+		return
+	}
 	administrator := token.Claims.(*MyClaims).Identity
 
 	if administrator != "管理员" {
@@ -136,30 +116,5 @@ func AdministratorToken(c *gin.Context) {
 		})
 		return
 	}
-
-	if Time < time.Now().Unix() {
-		code = "token已过期"
-		c.JSON(200, gin.H{
-			"msg": code,
-		})
-		c.Abort()
-		return
-	}
-
-	if err != nil {
-		fmt.Println("check token failed,err:", err)
-		tool.RespInternetError(c)
-		return
-	}
-
-	if token.Valid == false {
-		code = "token不正确"
-		c.JSON(200, gin.H{
-			"msg": code,
-		})
-		c.Abort()
-		return
-	}
-
-	c.Set("username", username)
+	c.Next()
 }
