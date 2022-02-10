@@ -56,8 +56,16 @@ func ChangePassword(ctx *gin.Context) {
 
 func Login(ctx *gin.Context) {
 	var user modle.User
+	var identity string
 	user.Username = ctx.PostForm("username")
 	user.Password = ctx.PostForm("password")
+
+	if user.Username == "1225101127" {
+		identity = "管理员"
+	} else {
+		identity = "用户"
+	}
+
 	err, res := service.CheckPassword(user)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -69,7 +77,7 @@ func Login(ctx *gin.Context) {
 		return
 	}
 	if res {
-		token, flag := middleware.SetToken(user.Username)
+		token, flag := middleware.SetToken(user.Username, identity)
 		if !flag {
 			tool.RespInternetError(ctx)
 			return

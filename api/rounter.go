@@ -22,7 +22,7 @@ func InitEngine() {
 
 	userInfo := engine.Group("/user")
 	{
-		userInfo.GET("/menu/:username", GetUserInfo)          //用户的信息（包括自我介绍
+		userInfo.GET("/:username/menu", GetUserInfo)          //用户的信息（包括自我介绍
 		userInfo.GET("/:username/Comment", GetUserComment)    //获取用户的影评和短评
 		userInfo.GET("/:username/favorites/wantSee", WantSee) //收藏夹
 		userInfo.GET("/:username/favorites/Seen", Seen)
@@ -72,5 +72,13 @@ func InitEngine() {
 		movieGet.GET("/GetNum=:movieNum/longComment", GetLongComment)
 		movieGet.GET("/commentArea/GetNum=:num", GetCommentArea) //获取讨论区信息
 	}
+
+	administrator := engine.Group("/administrator")
+	{
+		administrator.Use(middleware.AdministratorToken)
+
+		administrator.POST("/setNewMovie", NewMovie)
+	}
+
 	engine.Run()
 }
