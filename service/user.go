@@ -6,6 +6,32 @@ import (
 	"douban/modle"
 )
 
+func UpdateComment(username, txt string, movieNum, choose, areaNum int) error {
+	switch choose {
+	case 1:
+		err := dao.UpdateLongComment(username, txt, movieNum)
+		if err != nil {
+			return err
+		}
+	case 2:
+		err := dao.UpdateShortComment(username, txt, movieNum)
+		if err != nil {
+			return err
+		}
+	case 3:
+		err := dao.UpdateCommentArea(username, txt, movieNum)
+		if err != nil {
+			return err
+		}
+	case 4:
+		err := dao.UpdateComment(username, txt, movieNum, areaNum)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func GetUserWantSee(username string) (error, []modle.UserHistory) {
 	err, wantSee := dao.GetWantSee(username)
 	if err != nil {
@@ -46,8 +72,38 @@ func GetUserComment(username string) (error, []modle.UserComment, []modle.UserCo
 	return err, shortComments, longComments
 }
 
-func CommentMovie(Txt, username string, movieNum int) error {
-	err := dao.CommentMovie(Txt, username, movieNum)
+func SelectComment(username string, movieNum, choose, areaNum int) (error, bool, int) {
+	switch choose {
+	case 1:
+		err, flag := dao.SelectLongComment(username, movieNum)
+		if err != nil {
+			return err, flag, 0
+		}
+		return err, flag, 0
+	case 2:
+		err, flag := dao.SelectShortComment(username, movieNum)
+		if err != nil {
+			return err, flag, 0
+		}
+		return err, flag, 0
+	case 3:
+		err, flag, num := dao.SelectArea(username, movieNum)
+		if err != nil {
+			return err, flag, 0
+		}
+		return err, flag, num
+	case 4:
+		err, flag, num := dao.SelectComment(username, movieNum, areaNum)
+		if err != nil {
+			return err, flag, 0
+		}
+		return err, flag, num
+	}
+	return nil, false, 0
+}
+
+func CommentMovie(Txt, username, commentTopic string, movieNum int) error {
+	err := dao.CommentMovie(Txt, username, commentTopic, movieNum)
 	if err != nil {
 		return err
 	}

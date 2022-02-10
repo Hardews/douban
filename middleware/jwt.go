@@ -61,10 +61,12 @@ func JwtToken(c *gin.Context) {
 		return
 	}
 
+	//解析token
 	token, err := jwt.ParseWithClaims(tokenHeader, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
 
+	//获取token中的字段
 	username := token.Claims.(*MyClaims).Username
 	Time := token.Claims.(*MyClaims).ExpiresAt
 	if Time < time.Now().Unix() {

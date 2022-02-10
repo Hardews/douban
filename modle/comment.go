@@ -1,6 +1,7 @@
 package modle
 
 type UserComment struct {
+	Topic     string
 	MovieNum  int
 	MovieName string
 	Username  string

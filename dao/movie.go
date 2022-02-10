@@ -1,6 +1,9 @@
 package dao
 
-import "douban/modle"
+import (
+	"database/sql"
+	"douban/modle"
+)
 
 func DeleteShortComment(username string, movieNum int) error {
 	var iUsername string
@@ -58,7 +61,7 @@ func DeleteWantSee(movieNum int, label, username string) error {
 
 func GetComment(num int) (error, []modle.UserComment) {
 	var comments []modle.UserComment
-	sqlStr := "select Username,Essay,TIME from movieComment where movieNum = ?"
+	sqlStr := "select Username,Essay,TIME,commentTopic from movieComment where movieNum = ?"
 	rows, err := dB.Query(sqlStr, num)
 	if err != nil {
 		return err, comments
@@ -67,7 +70,7 @@ func GetComment(num int) (error, []modle.UserComment) {
 
 	for rows.Next() {
 		var comment modle.UserComment
-		err = rows.Scan(&comment.Username, &comment.Txt, &comment.Time)
+		err = rows.Scan(&comment.Username, &comment.Txt, &comment.Time, &comment.Topic)
 		if err != nil {
 			return err, comments
 		}
@@ -96,6 +99,29 @@ func GetMovieComment(num int) (error, []modle.UserComment) {
 	return err, comments
 }
 
+func UpdateShortComment(username, txt string, movieNum int) error {
+	sqlStr := "update shortComment set FilmCritics = ? where username = ? and movieNum = ?"
+	_, err := dB.Exec(sqlStr, txt, username, movieNum)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func SelectShortComment(username string, movieNum int) (error, bool) {
+	var iTxt string
+	sqlStr := "select FilmCritics from shortComment where username = ? and movieNum = ?"
+	err := dB.QueryRow(sqlStr, username, movieNum).Scan(&iTxt)
+	switch {
+	case err == nil:
+		return err, false
+	case err != nil && err == sql.ErrNoRows:
+		return nil, true
+	default:
+		return err, false
+	}
+}
+
 func Comment(Txt, username string, movieNum int) error {
 	sqlStr := "insert shortComment (movieNum,Username,FilmCritics) values (?,?,?)"
 	_, err := dB.Exec(sqlStr, movieNum, username, Txt)
@@ -105,9 +131,32 @@ func Comment(Txt, username string, movieNum int) error {
 	return err
 }
 
-func CommentMovie(Txt, username string, movieNum int) error {
-	sqlStr := "insert movieComment (movieNum,Username,Essay) values (?,?,?)"
-	_, err := dB.Exec(sqlStr, movieNum, username, Txt)
+func UpdateLongComment(username, txt string, movieNum int) error {
+	sqlStr := "update movieComment set Essay = ? where username = ? and movieNum = ?"
+	_, err := dB.Exec(sqlStr, txt, username, movieNum)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func SelectLongComment(username string, movieNum int) (error, bool) {
+	var iTxt string
+	sqlStr := "select Essay from movieComment where username = ? and movieNum = ?"
+	err := dB.QueryRow(sqlStr, username, movieNum).Scan(&iTxt)
+	switch {
+	case err == nil:
+		return err, false
+	case err != nil && err == sql.ErrNoRows:
+		return nil, true
+	default:
+		return err, false
+	}
+}
+
+func CommentMovie(Txt, username, commentTopic string, movieNum int) error {
+	sqlStr := "insert movieComment (movieNum,Username,Essay,commentTopic) values (?,?,?,?)"
+	_, err := dB.Exec(sqlStr, movieNum, username, Txt, commentTopic)
 	if err != nil {
 		return err
 	}

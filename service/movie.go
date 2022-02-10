@@ -70,14 +70,6 @@ func GetMovieComment(num int) (error, []modle.UserComment) {
 	return err, comments
 }
 
-func FindWithCategory(category string) (error, []modle.MovieInfo) {
-	err, movies := dao.FindWithCategory(category)
-	if err != nil {
-		return err, movies
-	}
-	return err, movies
-}
-
 func GetAMovieInfo(movieNum int) (error, modle.MovieInfo) {
 	err, movie := dao.GetAMovieInfo(movieNum)
 	if err != nil {

@@ -5,6 +5,65 @@ import (
 	"douban/modle"
 )
 
+func SelectArea(username string, movieNum int) (error, bool, int) {
+	var num int
+	sqlStr := "select num from commentArea where username = ? and movieNum = ?"
+	err := dB.QueryRow(sqlStr, username, movieNum).Scan(&num)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return err, true, 0
+		}
+		return err, false, 0
+	}
+	return err, true, num
+}
+
+func SelectComment(username string, movieNum, areaNum int) (error, bool, int) {
+	var num int
+	sqlStr := "select no from comment where username = ? and movieNum = ? and areaNum = ?"
+	err := dB.QueryRow(sqlStr, username, movieNum, areaNum).Scan(&num)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return err, true, 0
+		}
+		return err, false, 0
+	}
+	return err, true, num
+}
+
+func UpdateComment(username, txt string, movieNum, areaNum int) error {
+	sqlStr := "update comment set txt=? where movieNum = ? and username = ? and areaNum = ?"
+	_, err := dB.Exec(sqlStr, txt, movieNum, username, areaNum)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func UpdateCommentArea(username, txt string, movieNum int) error {
+	sqlStr := "update commentArea set topic=? where movieNum = ? and username = ?"
+	_, err := dB.Exec(sqlStr, txt, movieNum, username)
+	if err != nil {
+		return err
+	}
+
+	err, _, areaNum := SelectArea(username, movieNum)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			err = nil
+			return err
+		}
+		return err
+	}
+
+	sqlStr = "DELETE FROM comment where areaNum = ? and movieNum = ?;"
+	_, err = dB.Exec(sqlStr, areaNum, movieNum)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
 func DoNotLikeTopic(username string, areaNum int) error {
 	var likeNum int
 	sqlStr := "select likeNum from commentArea where num = ?"
@@ -164,7 +223,7 @@ func GiveTopicLike(username string, movieNum, num int) (error, bool) {
 }
 
 func GiveComment(comment modle.CommentArea) error {
-	sqlStr := "insert comment (num,username,txt,movieNum) values (?,?,?,?)"
+	sqlStr := "insert comment (areaNum,username,txt,movieNum) values (?,?,?,?)"
 	_, err := dB.Exec(sqlStr, comment.Num, comment.Username, comment.Comment, comment.MovieNum)
 	if err != nil {
 		return err
@@ -198,7 +257,7 @@ func SetCommentArea(username, topic string, movieNum int) error {
 
 func GetCommentByNum(movieNum, areaNum int) (error, []modle.CommentArea) {
 	var comments []modle.CommentArea
-	sqlStr := "select username,txt,time,likeNum from comment where movieNum = ? and num = ?"
+	sqlStr := "select username,txt,time,likeNum from comment where movieNum = ? and areaNum = ?"
 	rows, err := dB.Query(sqlStr, movieNum, areaNum)
 	if err != nil {
 		return err, comments
@@ -217,13 +276,24 @@ func GetCommentByNum(movieNum, areaNum int) (error, []modle.CommentArea) {
 	return err, comments
 }
 
-func GetCommentArea(movieNum, areaNum int) (error, modle.CommentArea) {
-	var commentTopic modle.CommentArea
-	sqlStr1 := "select num,username,topic,time,likeNum,commentNum from commentArea where movieNum = ? and num = ?"
-	err := dB.QueryRow(sqlStr1, movieNum, areaNum).Scan(&commentTopic.Num, &commentTopic.Username, &commentTopic.Topic, &commentTopic.Time, &commentTopic.LikeNum, &commentTopic.CommentNum)
+func GetCommentArea(movieNum int) (error, []modle.CommentArea) {
+	var commentTopics []modle.CommentArea
+	sqlStr1 := "select num,username,topic,time,likeNum,commentNum from commentArea where movieNum = ?"
+	rows, err := dB.Query(sqlStr1, movieNum)
 	if err != nil {
-		return err, commentTopic
+		return err, commentTopics
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var commentTopic modle.CommentArea
+		err := rows.Scan(&commentTopic.Num, &commentTopic.Username, &commentTopic.Topic, &commentTopic.Time, &commentTopic.LikeNum, &commentTopic.CommentNum)
+		if err != nil {
+			return err, commentTopics
+		}
+
+		commentTopics = append(commentTopics, commentTopic)
 	}
 
-	return err, commentTopic
+	return err, commentTopics
 }

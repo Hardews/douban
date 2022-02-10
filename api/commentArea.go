@@ -10,6 +10,55 @@ import (
 	"strconv"
 )
 
+func UpdateArea(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	Username := iUsername.(string)
+
+	txt := c.PostForm("comment")
+
+	num := c.Param("movieNum")
+	movieNum, err := strconv.Atoi(num)
+	if err != nil {
+		fmt.Println("translate num failed , err:", err)
+		tool.RespInternetError(c)
+		return
+	}
+
+	err = service.UpdateComment(Username, txt, movieNum, 3, 0)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("update comment failed,err :", err)
+		return
+	}
+	tool.RespSuccessfulWithDate(c, "修改成功")
+}
+
+func UpdateComment(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	Username := iUsername.(string)
+
+	txt := c.PostForm("comment")
+
+	num1 := c.Param("movieNum")
+	num2 := c.Param("num")
+
+	movieNum, err := strconv.Atoi(num1)
+	areaNum, err := strconv.Atoi(num2)
+	if err != nil {
+		fmt.Println("translate num failed , err:", err)
+		tool.RespInternetError(c)
+		return
+	}
+
+	err = service.UpdateComment(Username, txt, movieNum, 4, areaNum)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("update comment failed,err :", err)
+		return
+	}
+	tool.RespSuccessfulWithDate(c, "修改成功")
+}
+
 func doNotLikeComment(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	Username := iUsername.(string)
@@ -115,17 +164,15 @@ func deleteCommentArea(c *gin.Context) {
 }
 
 func GetCommentArea(c *gin.Context) {
-	num := c.Param("movieNum")
-	num1 := c.Param("commentArea")
+	num := c.Param("num")
 	movieNum, err := strconv.Atoi(num)
-	areaNum, err := strconv.Atoi(num1)
 	if err != nil {
 		fmt.Println("shift num failed,err =", err)
 		tool.RespInternetError(c)
 		return
 	}
 
-	err, commentArea := service.GetCommentArea(movieNum, areaNum)
+	err, commentArea := service.GetCommentArea(movieNum)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			tool.RespErrorWithDate(c, "无话题")
@@ -136,32 +183,39 @@ func GetCommentArea(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{
-		"username":   commentArea.Username,
-		"topic":      commentArea.Topic,
-		"time":       commentArea.Time,
-		"commentNum": commentArea.CommentNum,
-		"likeNum":    commentArea.LikeNum,
-	})
-
-	if commentArea.CommentNum == 0 {
-		tool.RespSuccessfulWithDate(c, "无评论")
+	if commentArea == nil {
+		tool.RespErrorWithDate(c, "无讨论区")
 		return
 	}
 
-	err, comment := service.GetCommentByNum(movieNum, areaNum)
-	if err != nil {
-		fmt.Println("get comment failed ,err:", err)
-		tool.RespInternetError(c)
-		return
-	}
-	for i, _ := range comment {
+	for i, _ := range commentArea {
 		c.JSON(200, gin.H{
-			"username": comment[i].Username,
-			"comment":  comment[i].Comment,
-			"time":     comment[i].Time,
-			"likeNum":  comment[i].LikeNum,
+			"username":   commentArea[i].Username,
+			"topic":      commentArea[i].Topic,
+			"time":       commentArea[i].Time,
+			"commentNum": commentArea[i].CommentNum,
+			"likeNum":    commentArea[i].LikeNum,
 		})
+
+		if commentArea[i].CommentNum == 0 {
+			tool.RespSuccessfulWithDate(c, "无评论")
+			return
+		}
+		err, comment := service.GetCommentByNum(movieNum, commentArea[i].Num)
+		if err != nil {
+			fmt.Println("get comment failed ,err:", err)
+			tool.RespInternetError(c)
+			return
+		}
+		for r, _ := range comment {
+			c.JSON(200, gin.H{
+				"username": comment[r].Username,
+				"comment":  comment[r].Comment,
+				"time":     comment[r].Time,
+				"likeNum":  comment[r].LikeNum,
+			})
+		}
+
 	}
 
 }
@@ -261,6 +315,36 @@ func SetCommentArea(c *gin.Context) {
 		tool.RespInternetError(c)
 		return
 	}
+
+	err, flag, _ := service.SelectComment(username, movieNum, 3, 0)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("select area failed,err:", err)
+		return
+	}
+	if !flag {
+		tool.RespErrorWithDate(c, "已有话题，是否重新设置（原话题所属评论会删除）")
+		num2 := c.PostForm("choose")
+		choose, err := strconv.Atoi(num2)
+		if err != nil {
+			fmt.Println("shift num failed,err =", err)
+			tool.RespInternetError(c)
+			return
+		}
+		switch choose {
+		case 1:
+			return
+		case 2:
+			err = service.UpdateComment(username, topic, movieNum, 3, 0)
+			if err != nil {
+				tool.RespInternetError(c)
+				fmt.Println("update comment failed,err :", err)
+				return
+			}
+			tool.RespSuccessfulWithDate(c, "修改成功")
+		}
+	}
+
 	err = service.SetCommentArea(username, topic, movieNum)
 	if err != nil {
 		fmt.Println("set comment area failed,err =", err)

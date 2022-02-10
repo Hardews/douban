@@ -11,6 +11,52 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func UpdateShortComment(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+
+	txt := c.PostForm("comment")
+
+	num := c.Param("movieNum")
+	movieNum, err := strconv.Atoi(num)
+	if err != nil {
+		fmt.Println("translate num failed , err:", err)
+		tool.RespInternetError(c)
+		return
+	}
+
+	err = service.UpdateComment(username, txt, movieNum, 2, 0)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("update short comment failed,err:", err)
+		return
+	}
+	tool.RespSuccessfulWithDate(c, "修改成功!")
+}
+
+func UpdateLongComment(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+
+	txt := c.PostForm("comment")
+
+	num := c.Param("movieNum")
+	movieNum, err := strconv.Atoi(num)
+	if err != nil {
+		fmt.Println("translate num failed , err:", err)
+		tool.RespInternetError(c)
+		return
+	}
+
+	err = service.UpdateComment(username, txt, movieNum, 1, 0)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("update Long comment failed,err:", err)
+		return
+	}
+	tool.RespSuccessfulWithDate(c, "修改成功!")
+}
+
 func deleteLongComment(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
@@ -46,7 +92,7 @@ func deleteShortComment(c *gin.Context) {
 		return
 	}
 
-	err, flag := service.DeleteLongComment(username, movieNum)
+	err, flag := service.DeleteShortComment(username, movieNum)
 	if err != nil {
 		tool.RespInternetError(c)
 		fmt.Println("delete short comment failed,err: ", err)
@@ -167,6 +213,30 @@ func ShortComment(c *gin.Context) {
 		return
 	}
 
+	err, flag, _ = service.SelectComment(username, movieNum, 2, 0)
+	if err != nil {
+		fmt.Println("select short comment failed,err:", err)
+		tool.RespInternetError(c)
+		return
+	}
+	if !flag {
+		tool.RespErrorWithDate(c, "已有影评，是否更新")
+		num1 := c.PostForm("choose")
+		choose, _ := strconv.Atoi(num1)
+
+		switch choose {
+		case 1:
+			return
+		case 2:
+			err = service.UpdateComment(username, commentTxt, movieNum, 2, 0)
+			if err != nil {
+				fmt.Println("update short comment failed,err:", err)
+				tool.RespInternetError(c)
+				return
+			}
+		}
+	}
+
 	err = service.Comment(commentTxt, username, movieNum)
 	if err != nil {
 		tool.RespInternetError(c)
@@ -183,6 +253,7 @@ func LongComment(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
 	commentTxt := c.PostForm("LongComment")
+	commentTopic := c.PostForm("topic")
 
 	flag := service.CheckSensitiveWords(commentTxt)
 	if !flag {
@@ -196,7 +267,32 @@ func LongComment(c *gin.Context) {
 	}
 
 	movieNum, _ := strconv.Atoi(num)
-	err := service.CommentMovie(commentTxt, username, movieNum)
+
+	err, flag, _ := service.SelectComment(username, movieNum, 1, 0)
+	if err != nil {
+		fmt.Println("select long comment failed,err:", err)
+		tool.RespInternetError(c)
+		return
+	}
+	if !flag {
+		tool.RespErrorWithDate(c, "已有影评，是否更新")
+		num1 := c.PostForm("choose")
+		choose, _ := strconv.Atoi(num1)
+
+		switch choose {
+		case 1:
+			return
+		case 2:
+			err = service.UpdateComment(username, commentTxt, movieNum, 1, 0)
+			if err != nil {
+				fmt.Println("update long comment failed,err:", err)
+				tool.RespInternetError(c)
+				return
+			}
+		}
+	}
+
+	err = service.CommentMovie(commentTxt, username, commentTopic, movieNum)
 	if err != nil {
 		tool.RespInternetError(c)
 		fmt.Println("comment failed,err:", err)
@@ -224,6 +320,7 @@ func GetLongComment(c *gin.Context) {
 
 	for i, _ := range comments {
 		c.JSON(200, gin.H{
+			"topic":    comments[i].Topic,
 			"username": comments[i].Username,
 			"txt":      comments[i].Txt,
 			"time":     comments[i].Time,
