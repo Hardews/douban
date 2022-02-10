@@ -9,8 +9,7 @@ import (
 )
 
 func WantSee(c *gin.Context) {
-	iUsername, _ := c.Get("username")
-	username := iUsername.(string)
+	username := c.Param("username")
 	err, wantSee := service.GetUserWantSee(username)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -30,8 +29,7 @@ func WantSee(c *gin.Context) {
 }
 
 func Seen(c *gin.Context) {
-	iUsername, _ := c.Get("username")
-	username := iUsername.(string)
+	username := c.Param("username")
 	err, seen := service.GetUserSeen(username)
 	if err != nil {
 		if err == sql.ErrNoRows {
