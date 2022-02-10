@@ -6,6 +6,15 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+func UploadAvatar(username, loadString string) error {
+	sqlStr := "update userBaseData set avatar = ? where username = ?"
+	_, err := dB.Exec(sqlStr, loadString, username)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
 func SetQuestion(username, question, answer string) (error, bool) {
 	_, err := SelectQuestion(username)
 	switch {

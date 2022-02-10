@@ -26,6 +26,11 @@ func Find(c *gin.Context) {
 		return
 	}
 
+	if nums == nil {
+		tool.RespErrorWithDate(c, "抱歉，暂时没有您想要的电影")
+		return
+	}
+
 	for i, _ := range nums {
 		err, info := service.GetAMovieInfo(nums[i])
 		if err != nil {

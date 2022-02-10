@@ -6,11 +6,44 @@ import (
 	"douban/modle"
 	"douban/service"
 	"douban/tool"
+	"strconv"
+	"time"
 
 	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
+
+func uploadAvatar(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+
+	file, err := c.FormFile("avatar")
+	if err != nil {
+		fmt.Println("get file failed,err:", err)
+		tool.RespErrorWithDate(c, "头像上传失败")
+		return
+	}
+
+	//保存到本地
+	fileName := "./uploadFile/" + strconv.FormatInt(time.Now().Unix(), 10) + file.Filename
+	err = c.SaveUploadedFile(file, fileName)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("保存错误,err", err)
+		return
+	}
+
+	loadString := "http://101.201.234.29:8080/" + fileName[1:]
+
+	err = service.UploadAvatar(username, loadString)
+	if err != nil {
+		tool.RespErrorWithDate(c, "上传失败")
+		fmt.Println("upload avatar failed ,err :", err)
+		return
+	}
+	tool.RespSuccessful(c)
+}
 
 func SetQuestion(c *gin.Context) {
 	var user modle.User
