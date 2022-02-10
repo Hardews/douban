@@ -49,8 +49,7 @@ func Seen(c *gin.Context) {
 }
 
 func GetUserComment(c *gin.Context) {
-	iUsername, _ := c.Get("username")
-	username := iUsername.(string)
+	username := c.Param("username")
 	err, shortComments, longComments := service.GetUserComment(username)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -110,14 +109,7 @@ func SetIntroduce(c *gin.Context) {
 }
 
 func GetUserInfo(c *gin.Context) {
-	iUsername, _ := c.Get("username")
-	username := iUsername.(string)
-	AUsername := c.Param("username")
-	if username != AUsername {
-		tool.RespInternetError(c)
-		fmt.Println("menu failed ")
-		return
-	}
+	username := c.Param("username")
 
 	err, user := service.GetUserMenu(username)
 	if err != nil {
