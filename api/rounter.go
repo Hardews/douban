@@ -48,18 +48,18 @@ func InitEngine() {
 
 		movie.POST("/num=:movieNum/longComment", LongComment) //影评
 		movie.DELETE("/num=:movieNum/longComment", deleteLongComment)
-		movie.POST("/num=:movieNum/longCommentUpdate", UpdateLongComment)
+		movie.PUT("/num=:movieNum/longComment", UpdateLongComment)
 		movie.POST("/num=:movieNum/shortComment", ShortComment) //短评
 		movie.DELETE("/num=:movieNum/shortComment", deleteShortComment)
-		movie.POST("/num=:movieNum/shortCommentUpdate", UpdateShortComment)
+		movie.PUT("/num=:movieNum/shortComment", UpdateShortComment)
 
 		movie.POST("/SetNum=:movieNum/commentArea", SetCommentArea) //发表讨论区话题
 		movie.DELETE("/Num=:movieNum/commentAreaNum=:num", deleteCommentArea)
-		movie.POST("/Num=:movieNum/commentArea/Update", UpdateArea)
+		movie.PUT("/Num=:movieNum/commentArea", UpdateArea)
 
 		movie.POST("/CommentNum=:movieNum/commentAreaNum=:num", GiveComment) //评论某个话题
 		movie.DELETE("/movieNum=:movieNum/commentAreaNum=:areaNum/commentNum=:num", deleteComment)
-		movie.POST("/Num=:movieNum/commentAreaNum=:num/update", UpdateComment)
+		movie.PUT("/Num=:movieNum/commentAreaNum=:num", UpdateComment)
 
 		movie.POST("/LikeNum=:movieNum/commentAreaNum=:num", GiveTopicLike) //给某个话题点赞
 		movie.POST("/Num=:movieNum/commentAreaNum=:num", doNotLike)
