@@ -17,11 +17,13 @@ func InitEngine() {
 	{
 		userGroup.Use(middleware.JwtToken)
 		userGroup.POST("/change", ChangePassword)
-		userGroup.POST("/menu/introduce/:username", SetIntroduce)
+		userGroup.POST("/menu/introduce", SetIntroduce)
+		userGroup.POST("/setQuestion", SetQuestion)
 	}
 
 	userInfo := engine.Group("/user")
 	{
+		userInfo.POST("/Retrieve", Retrieve)
 		userInfo.GET("/:username/menu", GetUserInfo)          //用户的信息（包括自我介绍
 		userInfo.GET("/:username/Comment", GetUserComment)    //获取用户的影评和短评
 		userInfo.GET("/:username/favorites/wantSee", WantSee) //收藏夹

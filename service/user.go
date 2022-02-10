@@ -6,6 +6,35 @@ import (
 	"douban/modle"
 )
 
+func SetQuestion(username, question, answer string) (error, bool) {
+	err, answer := Encryption(answer)
+	if err != nil {
+		return err, false
+	}
+	err, flag := dao.SetQuestion(username, question, answer)
+	if err != nil {
+		return err, false
+	}
+	return err, flag
+}
+
+func CheckAnswer(username, answer string) (error, bool) {
+	err, check := dao.CheckAnswer(username)
+	if err != nil {
+		return err, false
+	}
+	err, res := Interpretation(check, answer)
+	return err, res
+}
+
+func SelectQuestion(username string) (string, error) {
+	question, err := dao.SelectQuestion(username)
+	if err != nil {
+		return question, err
+	}
+	return question, err
+}
+
 func UpdateComment(username, txt string, movieNum, choose, areaNum int) error {
 	switch choose {
 	case 1:

@@ -12,6 +12,64 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func SetQuestion(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+
+	question := c.PostForm("question")
+	answer := c.PostForm("answer")
+
+	err, flag := service.SetQuestion(username, question, answer)
+	if err != nil {
+		fmt.Println("set question failed,err:", err)
+		tool.RespInternetError(c)
+		return
+	}
+	if !flag {
+		tool.RespErrorWithDate(c, "已设置过密保")
+		return
+	}
+	tool.RespSuccessfulWithDate(c, "设置成功")
+}
+
+func Retrieve(c *gin.Context) {
+	username := c.PostForm("username")
+
+	question, err := service.SelectQuestion(username)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			tool.RespErrorWithDate(c, "该账号无密保，可通过申诉找回")
+			return
+		}
+		fmt.Println("select question failed,err:", err)
+		tool.RespInternetError(c)
+		return
+	}
+	tool.RespSuccessfulWithDate(c, question)
+	answer := c.PostForm("answer")
+
+	err, flag := service.CheckAnswer(username, answer)
+	if err != nil {
+		fmt.Println("check answer failed,err:", err)
+		tool.RespInternetError(c)
+		return
+	}
+	if !flag {
+		tool.RespErrorWithDate(c, "答案错误！")
+		return
+	}
+	var user modle.User
+	user.Username = username
+	user.Password = c.PostForm("newPassword")
+
+	err = service.ChangePassword(user)
+	if err != nil {
+		fmt.Println("change password failed,err:", err)
+		tool.RespInternetError(c)
+		return
+	}
+}
+
 func ChangePassword(ctx *gin.Context) {
 	var user modle.User
 	iUsername, _ := ctx.Get("username")
