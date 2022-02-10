@@ -26,4 +26,6 @@ type MovieInfo struct {
 	CommentNum int
 	WantSee    int
 	Seen       int //看过
+
+	Img string
 }

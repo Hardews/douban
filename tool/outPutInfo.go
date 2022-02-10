@@ -23,6 +23,7 @@ func RespMovieInfo(ctx *gin.Context, movieInfo modle.MovieInfo) {
 		"WantSee":    movieInfo.WantSee,
 		"Seen":       movieInfo.Seen,
 		"types":      movieInfo.Types,
+		"img":        movieInfo.Img,
 	})
 }
 
@@ -43,6 +44,7 @@ func RespMovieInfos(ctx *gin.Context, infos []modle.MovieInfo) {
 			"wantSee":    infos[i].WantSee,
 			"Seen":       infos[i].Seen,
 			"types":      infos[i].Types,
+			"img":        infos[i].Img,
 		})
 	}
 }

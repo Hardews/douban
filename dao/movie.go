@@ -188,10 +188,10 @@ func FindWithCategory(category string) (error, []modle.MovieInfo) {
 
 func GetAMovieInfo(movieNum int) (error, modle.MovieInfo) {
 	var movie modle.MovieInfo
-	sqlStr := "select ChineseName,otherName,score,area,year,types,starring,director,commentNum,introduce,language,howLong,commentNum,seen,wantSee from movieBaseInfo,movieExtraInfo where movieBaseInfo.num = ? and movieExtraInfo.num = ?"
+	sqlStr := "select ChineseName,otherName,score,area,year,types,starring,director,commentNum,introduce,language,howLong,commentNum,seen,wantSee,img from movieBaseInfo,movieExtraInfo where movieBaseInfo.num = ? and movieExtraInfo.num = ?"
 	err := dB.QueryRow(sqlStr, movieNum, movieNum).Scan(&movie.Name, &movie.OtherName, &movie.Score, &movie.Area,
 		&movie.Year, &movie.Types, &movie.Starring, &movie.Director, &movie.CommentNum, &movie.Introduce, &movie.Language,
-		&movie.Time, &movie.CommentNum, &movie.Seen, &movie.WantSee)
+		&movie.Time, &movie.CommentNum, &movie.Seen, &movie.WantSee, &movie.Img)
 	if err != nil {
 		return err, movie
 	}
