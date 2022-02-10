@@ -48,12 +48,40 @@ func UserSeen(username, comment, label string, movieNum int) error {
 	if err != nil {
 		return err
 	}
+
+	sqlStr = "select Seen from movieBaseInfo where num = ?"
+	var num int
+	err = dB.QueryRow(sqlStr, movieNum).Scan(&num)
+	if err != nil {
+		return err
+	}
+
+	num += 1
+	sqlStr = "update movieBaseInfo set Seen = ? where num = ?"
+	_, err = dB.Exec(sqlStr, num, movieNum)
+	if err != nil {
+		return err
+	}
 	return err
 }
 
 func UserWantSee(username, comment, label string, movieNum int) error {
 	sqlStr := "insert userWantSee (username,comment,num,label) values (?,?,?,?)"
 	_, err := dB.Exec(sqlStr, username, comment, movieNum, label)
+	if err != nil {
+		return err
+	}
+
+	sqlStr = "select wantSee from movieBaseInfo where num = ?"
+	var num int
+	err = dB.QueryRow(sqlStr, movieNum).Scan(&num)
+	if err != nil {
+		return err
+	}
+
+	num += 1
+	sqlStr = "update movieBaseInfo set wantSee = ? where num = ?"
+	_, err = dB.Exec(sqlStr, num, movieNum)
 	if err != nil {
 		return err
 	}

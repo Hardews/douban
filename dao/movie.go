@@ -36,6 +36,21 @@ func DeleteLongComment(username string, movieNum int) error {
 	if err != nil {
 		return err
 	}
+
+	sqlStr = "select commentNum from movieExtraInfo where num = ?"
+	var num int
+	err = dB.QueryRow(sqlStr, movieNum).Scan(&num)
+	if err != nil {
+		return err
+	}
+
+	num -= 1
+	sqlStr = "update movieExtraInfo set commentNum = ? where num = ?"
+	_, err = dB.Exec(sqlStr, num, movieNum)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
@@ -46,6 +61,20 @@ func DeleteSeen(movieNum int, label, username string) error {
 	if err != nil {
 		return err
 	}
+
+	sqlStr = "select seen from movieBaseInfo where num = ?"
+	var num int
+	err = dB.QueryRow(sqlStr, movieNum).Scan(&num)
+	if err != nil {
+		return err
+	}
+
+	num -= 1
+	sqlStr = "update movieBaseInfo set wantSee = ? where num = ?"
+	_, err = dB.Exec(sqlStr, num, movieNum)
+	if err != nil {
+		return err
+	}
 	return err
 }
 
@@ -53,6 +82,20 @@ func DeleteWantSee(movieNum int, label, username string) error {
 	username = username + "已删除"
 	sqlStr := "update userWantSee set username = ? where movieNum = ? and label = ?"
 	_, err := dB.Exec(sqlStr, username, movieNum, label)
+	if err != nil {
+		return err
+	}
+
+	sqlStr = "select wantSee from movieBaseInfo where num = ?"
+	var num int
+	err = dB.QueryRow(sqlStr, movieNum).Scan(&num)
+	if err != nil {
+		return err
+	}
+
+	num -= 1
+	sqlStr = "update movieBaseInfo set wantSee = ? where num = ?"
+	_, err = dB.Exec(sqlStr, num, movieNum)
 	if err != nil {
 		return err
 	}
