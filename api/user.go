@@ -200,10 +200,19 @@ func Register(ctx *gin.Context) {
 	var user modle.User
 	user.Username = ctx.PostForm("username")
 	user.Password = ctx.PostForm("password")
+	user.NickName = ctx.PostForm("nickName")
+	fmt.Println(user.Username)
+	fmt.Println(user.Password)
+	fmt.Println(user.NickName)
 
 	res := service.CheckSensitiveWords(user.Username)
 	if !res {
 		tool.RespErrorWithDate(ctx, "用户名含有敏感词汇")
+		return
+	}
+	res = service.CheckSensitiveWords(user.NickName)
+	if !res {
+		tool.RespErrorWithDate(ctx, "昵称含有敏感词汇")
 		return
 	}
 
