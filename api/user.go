@@ -218,11 +218,11 @@ func Register(ctx *gin.Context) {
 		return
 	}
 
-	res = service.CheckLength(user.Password)
-	if !res {
-		tool.RespErrorWithDate(ctx, "密码长度不合法")
-		return
-	}
+	//res = service.CheckLength(user.Password)
+	//if !res {
+	//	tool.RespErrorWithDate(ctx, "密码长度不合法")
+	//	return
+	//}
 
 	err, user.Password = service.Encryption(user.Password)
 	if err != nil {
