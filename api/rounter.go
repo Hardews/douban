@@ -2,13 +2,16 @@ package api
 
 import (
 	"douban/middleware"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func InitEngine() {
 	engine := gin.Default()
 
-	engine.Use(middleware.Cors)
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://127.0.0.1:8080"}
+	engine.Use(cors.New(config))
 
 	engine.POST("/register", Register)
 	engine.POST("/login", Login)
