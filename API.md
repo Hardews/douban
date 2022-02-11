@@ -1,8 +1,8 @@
 API
 
-###Login
+###`Login`
 
-####POST`/api/login` 
+####`POST` `/api/login` 
 `application/form-data`
 
 | 请求参数     | 类型 | 备注   |
@@ -18,15 +18,15 @@ API
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
-|false|"输入的账号为空"|`logName`为空|
-|false|"输入的密码为空"|`password`为空|
-|false|"无此账号"|`logName`不存在|
-|false|"密码错误"|`logName`与`password`不匹配|
-|ture|"成功"|成功|
+|`false`|`输入的账号为空`|`logName`为空|
+|`false`|`输入的密码为空`|`password`为空|
+|`false`|`无此账号`|`logName`不存在|
+|`false`|`密码错误`|`logName`与`password`不匹配|
+|`ture`|`成功`|成功|
 
-###Register
+###`Register`
 
-####POST`api/register`
+####`POST` `api/register`
 `application/form-data`
 
 | 请求参数     | 类型 | 备注   |
@@ -42,17 +42,17 @@ API
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
-|false|"输入的账号为空"|`signName`为空|
-|false|"输入的密码为空"|`signPassword`为空|
-|false|"用户名已存在"|`signName`已存在|
-|false|"用户名含有敏感词汇"|`nickName`含有敏感词汇|
-|false|"昵称含有敏感词汇"|`nickName`含有敏感词汇|
-|false|"密码长度不合法"|`signPassword`太长或太短|
-|ture|"成功"|注册成功|
+|`false`|`输入的账号为空`|`signName`为空|
+|`false`|`输入的密码为空`|`signPassword`为空|
+|`false`|`用户名已存在`|`signName`已存在|
+|`false`|`用户名含有敏感词汇`|`nickName`含有敏感词汇|
+|`false`|`昵称含有敏感词汇`|`nickName`含有敏感词汇|
+|`false`|`密码长度不合法`|`signPassword`太长或太短|
+|`ture`|`成功`|注册成功|
 
-###User
+###`User`
 
-####POST`api/user/change`
+####`POST` `api/user/change`
 `application/form-data`
 
 `修改密码`
@@ -70,18 +70,18 @@ API
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
-|false|"输入的旧密码为空"|`oldPassword`为空|
-|false|"输入的新密码为空"|`newPassword`为空|
-|false|"旧密码不正确"|`oldPassword`已存在|
-|false|"新密码长度不合法"|`newPassword`含有敏感词汇|
-|false|"`token`为空"|`token`为空|
-|false|"`token`不正确"|`token`不正确|
-|false|"`token`格式不正确"|`token`格式不正确|
-|false|"`token`已过期"|`token`已过期|
-|ture|"修改成功"|修改成功|
+|`false`|`输入的旧密码为空`|`oldPassword`为空|
+|`false`|`输入的新密码为空`|`newPassword`为空|
+|`false`|`旧密码不正确`|`oldPassword`已存在|
+|`false`|`新密码长度不合法`|`newPassword`含有敏感词汇|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`修改成功`|修改成功|
 
 
-####POST`api/user/introduce`
+####`POST` `api/user/introduce`
 `application/form-data`
 
 `设置自我介绍`
@@ -93,16 +93,16 @@ API
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
-|false|"输入的自我介绍为空"|`introduce`为空|
-|false|"输入的自我介绍含有敏感词"|`introduce`含有敏感词|
-|false|"自我介绍长度不合法"|`introduce`不合法|
-|false|"`token`为空"|`token`为空|
-|false|"`token`不正确"|`token`不正确|
-|false|"`token`格式不正确"|`token`格式不正确|
-|false|"`token`已过期"|`token`已过期|
-|ture|"设置成功"|设置成功|
+|`false`|`输入的自我介绍为空`|`introduce`为空|
+|`false`|`输入的自我介绍含有敏感词`|`introduce`含有敏感词|
+|`false`|`自我介绍长度不合法`|`introduce`不合法|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`设置成功`|设置成功|
 
-####POST`api/user/setQuestion`
+####`POST` `api/user/setQuestion`
 `application/form-data`
 
 `设置密保问题`
@@ -116,18 +116,18 @@ API
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
-|false|"密码为空"|`password`为空|
-|false|"问题为空"|`question`为空|
-|false|"答案为空"|`answer`为空|
-|false|"密码错误"|`password`与用户名不匹配|
-|false|"已设置密保"|`question`已设置|
-|false|"`token`为空"|`token`为空|
-|false|"`token`不正确"|`token`不正确|
-|false|"`token`格式不正确"|`token`格式不正确|
-|false|"`token`已过期"|`token`已过期|
-|ture|"设置成功"|设置成功|
+|`false`|`密码为空`|`password`为空|
+|`false`|`问题为空`|`question`为空|
+|`false`|`答案为空`|`answer`为空|
+|`false`|`密码错误`|`password`与用户名不匹配|
+|`false`|`已设置密保`|`question`已设置|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`设置成功`|`设置成功`|
 
-####POST`api/user/retrieve`
+####`POST` `api/user/retrieve`
 `application/form-data`
 
 `通过密保找回密码`
@@ -141,15 +141,15 @@ API
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
-|false|"密码为空"|`newPassword`为空|
-|false|"用户名为空"|`username`为空|
-|false|"无此账号"|没有这个用户|
-|false|"该账号无密保，可通过申诉找回"|该用户没设置`question`|
-|false|"答案不正确"|`question`与`answer`不匹配|
-|false|"答案为空"|`answer`为空|
-|ture|"修改成功"|找回成功|
+|`false`|`密码为空`|`newPassword`为空|
+|`false`|`用户名为空`|`username`为空|
+|`false`|`无此账号`|没有这个用户|
+|`false`|`该账号无密保，可通过申诉找回`|该用户没设置`question`|
+|`false`|`答案不正确`|`question`与`answer`不匹配|
+|`false`|`答案为空`|`answer`为空|
+|`ture`|`修改成功`|找回成功|
 
-####GET`/api/:username/menu`
+####`GET` `/api/:username/menu`
 `获取username为:username的用户基础信息`
 
 | 请求参数     | 类型 | 备注   |
@@ -169,7 +169,7 @@ API
 }
 ```
 
-####GET`api/:username/Comment`
+####`GET` `api/:username/Comment`
 `获取username为:username的用户影评和短评`
 
 
@@ -192,7 +192,7 @@ API
 }
 ```
 
-####GET`api/:username/wantSee`
+####`GET` `api/:username/wantSee`
 `获取username为:username的用户的想看文件夹`
 
 | 请求参数     | 类型 | 备注   |
@@ -218,7 +218,7 @@ API
 }
 ```
 
-####GET`/api/user/:username/Seen`
+####`GET` `/api/user/:username/Seen`
 `获取username为:username的用户的看过文件夹`
 
 | 请求参数     | 类型 | 备注   |
@@ -244,8 +244,8 @@ API
 }
 ```
 
-###Home
-####GET`/api/home/research/:find`
+###`Home`
+####`GET` `/api/home/research/:find`
 `搜索功能`
 
 | 请求参数     | 类型 | 备注   |
@@ -276,7 +276,7 @@ data:{
 	"url":        "http://101.201.234.29:8080/movie/" + movieNum,
 }
 ```
-####GET`/api/home/recommend`
+####`GET` `/api/home/recommend`
 `推荐功能（随机`
 
 
@@ -304,7 +304,7 @@ data:{
 }
 ```
 
-####GET`/api/home/:category`
+####`GET` `/api/home/:category`
 `分类功能`
 
 | 请求参数     | 类型 | 备注   |
@@ -337,7 +337,7 @@ data:{
 ```
 
 ###Movie
-####GET`api/movieInfo/:movieNum`
+####`GET` `api/movieInfo/:movieNum`
 `通过:movieNum获取电影信息`
 
 | 请求参数     | 类型 | 备注   |
@@ -367,7 +367,7 @@ data:{
         "url":        "http://101.201.234.29:8080/movie/" + movieNum,
 }
 ```
-####GET`api/movieInfo/:movieNum/longComment`
+####`GET` `api/movieInfo/:movieNum/longComment`
 `通过:movieNum获取电影的影评`
 
 | 请求参数     | 类型 | 备注   |
@@ -402,7 +402,7 @@ data:{
     ]
 }
 ```
-####GET`api/movieInfo/:movieNum/shortComment`
+####`GET` `api/movieInfo/:movieNum/shortComment`
 `通过:movieNum获取电影的短评`
 
 | 请求参数     | 类型 | 备注   |
@@ -437,7 +437,7 @@ data:{
     ]
 }
 ```
-####GET`api/movieInfo/:movieNum/commentArea`
+####`GET` `api/movieInfo/:movieNum/commentArea`
 `通过:movieNum获取电影的讨论区`
 
 | 请求参数     | 类型 | 备注   |
@@ -476,7 +476,7 @@ data:{
     "data": "无评论"
 }
 ```
-####POST`api/movie/:movieNum/wantSee`
+####`POST` `api/movie/:movieNum/wantSee`
 `application/form-data`
 
 `用户设置想看`
@@ -495,13 +495,13 @@ data:{
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
-|false|"`token`为空"|`token`为空|
-|false|"`token`不正确"|`token`不正确|
-|false|"`token`格式不正确"|`token`格式不正确|
-|false|"`token`已过期"|`token`已过期|
-|ture|"成功"|设置成功|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`成功`|设置成功|
 
-####POST`api/movie/:movieNum/seen`
+####`POST` `api/movie/:movieNum/seen`
 `application/form-data`
 
 `用户设置看过`
@@ -520,13 +520,13 @@ data:{
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
-|false|"`token`为空"|`token`为空|
-|false|"`token`不正确"|`token`不正确|
-|false|"`token`格式不正确"|`token`格式不正确|
-|false|"`token`已过期"|`token`已过期|
-|ture|"成功"|设置成功|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`"成功"`|设置成功|
 
-####DELETE`api/movie/:movieNum/wantSee`
+####`DELETE` `api/movie/:movieNum/wantSee`
 `application/form-data`
 
 `用户删除想看内容`
@@ -544,13 +544,13 @@ data:{
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
-|false|"`token`为空"|`token`为空|
-|false|"`token`不正确"|`token`不正确|
-|false|"`token`格式不正确"|`token`格式不正确|
-|false|"`token`已过期"|`token`已过期|
-|ture|"删除成功"|成功|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`删除成功`|成功|
 
-####DELETE`api/movie/:movieNum/seen`
+####`DELETE` `api/movie/:movieNum/seen`
 `application/form-data`
 
 `用户删除看过内容`
@@ -568,13 +568,13 @@ data:{
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
-|false|"`token`为空"|`token`为空|
-|false|"`token`不正确"|`token`不正确|
-|false|"`token`格式不正确"|`token`格式不正确|
-|false|"`token`已过期"|`token`已过期|
-|ture|"删除成功"|成功|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`删除成功`|成功|
 
-####POST`api/movie/:movieNum/longComment`
+####`POST` `api/movie/:movieNum/longComment`
 `application/form-data`
 
 `用户给予影评`
@@ -593,16 +593,16 @@ data:{
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
-|false|"影评含有敏感词汇"|`LongComment`含有敏感词汇|
-|false|"长度不合法"|`LongComment`过长或过短|
-|false|"已有影评"|`LongComment`已存在|
-|false|"`token`为空"|`token`为空|
-|false|"`token`不正确"|`token`不正确|
-|false|"`token`格式不正确"|`token`格式不正确|
-|false|"`token`已过期"|`token`已过期|
-|ture|"成功"|成功|
+|`false`|`影评含有敏感词汇`|`LongComment`含有敏感词汇|
+|`false`|`长度不合法`|`LongComment`过长或过短|
+|`false`|`已有影评`|`LongComment`已存在|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`成功`|成功|
 
-####DELETE`api/movie/:movieNum/longComment`
+####`DELETE` `api/movie/:movieNum/longComment`
 `application/form-data`
 
 `用户删除影评`
@@ -619,14 +619,14 @@ data:{
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
-|false|"影评不存在"|`LongComment`不存在|
-|false|"`token`为空"|`token`为空|
-|false|"`token`不正确"|`token`不正确|
-|false|"`token`格式不正确"|`token`格式不正确|
-|false|"`token`已过期"|`token`已过期|
-|ture|"删除成功"|成功|
+|`false`|`影评不存在`|`LongComment`不存在|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`删除成功`|成功|
 
-####PUT`api/movie/:movieNum/longComment`
+####`PUT` `api/movie/:movieNum/longComment`
 `application/form-data`
 
 `用户更新短评`
@@ -644,16 +644,16 @@ data:{
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
-|false|"影评不存在"|`LongComment`不存在|
-|false|"影评含有敏感词汇"|`LongComment`含有敏感词汇|
-|false|"长度不合法"|`LongComment`过长或过短|
-|false|"`token`为空"|`token`为空|
-|false|"`token`不正确"|`token`不正确|
-|false|"`token`格式不正确"|`token`格式不正确|
-|false|"`token`已过期"|`token`已过期|
-|ture|"更新成功"|成功|
+|`false`|`影评不存在`|`LongComment`不存在|
+|`false`|`影评含有敏感词汇`|`LongComment`含有敏感词汇|
+|`false`|`长度不合法`|`LongComment`过长或过短|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`更新成功`|成功|
 
-####POST`api/movie/:movieNum/shortComment`
+####`POST` `api/movie/:movieNum/shortComment`
 `application/form-data`
 
 `用户给予短评`
@@ -672,16 +672,15 @@ data:{
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
-|false|"短评含有敏感词汇"|`ShortComment`含有敏感词汇|
-|false|"长度不合法"|`ShortComment`过长或过短|
-|false|"已有短评"|`ShortComment`已存在|
-|false|"`token`为空"|`token`为空|
-|false|"`token`不正确"|`token`不正确|
-|false|"`token`格式不正确"|`token`格式不正确|
-|false|"`token`已过期"|`token`已过期|
-|ture|"成功"|成功|
-
-####DELETE`api/movie/:movieNum/shortComment`
+|`false`|`短评含有敏感词汇`|`ShortComment`含有敏感词汇|
+|`false`|`长度不合法`|`ShortComment`过长或过短|
+|`false`|`已有短评`|`ShortComment`已存在|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`"成功"`|成功|
+####`DELETE` `api/movie/:movieNum/shortComment`
 `application/form-data`
 
 `用户删除短评`
@@ -698,14 +697,14 @@ data:{
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
-|false|"短评不存在"|`ShortComment`不存在|
-|false|"`token`为空"|`token`为空|
-|false|"`token`不正确"|`token`不正确|
-|false|"`token`格式不正确"|`token`格式不正确|
-|false|"`token`已过期"|`token`已过期|
-|ture|"删除成功"|成功|
+|`false`|`短评不存在`|`ShortComment`不存在|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`"删除成功"`|成功|
 
-####PUT`api/movie/:movieNum/shortComment`
+####`PUT` `api/movie/:movieNum/shortComment`
 `application/form-data`
 
 `用户更新短评`
@@ -723,11 +722,11 @@ data:{
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
-|false|"短评不存在"|`ShortComment`不存在|
-|false|"短评含有敏感词汇"|`ShortComment`含有敏感词汇|
-|false|"长度不合法"|`ShortComment`过长或过短|
-|false|"`token`为空"|`token`为空|
-|false|"`token`不正确"|`token`不正确|
-|false|"`token`格式不正确"|`token`格式不正确|
-|false|"`token`已过期"|`token`已过期|
-|ture|"更新成功"|成功|
+|`false`|`短评不存在`|`ShortComment`不存在|
+|`false`|`短评含有敏感词汇`|`ShortComment`含有敏感词汇|
+|`false`|"长度不合法"|`ShortComment`过长或过短|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`更新成功`|成功|
