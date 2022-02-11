@@ -42,25 +42,34 @@ func InitEngine() {
 	{
 		movie.Use(middleware.JwtToken)
 
-		movie.POST("/num=:movieNum/wantSee", userWantSee) //用户想看
-		movie.DELETE("/num=:movieNum/:label/wantSee", deleteUserWantSee)
-		movie.POST("/num=:movieNum/seen", userSeen) //用户看过
-		movie.DELETE("/num=:movieNum/:label/seen", deleteUserSeen)
+		movieNum := movie.Group("/:movieNum")
+		{
+			movieNum.POST("/wantSee", userWantSee) //用户想看
+			movieNum.DELETE("/:label/wantSee", deleteUserWantSee)
 
-		movie.POST("/num=:movieNum/longComment", LongComment) //影评
-		movie.DELETE("/num=:movieNum/longComment", deleteLongComment)
-		movie.PUT("/num=:movieNum/longComment", UpdateLongComment)
-		movie.POST("/num=:movieNum/shortComment", ShortComment) //短评
-		movie.DELETE("/num=:movieNum/shortComment", deleteShortComment)
-		movie.PUT("/num=:movieNum/shortComment", UpdateShortComment)
+			movieNum.POST("/seen", userSeen) //用户看过
+			movieNum.DELETE("/:label/seen", deleteUserSeen)
 
-		movie.POST("/SetNum=:movieNum/commentArea", SetCommentArea) //发表讨论区话题
-		movie.DELETE("/Num=:movieNum/commentAreaNum=:num", deleteCommentArea)
-		movie.PUT("/Num=:movieNum/commentArea", UpdateArea)
+			movieNum.POST("/longComment", LongComment) //影评
+			movieNum.DELETE("/longComment", deleteLongComment)
+			movieNum.PUT("/longComment", UpdateLongComment)
 
-		movie.POST("/CommentNum=:movieNum/commentAreaNum=:num", GiveComment) //评论某个话题
-		movie.DELETE("/movieNum=:movieNum/commentAreaNum=:areaNum/commentNum=:num", deleteComment)
-		movie.PUT("/Num=:movieNum/commentAreaNum=:num", UpdateComment)
+			movieNum.POST("/shortComment", ShortComment) //短评
+			movieNum.DELETE("/shortComment", deleteShortComment)
+			movieNum.PUT("/shortComment", UpdateShortComment)
+
+		}
+
+		commentArea := movie.Group("/commentArea")
+		{
+			commentArea.POST("/", SetCommentArea) //发表讨论区话题
+			commentArea.DELETE("/:num", deleteCommentArea)
+			commentArea.PUT("/", UpdateArea)
+
+			movie.POST("/CommentNum=:movieNum/commentAreaNum=:num", GiveComment) //评论某个话题
+			movie.DELETE("/movieNum=:movieNum/commentAreaNum=:areaNum/commentNum=:num", deleteComment)
+			movie.PUT("/Num=:movieNum/commentAreaNum=:num", UpdateComment)
+		}
 
 		movie.POST("/LikeNum=:movieNum/commentAreaNum=:num", GiveTopicLike) //给某个话题点赞
 		movie.POST("/Num=:movieNum/commentAreaNum=:num", doNotLike)
@@ -70,10 +79,10 @@ func InitEngine() {
 
 	movieGet := engine.Group("/movie")
 	{
-		movieGet.GET("/num=:movieNum", GetAMovieInfo) //获取电影的信息
-		movieGet.GET("/GetNum=:movieNum/shortComment", GetShortComment)
-		movieGet.GET("/GetNum=:movieNum/longComment", GetLongComment)
-		movieGet.GET("/commentArea/GetNum=:num", GetCommentArea) //获取讨论区信息
+		movieGet.GET("/:movieNum", GetAMovieInfo) //获取电影的信息
+		movieGet.GET("/:movieNum/shortComment", GetShortComment)
+		movieGet.GET("/:movieNum/longComment", GetLongComment)
+		movieGet.GET("/:num/commentArea", GetCommentArea) //获取讨论区信息
 	}
 
 	administrator := engine.Group("/administrator")
