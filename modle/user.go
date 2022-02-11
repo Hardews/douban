@@ -11,4 +11,5 @@ type UserHistory struct {
 	MovieNum int
 	Comment  string
 	Label    string
+	Url      string
 }

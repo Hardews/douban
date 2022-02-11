@@ -3,6 +3,7 @@ package api
 import (
 	"douban/service"
 	"douban/tool"
+	"strconv"
 
 	"database/sql"
 	"fmt"
@@ -33,12 +34,14 @@ func Find(c *gin.Context) {
 
 	for i, _ := range nums {
 		err, info := service.GetAMovieInfo(nums[i])
+		movieNum := strconv.Itoa(nums[i])
+		info.Url = "http://101.201.234.29:8080/movieInfo/" + movieNum
 		if err != nil {
 			fmt.Println("find movie failed,err:", err)
 			tool.RespInternetError(c)
 			return
 		}
-		tool.RespMovieInfo(c, info)
+		tool.RespSuccessfulWithDate(c, info)
 	}
 }
 
@@ -51,7 +54,7 @@ func FindWithCategory(c *gin.Context) {
 		return
 	}
 
-	tool.RespMovieInfos(c, infos)
+	tool.RespSuccessfulWithDate(c, infos)
 
 }
 
@@ -70,6 +73,6 @@ func Recommend(c *gin.Context) {
 			fmt.Println("get recommend movie failed,err:", err)
 			return
 		}
-		tool.RespMovieInfo(c, infos)
+		tool.RespSuccessfulWithDate(c, infos)
 	}
 }

@@ -3,6 +3,7 @@ package dao
 import (
 	"database/sql"
 	"douban/modle"
+	"strconv"
 )
 
 func DeleteShortComment(username string, movieNum int) error {
@@ -208,7 +209,7 @@ func CommentMovie(Txt, username, commentTopic string, movieNum int) error {
 
 func FindWithCategory(category string) (error, []modle.MovieInfo) {
 	var movies []modle.MovieInfo
-	sqlStr := "select ChineseName,otherName,score,area,year,types,starring,director,commentNum,introduce,language,howLong,commentNum,seen,wantSee from movieBaseInfo where movieBaseInfo.types like ?"
+	sqlStr := "select num,ChineseName,otherName,score,area,year,types,starring,director from movieBaseInfo where types like ?"
 	category = "%" + category + "%"
 	rows, err := dB.Query(sqlStr, category)
 	if err != nil {
@@ -218,12 +219,13 @@ func FindWithCategory(category string) (error, []modle.MovieInfo) {
 
 	for rows.Next() {
 		var movie modle.MovieInfo
-		err := rows.Scan(&movie.Name, &movie.OtherName, &movie.Score, &movie.Area,
-			&movie.Year, &movie.Types, &movie.Starring, &movie.Director, &movie.CommentNum, &movie.Introduce, &movie.Language,
-			&movie.Time, &movie.CommentNum, &movie.Seen, &movie.WantSee)
+		err := rows.Scan(&movie.Num, &movie.Name, &movie.OtherName, &movie.Score, &movie.Area,
+			&movie.Year, &movie.Types, &movie.Starring, &movie.Director)
 		if err != nil {
 			return err, movies
 		}
+		movieNum := strconv.Itoa(movie.Num)
+		movie.Url = "http://101.201.234.29:8080/movieInfo/" + movieNum
 		movies = append(movies, movie)
 	}
 	return err, movies
@@ -231,10 +233,13 @@ func FindWithCategory(category string) (error, []modle.MovieInfo) {
 
 func GetAMovieInfo(movieNum int) (error, modle.MovieInfo) {
 	var movie modle.MovieInfo
-	sqlStr := "select ChineseName,otherName,score,area,year,types,starring,director,commentNum,introduce,language,howLong,commentNum,seen,wantSee,img from movieBaseInfo,movieExtraInfo where movieBaseInfo.num = ? and movieExtraInfo.num = ?"
+	sqlStr := "select ChineseName,otherName,score,area,year,types,starring,director,commentNum,introduce,howLong,commentNum,seen,wantSee,img from movieBaseInfo,movieExtraInfo where movieBaseInfo.num = ? and movieExtraInfo.num = ?"
 	err := dB.QueryRow(sqlStr, movieNum, movieNum).Scan(&movie.Name, &movie.OtherName, &movie.Score, &movie.Area,
-		&movie.Year, &movie.Types, &movie.Starring, &movie.Director, &movie.CommentNum, &movie.Introduce, &movie.Language,
+		&movie.Year, &movie.Types, &movie.Starring, &movie.Director, &movie.CommentNum, &movie.Introduce,
 		&movie.Time, &movie.CommentNum, &movie.Seen, &movie.WantSee, &movie.Img)
+	Num := strconv.Itoa(movieNum)
+	movie.Num = movieNum
+	movie.Url = "http://101.201.234.29:8080/movieInfo/" + Num
 	if err != nil {
 		return err, movie
 	}

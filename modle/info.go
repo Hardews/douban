@@ -14,7 +14,6 @@ type MovieInfo struct {
 	Types     string //类型
 
 	Introduce string //简介
-	Language  string
 
 	FUsername   string
 	FTime       string
@@ -28,4 +27,5 @@ type MovieInfo struct {
 	Seen       int //看过
 
 	Img string
+	Url string
 }

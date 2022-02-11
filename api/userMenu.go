@@ -13,19 +13,13 @@ func WantSee(c *gin.Context) {
 	err, wantSee := service.GetUserWantSee(username)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			tool.RespErrorWithDate(c, "暂时无想看内容")
+			tool.RespErrorWithDate(c, "暂时无内容")
 		}
 		tool.RespInternetError(c)
 		fmt.Println("get wantSee failed ,err:", err)
 		return
 	}
-
-	err = tool.WantSee(c, wantSee, username)
-	if err != nil {
-		tool.RespInternetError(c)
-		fmt.Println("get wantSee failed ,err:", err)
-		return
-	}
+	tool.RespErrorWithDate(c, wantSee)
 }
 
 func Seen(c *gin.Context) {
@@ -33,19 +27,14 @@ func Seen(c *gin.Context) {
 	err, seen := service.GetUserSeen(username)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			tool.RespErrorWithDate(c, "暂时无看过内容")
+			tool.RespErrorWithDate(c, "暂时无内容")
 		}
 		tool.RespInternetError(c)
 		fmt.Println("get wantSee failed ,err:", err)
 		return
 	}
 
-	err = tool.Seen(c, seen, username)
-	if err != nil {
-		tool.RespInternetError(c)
-		fmt.Println("get wantSee failed ,err:", err)
-		return
-	}
+	tool.RespErrorWithDate(c, seen)
 }
 
 func GetUserComment(c *gin.Context) {
@@ -53,27 +42,12 @@ func GetUserComment(c *gin.Context) {
 	err, shortComments, longComments := service.GetUserComment(username)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			tool.RespErrorWithDate(c, "无评论")
+			tool.RespErrorWithDate(c, "该用户暂时无评论")
 			return
 		}
 	}
-
-	for i, _ := range shortComments {
-		c.JSON(200, gin.H{
-			"movieNum": shortComments[i].MovieNum,
-			"username": username,
-			"txt":      shortComments[i].Txt,
-			"time":     shortComments[i].Time,
-		})
-	}
-	for i, _ := range longComments {
-		c.JSON(200, gin.H{
-			"movieNum": longComments[i].MovieNum,
-			"username": username,
-			"txt":      longComments[i].Txt,
-			"time":     longComments[i].Time,
-		})
-	}
+	tool.RespSuccessfulWithDate(c, longComments)
+	tool.RespSuccessfulWithDate(c, shortComments)
 }
 
 func SetIntroduce(c *gin.Context) {
@@ -83,12 +57,12 @@ func SetIntroduce(c *gin.Context) {
 
 	flag := service.CheckSensitiveWords(introduce)
 	if !flag {
-		tool.RespErrorWithDate(c, "自我介绍含有敏感词汇")
+		tool.RespErrorWithDate(c, "输入的自我介绍含有敏感词汇")
 		return
 	}
 	res := service.CheckTxtLengthS(introduce)
 	if !res {
-		tool.RespErrorWithDate(c, "长度不合法")
+		tool.RespErrorWithDate(c, "自我介绍长度不合法")
 		return
 	}
 
@@ -98,7 +72,7 @@ func SetIntroduce(c *gin.Context) {
 		fmt.Println("set introduce failed,err:", err)
 		return
 	}
-	tool.RespSuccessful(c)
+	tool.RespSuccessfulWithDate(c, "设置成功")
 }
 
 func GetUserInfo(c *gin.Context) {

@@ -10,7 +10,7 @@ func InitEngine() {
 	engine := gin.Default()
 
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://101.201.234.29:8080"}
+	config.AllowOrigins = []string{"*"}
 	engine.Use(cors.New(config))
 
 	engine.POST("/register", Register)
@@ -19,19 +19,18 @@ func InitEngine() {
 	userGroup := engine.Group("/user")
 	{
 		userGroup.Use(middleware.JwtToken)
-		userGroup.POST("/uploadAvatar", uploadAvatar)
 		userGroup.POST("/change", ChangePassword)
-		userGroup.POST("/menu/introduce", SetIntroduce)
+		userGroup.POST("/introduce", SetIntroduce)
 		userGroup.POST("/setQuestion", SetQuestion)
 	}
 
 	userInfo := engine.Group("/user")
 	{
-		userInfo.POST("/Retrieve", Retrieve)
-		userInfo.GET("/:username/menu", GetUserInfo)          //用户的信息（包括自我介绍,头像
-		userInfo.GET("/:username/Comment", GetUserComment)    //获取用户的影评和短评
-		userInfo.GET("/:username/favorites/wantSee", WantSee) //收藏夹
-		userInfo.GET("/:username/favorites/Seen", Seen)
+		userInfo.POST("/retrieve", Retrieve)
+		userInfo.GET("/:username/menu", GetUserInfo)       //用户的信息（包括自我介绍,头像
+		userInfo.GET("/:username/Comment", GetUserComment) //获取用户的影评和短评
+		userInfo.GET("/:username/wantSee", WantSee)        //收藏夹
+		userInfo.GET("/:username/Seen", Seen)
 	}
 
 	home := engine.Group("/home")

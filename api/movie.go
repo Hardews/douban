@@ -186,7 +186,7 @@ func GetAMovieInfo(c *gin.Context) {
 		return
 	}
 
-	tool.RespMovieInfo(c, movieInfo)
+	tool.RespSuccessfulWithDate(c, movieInfo)
 }
 
 func ShortComment(c *gin.Context) {
@@ -318,14 +318,7 @@ func GetLongComment(c *gin.Context) {
 		return
 	}
 
-	for i, _ := range comments {
-		c.JSON(200, gin.H{
-			"topic":    comments[i].Topic,
-			"username": comments[i].Username,
-			"txt":      comments[i].Txt,
-			"time":     comments[i].Time,
-		})
-	}
+	tool.RespSuccessfulWithDate(c, comments)
 }
 
 func GetShortComment(c *gin.Context) {
@@ -343,11 +336,5 @@ func GetShortComment(c *gin.Context) {
 		return
 	}
 
-	for i, _ := range comments {
-		c.JSON(200, gin.H{
-			"username": comments[i].Username,
-			"txt":      comments[i].Txt,
-			"time":     comments[i].Time,
-		})
-	}
+	tool.RespSuccessfulWithDate(c, comments)
 }

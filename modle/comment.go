@@ -8,11 +8,13 @@ type UserComment struct {
 	Txt       string
 	Time      string
 	LikeNum   int
+	Url       string
 }
 
 type CommentArea struct {
 	Num        int
 	MovieNum   int
+	Url        string
 	CommentNum int
 	Topic      string
 	Username   string

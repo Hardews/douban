@@ -6,44 +6,10 @@ import (
 	"douban/modle"
 	"douban/service"
 	"douban/tool"
-	"strconv"
-	"time"
-
 	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
-
-func uploadAvatar(c *gin.Context) {
-	iUsername, _ := c.Get("username")
-	username := iUsername.(string)
-
-	file, err := c.FormFile("avatar")
-	if err != nil {
-		fmt.Println("get file failed,err:", err)
-		tool.RespErrorWithDate(c, "头像上传失败")
-		return
-	}
-
-	//保存到本地
-	fileName := "./uploadFile/" + strconv.FormatInt(time.Now().Unix(), 10) + file.Filename
-	err = c.SaveUploadedFile(file, fileName)
-	if err != nil {
-		tool.RespInternetError(c)
-		fmt.Println("保存错误,err", err)
-		return
-	}
-
-	loadString := "http://101.201.234.29:8080/" + fileName[1:]
-
-	err = service.UploadAvatar(username, loadString)
-	if err != nil {
-		tool.RespErrorWithDate(c, "上传失败")
-		fmt.Println("upload avatar failed ,err :", err)
-		return
-	}
-	tool.RespSuccessful(c)
-}
 
 func SetQuestion(c *gin.Context) {
 	var user modle.User
@@ -54,6 +20,18 @@ func SetQuestion(c *gin.Context) {
 	question := c.PostForm("question")
 	answer := c.PostForm("answer")
 
+	if user.Password == "" {
+		tool.RespErrorWithDate(c, "密码为空")
+		return
+	}
+	if question == "" {
+		tool.RespErrorWithDate(c, "问题为空")
+		return
+	}
+	if answer == "" {
+		tool.RespErrorWithDate(c, "答案为空")
+		return
+	}
 	err, flag := service.CheckPassword(user)
 	if err != nil {
 		tool.RespInternetError(c)
@@ -81,6 +59,10 @@ func SetQuestion(c *gin.Context) {
 func Retrieve(c *gin.Context) {
 	username := c.PostForm("username")
 
+	if username == "" {
+		tool.RespErrorWithDate(c, "用户名为空")
+		return
+	}
 	question, err := service.SelectQuestion(username)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -93,6 +75,10 @@ func Retrieve(c *gin.Context) {
 	}
 	tool.RespSuccessfulWithDate(c, question)
 	answer := c.PostForm("answer")
+	if answer == "" {
+		tool.RespErrorWithDate(c, "答案为空")
+		return
+	}
 
 	err, flag := service.CheckAnswer(username, answer)
 	if err != nil {
@@ -107,6 +93,10 @@ func Retrieve(c *gin.Context) {
 	var user modle.User
 	user.Username = username
 	user.Password = c.PostForm("newPassword")
+	if user.Password == "" {
+		tool.RespErrorWithDate(c, "新密码为空")
+		return
+	}
 
 	err = service.ChangePassword(user)
 	if err != nil {
@@ -114,6 +104,7 @@ func Retrieve(c *gin.Context) {
 		tool.RespInternetError(c)
 		return
 	}
+	tool.RespSuccessfulWithDate(c, "修改成功")
 }
 
 func ChangePassword(ctx *gin.Context) {
@@ -123,6 +114,15 @@ func ChangePassword(ctx *gin.Context) {
 	fmt.Println(user.Username)
 	user.Password = ctx.PostForm("oldPassword")
 	newPassword := ctx.PostForm("newPassword")
+
+	if user.Password == "" {
+		tool.RespErrorWithDate(ctx, "旧密码为空")
+		return
+	}
+	if newPassword == "" {
+		tool.RespErrorWithDate(ctx, "新密码为空")
+		return
+	}
 
 	err, res := service.CheckPassword(user)
 	if err != nil {
@@ -139,7 +139,7 @@ func ChangePassword(ctx *gin.Context) {
 
 		res = service.CheckLength(newPassword)
 		if !res {
-			tool.RespErrorWithDate(ctx, "密码长度不合法")
+			tool.RespErrorWithDate(ctx, "新密码长度不合法")
 			return
 		}
 
@@ -150,7 +150,7 @@ func ChangePassword(ctx *gin.Context) {
 			return
 		}
 
-		tool.RespSuccessful(ctx)
+		tool.RespSuccessfulWithDate(ctx, "修改成功")
 	} else {
 		tool.RespErrorWithDate(ctx, "旧密码错误")
 		return
@@ -164,6 +164,12 @@ func Login(ctx *gin.Context) {
 	user.Username = ctx.PostForm("logName")
 	user.Password = ctx.PostForm("password")
 
+	if user.Username == "" {
+		tool.RespErrorWithDate(ctx, "输入的账号为空")
+	}
+	if user.Password == "" {
+		tool.RespErrorWithDate(ctx, "输入的密码为空")
+	}
 	flag := service.CheckAdministratorUsername(user.Username)
 	if flag {
 		identity = "管理员"
@@ -202,10 +208,15 @@ func Register(ctx *gin.Context) {
 	user.Password = ctx.PostForm("signPassword")
 	user.NickName = ctx.PostForm("nickname")
 
-	if user.Username == "" || user.Password == "" || user.NickName == "" {
-		tool.RespErrorWithDate(ctx, "传入空值")
+	if user.Username == "" {
+		tool.RespErrorWithDate(ctx, "用户名为空")
 		return
 	}
+	if user.Password == "" {
+		tool.RespErrorWithDate(ctx, "密码为空")
+		return
+	}
+
 	res := service.CheckSensitiveWords(user.Username)
 	if !res {
 		tool.RespErrorWithDate(ctx, "用户名含有敏感词汇")

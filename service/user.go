@@ -6,14 +6,6 @@ import (
 	"douban/modle"
 )
 
-func UploadAvatar(username, loadString string) error {
-	err := dao.UploadAvatar(username, loadString)
-	if err != nil {
-		return err
-	}
-	return err
-}
-
 func SetQuestion(username, question, answer string) (error, bool) {
 	err, answer := Encryption(answer)
 	if err != nil {

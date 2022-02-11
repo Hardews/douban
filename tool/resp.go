@@ -17,14 +17,14 @@ func RespSuccessful(ctx *gin.Context) {
 	})
 }
 
-func RespErrorWithDate(ctx *gin.Context, Date interface{}) {
+func RespErrorWithDate(ctx *gin.Context, Data interface{}) {
 	ctx.JSON(http.StatusOK, gin.H{
-		"date": Date,
+		"date": Data,
 	})
 }
 
-func RespSuccessfulWithDate(c *gin.Context, date interface{}) {
+func RespSuccessfulWithDate(c *gin.Context, data interface{}) {
 	c.JSON(http.StatusOK, gin.H{
-		"date": date,
+		"data": data,
 	})
 }

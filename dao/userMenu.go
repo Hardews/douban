@@ -1,6 +1,9 @@
 package dao
 
-import "douban/modle"
+import (
+	"douban/modle"
+	"strconv"
+)
 
 func GetWantSee(username string) (error, []modle.UserHistory) {
 	var wantSees []modle.UserHistory
@@ -17,6 +20,8 @@ func GetWantSee(username string) (error, []modle.UserHistory) {
 		if err != nil {
 			return err, wantSees
 		}
+		movieNum := strconv.Itoa(wantSee.MovieNum)
+		wantSee.Url = "http://101.201.234.29:8080/movieInfo/" + movieNum
 		wantSees = append(wantSees, wantSee)
 	}
 	return err, wantSees
@@ -37,6 +42,8 @@ func GetSeen(username string) (error, []modle.UserHistory) {
 		if err != nil {
 			return err, Seens
 		}
+		movieNum := strconv.Itoa(Seen.MovieNum)
+		Seen.Url = "http://101.201.234.29:8080/movieInfo/" + movieNum
 		Seens = append(Seens, Seen)
 	}
 	return err, Seens
@@ -102,6 +109,8 @@ func GetUserComment(username string) (error, []modle.UserComment, []modle.UserCo
 		if err != nil {
 			return err, shortComments, longComments
 		}
+		movieNum := strconv.Itoa(shortComment.MovieNum)
+		shortComment.Url = "http://101.201.234.29:8080/movieInfo/" + movieNum
 		shortComments = append(shortComments, shortComment)
 	}
 
@@ -118,6 +127,8 @@ func GetUserComment(username string) (error, []modle.UserComment, []modle.UserCo
 		if err != nil {
 			return err, shortComments, longComments
 		}
+		movieNum := strconv.Itoa(longComment.MovieNum)
+		longComment.Url = "http://101.201.234.29:8080/movieInfo/" + movieNum
 		longComments = append(longComments, longComment)
 	}
 	return err, shortComments, longComments
