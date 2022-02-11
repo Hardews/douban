@@ -10,7 +10,7 @@ func InitEngine() {
 	engine := gin.Default()
 
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://127.0.0.1:8080"}
+	config.AllowOrigins = []string{"http://101.201.234.29:8080"}
 	engine.Use(cors.New(config))
 
 	engine.POST("/register", Register)
