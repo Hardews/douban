@@ -22,8 +22,8 @@ func DoNotLikeComment(username string, areaNum, commentNum int) error {
 	return err
 }
 
-func DeleteComment(movieNum, areaNum, commentNum int) (error, bool) {
-	err := dao.DeleteComment(movieNum, areaNum, commentNum)
+func DeleteComment(username string, movieNum, areaNum int) (error, bool) {
+	err := dao.DeleteComment(username, movieNum, areaNum)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			err = nil
@@ -46,8 +46,8 @@ func DeleteCommentArea(movieNum, areaNum int) (error, bool) {
 	return err, true
 }
 
-func GiveCommentLike(username string, movieNum, areaNum, commentNum int) (error, bool) {
-	err, flag := dao.GiveCommentLike(username, movieNum, areaNum, commentNum)
+func GiveCommentLike(username, name string, movieNum, areaNum int) (error, bool) {
+	err, flag := dao.GiveCommentLike(username, name, movieNum, areaNum)
 	if err != nil {
 		return err, flag
 	}

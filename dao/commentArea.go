@@ -118,17 +118,17 @@ func DoNotLikeComment(username string, areaNum, commentNum int) error {
 	return err
 }
 
-func DeleteComment(movieNum, areaNum, commentNum int) error {
+func DeleteComment(username string, movieNum, areaNum int) error {
 	var iMovieNum, iAreaNum, iCommentNum string
-	sqlStr := "select movieNum,num,no from comment where movieNum = ? and num = ? and no = ?"
-	err := dB.QueryRow(sqlStr, movieNum, areaNum, commentNum).Scan(&iMovieNum, &iAreaNum, &iCommentNum)
+	sqlStr := "select movieNum,num,no from comment where movieNum = ? and areaNum = ? and username = ? "
+	err := dB.QueryRow(sqlStr, movieNum, areaNum, username).Scan(&iMovieNum, &iAreaNum, &iCommentNum)
 	if err != nil {
 		return err
 	}
 
 	iMovieNum, iAreaNum, iCommentNum = iMovieNum+"已删除", iAreaNum+"已删除", iCommentNum+"已删除"
-	sqlStr = "update comment set movieNum = ?,num = ?,no = ? where movieNum = ? and num = ? and no = ?"
-	_, err = dB.Exec(sqlStr, iMovieNum, iAreaNum, iCommentNum, movieNum, areaNum, commentNum)
+	sqlStr = "update comment set movieNum = ?,num = ?,no = ? where movieNum = ? and areaNum = ? and username = ? "
+	_, err = dB.Exec(sqlStr, iMovieNum, iAreaNum, iCommentNum, movieNum, areaNum, username)
 	if err != nil {
 		return err
 	}
@@ -152,10 +152,10 @@ func DeleteCommentArea(movieNum, areaNum int) error {
 	return err
 }
 
-func GiveCommentLike(username string, movieNum, areaNum, commentNum int) (error, bool) {
+func GiveCommentLike(username, name string, movieNum, areaNum int) (error, bool) {
 	var iUsername string
-	sqlStr := "select username from commentLike where commentNum = ? and movieNum = ? and topicNum = ? and username = ?"
-	err := dB.QueryRow(sqlStr, commentNum, movieNum, areaNum, username).Scan(&iUsername)
+	sqlStr := "select username from commentLike where  movieNum = ? and topicNum = ? and username = ?"
+	err := dB.QueryRow(sqlStr, movieNum, areaNum, username).Scan(&iUsername)
 	switch err {
 	case nil:
 		return err, false
@@ -165,15 +165,15 @@ func GiveCommentLike(username string, movieNum, areaNum, commentNum int) (error,
 		return err, false
 	}
 
-	sqlStr = "insert commentLike (username,movieNum,topicNum,commentNum) values (?,?,?,?)"
-	_, err = dB.Exec(sqlStr, username, movieNum, areaNum, commentNum)
+	sqlStr = "insert commentLike (username,movieNum,topicNum) values (?,?,?)"
+	_, err = dB.Exec(sqlStr, username, movieNum, areaNum)
 	if err != nil {
 		return err, false
 	}
 
 	var likeNum int
-	sqlStr = "select likeNum from comment where movieNum = ? and num = ? and no = ?"
-	err = dB.QueryRow(sqlStr, movieNum, areaNum, commentNum).Scan(&likeNum)
+	sqlStr = "select likeNum from comment where movieNum = ? and num = ? and username = ?"
+	err = dB.QueryRow(sqlStr, movieNum, areaNum, name).Scan(&likeNum)
 	if err != nil {
 		return err, false
 	}

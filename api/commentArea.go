@@ -40,7 +40,7 @@ func UpdateComment(c *gin.Context) {
 	txt := c.PostForm("comment")
 
 	num1 := c.Param("movieNum")
-	num2 := c.Param("num")
+	num2 := c.Param("areaNum")
 
 	movieNum, err := strconv.Atoi(num1)
 	areaNum, err := strconv.Atoi(num2)
@@ -63,7 +63,7 @@ func doNotLikeComment(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	Username := iUsername.(string)
 	num2 := c.Param("areaNum")
-	num3 := c.Param("num")
+	num3 := c.PostForm("commentNum")
 
 	areaNum, err := strconv.Atoi(num2)
 	commentNum, err := strconv.Atoi(num3)
@@ -112,20 +112,20 @@ func doNotLike(c *gin.Context) {
 }
 
 func deleteComment(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
 	num1 := c.Param("movieNum")
 	num2 := c.Param("areaNum")
-	num3 := c.Param("num")
 
 	movieNum, err := strconv.Atoi(num1)
 	areaNum, err := strconv.Atoi(num2)
-	commentNum, err := strconv.Atoi(num3)
 	if err != nil {
 		tool.RespInternetError(c)
 		fmt.Println(err)
 		return
 	}
 
-	err, flag := service.DeleteComment(movieNum, areaNum, commentNum)
+	err, flag := service.DeleteComment(username, movieNum, areaNum)
 	if err != nil {
 		fmt.Println("delete comment failed,err :", err)
 		tool.RespInternetError(c)
@@ -225,7 +225,7 @@ func GiveTopicLike(c *gin.Context) {
 	Username := iUsername.(string)
 
 	Num1 := c.Param("movieNum")
-	Num2 := c.Param("num")
+	Num2 := c.Param("areaNum")
 	MovieNum, err := strconv.Atoi(Num1)
 	areaNum, err := strconv.Atoi(Num2)
 	if err != nil {
@@ -254,7 +254,7 @@ func GiveComment(c *gin.Context) {
 	comment.Username = iUsername.(string)
 
 	Num1 := c.Param("movieNum")
-	Num2 := c.Param("num")
+	Num2 := c.Param("areaNum")
 	comment.MovieNum, err = strconv.Atoi(Num1)
 	comment.Num, err = strconv.Atoi(Num2)
 	if err != nil {
@@ -278,19 +278,18 @@ func GiveCommentLike(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	Username := iUsername.(string)
 
+	name := c.PostForm("username")
 	Num1 := c.Param("movieNum")
 	Num2 := c.Param("num")
-	Num3 := c.Param("commentNum")
 	MovieNum, err := strconv.Atoi(Num1)
 	areaNum, err := strconv.Atoi(Num2)
-	commentNum, err := strconv.Atoi(Num3)
 	if err != nil {
 		fmt.Println("shift num failed,err,", err)
 		tool.RespInternetError(c)
 		return
 	}
 
-	err, flag := service.GiveCommentLike(Username, MovieNum, areaNum, commentNum)
+	err, flag := service.GiveCommentLike(Username, name, MovieNum, areaNum)
 	if err != nil {
 		tool.RespInternetError(c)
 		fmt.Println("give comment like failed ,err:", err)

@@ -33,7 +33,7 @@ func InitEngine() {
 
 	home := engine.Group("/home")
 	{
-		home.GET("/research=:find", Find)
+		home.GET("/research/:find", Find)
 		home.GET("/recommend", Recommend)
 		home.GET("/:category", FindWithCategory)
 	}
@@ -58,23 +58,24 @@ func InitEngine() {
 			movieNum.DELETE("/shortComment", deleteShortComment)
 			movieNum.PUT("/shortComment", UpdateShortComment)
 
+			commentArea := movieNum.Group("/commentArea")
+			{
+				commentArea.POST("/", SetCommentArea) //发表讨论区话题
+				commentArea.DELETE("/:areaNum", deleteCommentArea)
+				commentArea.PUT("/", UpdateArea)
+				commentArea.POST("/:areaNum/like", GiveTopicLike) //给某个话题点赞
+				commentArea.DELETE("/:areaNum/like", doNotLike)
+
+				comment := commentArea.Group("/:areaNum")
+				{
+					comment.POST("/comment", GiveComment) //评论某个话题
+					comment.DELETE("/comment", deleteComment)
+					comment.PUT("/comment", UpdateComment)
+					comment.POST("/comment/like", GiveCommentLike) //给某个评论点赞
+					comment.DELETE("/comment/like", doNotLikeComment)
+				}
+			}
 		}
-
-		commentArea := movieNum.Group("/commentArea")
-		{
-			commentArea.POST("/", SetCommentArea) //发表讨论区话题
-			commentArea.DELETE("/", deleteCommentArea)
-			commentArea.PUT("/", UpdateArea)
-
-			commentArea.POST("/CommentNum=:movieNum/commentAreaNum=:num", GiveComment) //评论某个话题
-			commentArea.DELETE("/movieNum=:movieNum/commentAreaNum=:areaNum/commentNum=:num", deleteComment)
-			commentArea.PUT("/Num=:movieNum/commentAreaNum=:num", UpdateComment)
-		}
-
-		movie.POST("/LikeNum=:movieNum/commentAreaNum=:num", GiveTopicLike) //给某个话题点赞
-		movie.POST("/Num=:movieNum/commentAreaNum=:num", doNotLike)
-		movie.POST("/LikeComment-Num=:movieNum/commentAreaNum=:num/:commentNum", GiveCommentLike) //给某个评论点赞
-		movie.POST("/LikeComment-Num=:movieNum/commentAreaNum=:num", doNotLikeComment)
 	}
 
 	movieGet := engine.Group("/movieInfo")
