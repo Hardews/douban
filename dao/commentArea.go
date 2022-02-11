@@ -11,6 +11,7 @@ func SelectArea(username string, movieNum int) (error, bool, int) {
 	err := dB.QueryRow(sqlStr, username, movieNum).Scan(&num)
 	if err != nil {
 		if err == sql.ErrNoRows {
+			err = nil
 			return err, true, 0
 		}
 		return err, false, 0

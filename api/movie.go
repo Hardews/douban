@@ -25,6 +25,17 @@ func UpdateShortComment(c *gin.Context) {
 		return
 	}
 
+	err, flag, _ := service.SelectComment(username, movieNum, 2, 0)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("select comment failed,err:", err)
+		return
+	}
+	if flag {
+		tool.RespErrorWithDate(c, "无评论")
+		return
+	}
+
 	err = service.UpdateComment(username, txt, movieNum, 2, 0)
 	if err != nil {
 		tool.RespInternetError(c)
@@ -48,6 +59,16 @@ func UpdateLongComment(c *gin.Context) {
 		return
 	}
 
+	err, flag, _ := service.SelectComment(username, movieNum, 1, 0)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("select comment failed,err:", err)
+		return
+	}
+	if flag {
+		tool.RespErrorWithDate(c, "无评论")
+		return
+	}
 	err = service.UpdateComment(username, txt, movieNum, 1, 0)
 	if err != nil {
 		tool.RespInternetError(c)
@@ -108,7 +129,7 @@ func deleteShortComment(c *gin.Context) {
 func deleteUserSeen(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
-	label := c.Param("label") //用户存储标签
+	label := c.PostForm("label") //用户存储标签
 	Num := c.Param("movieNum")
 
 	movieNum, _ := strconv.Atoi(Num)
@@ -123,7 +144,7 @@ func deleteUserSeen(c *gin.Context) {
 func deleteUserWantSee(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
-	label := c.Param("label") //用户存储标签
+	label := c.PostForm("label") //用户存储标签
 	Num := c.Param("movieNum")
 
 	movieNum, _ := strconv.Atoi(Num)
@@ -181,6 +202,10 @@ func GetAMovieInfo(c *gin.Context) {
 	}
 	err, movieInfo := service.GetAMovieInfo(movieNum)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			tool.RespErrorWithDate(c, "无该电影的信息")
+			return
+		}
 		tool.RespInternetError(c)
 		fmt.Println("get a movie info failed , err ", err)
 		return
@@ -275,21 +300,8 @@ func LongComment(c *gin.Context) {
 		return
 	}
 	if !flag {
-		tool.RespErrorWithDate(c, "已有影评，是否更新")
-		num1 := c.PostForm("choose")
-		choose, _ := strconv.Atoi(num1)
-
-		switch choose {
-		case 1:
-			return
-		case 2:
-			err = service.UpdateComment(username, commentTxt, movieNum, 1, 0)
-			if err != nil {
-				fmt.Println("update long comment failed,err:", err)
-				tool.RespInternetError(c)
-				return
-			}
-		}
+		tool.RespErrorWithDate(c, "已有影评")
+		return
 	}
 
 	err = service.CommentMovie(commentTxt, username, commentTopic, movieNum)

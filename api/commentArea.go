@@ -164,7 +164,7 @@ func deleteCommentArea(c *gin.Context) {
 }
 
 func GetCommentArea(c *gin.Context) {
-	num := c.Param("num")
+	num := c.Param("movieNum")
 	movieNum, err := strconv.Atoi(num)
 	if err != nil {
 		fmt.Println("shift num failed,err =", err)
@@ -322,26 +322,8 @@ func SetCommentArea(c *gin.Context) {
 		return
 	}
 	if !flag {
-		tool.RespErrorWithDate(c, "已有话题，是否重新设置（原话题所属评论会删除）")
-		num2 := c.PostForm("choose")
-		choose, err := strconv.Atoi(num2)
-		if err != nil {
-			fmt.Println("shift num failed,err =", err)
-			tool.RespInternetError(c)
-			return
-		}
-		switch choose {
-		case 1:
-			return
-		case 2:
-			err = service.UpdateComment(username, topic, movieNum, 3, 0)
-			if err != nil {
-				tool.RespInternetError(c)
-				fmt.Println("update comment failed,err :", err)
-				return
-			}
-			tool.RespSuccessfulWithDate(c, "修改成功")
-		}
+		tool.RespErrorWithDate(c, "已有话题")
+		return
 	}
 
 	err = service.SetCommentArea(username, topic, movieNum)

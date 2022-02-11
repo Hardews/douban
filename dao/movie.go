@@ -118,6 +118,8 @@ func GetComment(num int) (error, []modle.UserComment) {
 		if err != nil {
 			return err, comments
 		}
+		movieNum := strconv.Itoa(num)
+		comment.Url = "http://101.201.234.29:8080/movieInfo/" + movieNum
 		comments = append(comments, comment)
 	}
 	return err, comments
@@ -134,10 +136,13 @@ func GetMovieComment(num int) (error, []modle.UserComment) {
 
 	for rows.Next() {
 		var comment modle.UserComment
+		comment.MovieNum = num
 		err = rows.Scan(&comment.Username, &comment.Txt, &comment.Time)
 		if err != nil {
 			return err, comments
 		}
+		movieNum := strconv.Itoa(num)
+		comment.Url = "http://101.201.234.29:8080/movieInfo/" + movieNum
 		comments = append(comments, comment)
 	}
 	return err, comments

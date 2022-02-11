@@ -1,14 +1,13 @@
 package modle
 
 type UserComment struct {
-	Topic     string
-	MovieNum  int
-	MovieName string
-	Username  string
-	Txt       string
-	Time      string
-	LikeNum   int
-	Url       string
+	Topic    string
+	MovieNum int
+	Username string
+	Txt      string
+	Time     string
+	LikeNum  int
+	Url      string
 }
 
 type CommentArea struct {

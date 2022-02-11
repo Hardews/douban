@@ -166,9 +166,11 @@ func Login(ctx *gin.Context) {
 
 	if user.Username == "" {
 		tool.RespErrorWithDate(ctx, "输入的账号为空")
+		return
 	}
 	if user.Password == "" {
 		tool.RespErrorWithDate(ctx, "输入的密码为空")
+		return
 	}
 	flag := service.CheckAdministratorUsername(user.Username)
 	if flag {

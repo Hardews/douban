@@ -47,10 +47,10 @@ func InitEngine() {
 		movieNum := movie.Group("/:movieNum")
 		{
 			movieNum.POST("/wantSee", userWantSee) //用户想看
-			movieNum.DELETE("/:label/wantSee", deleteUserWantSee)
+			movieNum.DELETE("/wantSee", deleteUserWantSee)
 
 			movieNum.POST("/seen", userSeen) //用户看过
-			movieNum.DELETE("/:label/seen", deleteUserSeen)
+			movieNum.DELETE("/seen", deleteUserSeen)
 
 			movieNum.POST("/longComment", LongComment) //影评
 			movieNum.DELETE("/longComment", deleteLongComment)
