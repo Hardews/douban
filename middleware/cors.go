@@ -23,7 +23,7 @@ func Cors() gin.HandlerFunc {
 		} else {
 			headerStr = "access-control-allow-origin, access-control-allow-headers"
 		}
-		originDomains := []string{"http://test.j.cn"}
+		originDomains := []string{"http://101.201.234.29"}
 		inArraysFlag := false
 		for _, value := range originDomains {
 			if origin == value {
