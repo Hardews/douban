@@ -1,9 +1,10 @@
 API
 
-## `Login`
+# Login
 
-### `POST` `/api/login`
-`application/form-data`
+## `POST` `/api/login`
+
+###`application/form-data`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -24,10 +25,10 @@ API
 |`false`|`密码错误`|`logName`与`password`不匹配|
 |`ture`|`成功`|成功|
 
-###`Register`
+# Register
 
-####`POST` `api/register`
-`application/form-data`
+## `POST` `api/register`
+###`application/form-data`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -50,12 +51,12 @@ API
 |`false`|`密码长度不合法`|`signPassword`太长或太短|
 |`ture`|`成功`|注册成功|
 
-###`User`
+# User
 
-####`POST` `api/user/change`
-`application/form-data`
+## `POST` `api/user/change`
+###`application/form-data`
 
-`修改密码`
+####`修改密码`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -81,10 +82,10 @@ API
 |`ture`|`修改成功`|修改成功|
 
 
-####`POST` `api/user/introduce`
-`application/form-data`
+## `POST` `api/user/introduce`
+### `application/form-data`
 
-`设置自我介绍`
+#### `设置自我介绍`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -102,10 +103,10 @@ API
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`设置成功`|设置成功|
 
-####`POST` `api/user/setQuestion`
-`application/form-data`
+## `POST` `api/user/setQuestion`
+### `application/form-data`
 
-`设置密保问题`
+#### `设置密保问题`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -127,7 +128,7 @@ API
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`设置成功`|`设置成功`|
 
-####`POST` `api/user/retrieve`
+## `POST` `api/user/retrieve`
 `application/form-data`
 
 `通过密保找回密码`
@@ -149,8 +150,8 @@ API
 |`false`|`答案为空`|`answer`为空|
 |`ture`|`修改成功`|找回成功|
 
-####`GET` `/api/:username/menu`
-`获取username为:username的用户基础信息`
+## `GET` `/api/:username/menu`
+### `获取username为:username的用户基础信息`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -169,8 +170,8 @@ API
 }
 ```
 
-####`GET` `api/:username/Comment`
-`获取username为:username的用户影评和短评`
+## `GET` `api/:username/Comment`
+### `获取username为:username的用户影评和短评`
 
 
 | 请求参数     | 类型 | 备注   |
@@ -192,8 +193,8 @@ API
 }
 ```
 
-####`GET` `api/:username/wantSee`
-`获取username为:username的用户的想看文件夹`
+## `GET` `api/:username/wantSee`
+###`获取username为:username的用户的想看文件夹`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -218,8 +219,8 @@ API
 }
 ```
 
-####`GET` `/api/user/:username/Seen`
-`获取username为:username的用户的看过文件夹`
+## `GET` `/api/user/:username/Seen`
+###`获取username为:username的用户的看过文件夹`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -243,69 +244,9 @@ API
         "num": "n部看过",
 }
 ```
-
-###`Home`
-####`GET` `/api/home/research/:find`
-`搜索功能`
-
-| 请求参数     | 类型 | 备注   |
-| -------- | ---- | ------ |
-| :find | 必选 | 搜索内容 |
-
-| status    | data     | 说明   |
-| ------------ | ------------ | ------------ |
-|false|"抱歉，暂时没有你想要的电影”|搜索不到|
-|true|参见以下代码|获取成功|
-
-```
-data:{
-	"name":       movieInfo.Name,          //电影中文名字
-	"otherName":  movieInfo.OtherName,     //别名
-	"score":      movieInfo.Score,         //评分
-	"year":       movieInfo.Year,          //出版年份
-	"time":       movieInfo.Time + "分钟",  //时长
-	"area":       movieInfo.Area,          //地区
-	"director":   movieInfo.Director,      //导演
-	"starring":   movieInfo.Starring,      //主演
-	"CommentNum": movieInfo.CommentNum,    //影评数
-	"Introduce":  movieInfo.Introduce,     //简介
-	"WantSee":    movieInfo.WantSee,       //想看人数
-	"Seen":       movieInfo.Seen,          //看过人数
-	"types":      movieInfo.Types,         //类型
-	"img":        movieInfo.Img,           //图片url
-	"url":        "http://101.201.234.29:8080/movie/" + movieNum,
-}
-```
-####`GET` `/api/home/recommend`
-`推荐功能（随机`
-
-
-| status    | data     | 说明   |
-| ------------ | ------------ | ------------ |
-|true|参见以下代码|获取成功|
-
-```
-data:{
-	"name":       movieInfo.Name,          //电影中文名字
-	"otherName":  movieInfo.OtherName,     //别名
-	"score":      movieInfo.Score,         //评分
-	"year":       movieInfo.Year,          //出版年份
-	"time":       movieInfo.Time + "分钟",  //时长
-	"area":       movieInfo.Area,          //地区
-	"director":   movieInfo.Director,      //导演
-	"starring":   movieInfo.Starring,      //主演
-	"CommentNum": movieInfo.CommentNum,    //影评数
-	"Introduce":  movieInfo.Introduce,     //简介
-	"WantSee":    movieInfo.WantSee,       //想看人数
-	"Seen":       movieInfo.Seen,          //看过人数
-	"types":      movieInfo.Types,         //类型
-	"img":        movieInfo.Img,           //图片url
-	"url":        "http://101.201.234.29:8080/movie/" + movieNum,
-}
-```
-
-####`GET` `/api/home/:category`
-`分类功能`
+# `Home`
+## `GET` `/api/home/research/:find`
+### `搜索功能`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -335,10 +276,69 @@ data:{
 	"url":        "http://101.201.234.29:8080/movie/" + movieNum,
 }
 ```
+## `GET` `/api/home/recommend`
+### `推荐功能（随机`
 
-###Movie
-####`GET` `api/movieInfo/:movieNum`
-`通过:movieNum获取电影信息`
+
+| status    | data     | 说明   |
+| ------------ | ------------ | ------------ |
+|true|参见以下代码|获取成功|
+
+```
+data:{
+	"name":       movieInfo.Name,          //电影中文名字
+	"otherName":  movieInfo.OtherName,     //别名
+	"score":      movieInfo.Score,         //评分
+	"year":       movieInfo.Year,          //出版年份
+	"time":       movieInfo.Time + "分钟",  //时长
+	"area":       movieInfo.Area,          //地区
+	"director":   movieInfo.Director,      //导演
+	"starring":   movieInfo.Starring,      //主演
+	"CommentNum": movieInfo.CommentNum,    //影评数
+	"Introduce":  movieInfo.Introduce,     //简介
+	"WantSee":    movieInfo.WantSee,       //想看人数
+	"Seen":       movieInfo.Seen,          //看过人数
+	"types":      movieInfo.Types,         //类型
+	"img":        movieInfo.Img,           //图片url
+	"url":        "http://101.201.234.29:8080/movie/" + movieNum,
+}
+```
+
+## `GET` `/api/home/:category`
+###`分类功能`
+
+| 请求参数     | 类型 | 备注   |
+| -------- | ---- | ------ |
+| :find | 必选 | 搜索内容 |
+
+| status    | data     | 说明   |
+| ------------ | ------------ | ------------ |
+|false|"抱歉，暂时没有你想要的电影”|搜索不到|
+|true|参见以下代码|获取成功|
+
+```
+data:{
+	"name":       movieInfo.Name,          //电影中文名字
+	"otherName":  movieInfo.OtherName,     //别名
+	"score":      movieInfo.Score,         //评分
+	"year":       movieInfo.Year,          //出版年份
+	"time":       movieInfo.Time + "分钟",  //时长
+	"area":       movieInfo.Area,          //地区
+	"director":   movieInfo.Director,      //导演
+	"starring":   movieInfo.Starring,      //主演
+	"CommentNum": movieInfo.CommentNum,    //影评数
+	"Introduce":  movieInfo.Introduce,     //简介
+	"WantSee":    movieInfo.WantSee,       //想看人数
+	"Seen":       movieInfo.Seen,          //看过人数
+	"types":      movieInfo.Types,         //类型
+	"img":        movieInfo.Img,           //图片url
+	"url":        "http://101.201.234.29:8080/movie/" + movieNum,
+}
+```
+
+#Movie
+## `GET` `api/movieInfo/:movieNum`
+###`通过:movieNum获取电影信息`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -367,8 +367,8 @@ data:{
         "url":        "http://101.201.234.29:8080/movie/" + movieNum,
 }
 ```
-####`GET` `api/movieInfo/:movieNum/longComment`
-`通过:movieNum获取电影的影评`
+## `GET` `api/movieInfo/:movieNum/longComment`
+### `通过:movieNum获取电影的影评`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -402,8 +402,8 @@ data:{
     ]
 }
 ```
-####`GET` `api/movieInfo/:movieNum/shortComment`
-`通过:movieNum获取电影的短评`
+## `GET` `api/movieInfo/:movieNum/shortComment`
+###`通过:movieNum获取电影的短评`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -437,8 +437,8 @@ data:{
     ]
 }
 ```
-####`GET` `api/movieInfo/:movieNum/commentArea`
-`通过:movieNum获取电影的讨论区`
+## `GET` `api/movieInfo/:movieNum/commentArea`
+### `通过:movieNum获取电影的讨论区`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -476,10 +476,10 @@ data:{
     "data": "无评论"
 }
 ```
-####`POST` `api/movie/:movieNum/wantSee`
-`application/form-data`
+## `POST` `api/movie/:movieNum/wantSee`
+### `application/form-data`
 
-`用户设置想看`
+####`用户设置想看`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -501,10 +501,10 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`成功`|设置成功|
 
-####`POST` `api/movie/:movieNum/seen`
-`application/form-data`
+## `POST` `api/movie/:movieNum/seen`
+### `application/form-data`
 
-`用户设置看过`
+#### `用户设置看过`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -526,34 +526,10 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`"成功"`|设置成功|
 
-####`DELETE` `api/movie/:movieNum/wantSee`
-`application/form-data`
+## `DELETE` `api/movie/:movieNum/wantSee`
+### `application/form-data`
 
-`用户删除想看内容`
-
-| 请求参数     | 类型 | 备注   |
-| -------- | ---- | ------ |
-| :movieNum | 必选 | 电影编号 |
-| label | 非必选 | 存储标签 |
-| token | 必选 | token |
-
-| 返回参数     | 说明         |
-| ------------ | ------------ |
-| status       | 状态码       |
-| data         | 返回消息     |
-
-| status    | data     | 说明   |
-| ------------ | ------------ | ------------ |
-|`false`|`token为空`|`token`为空|
-|`false`|`token不正确`|`token`不正确|
-|`false`|`token格式不正确`|`token`格式不正确|
-|`false`|`token已过期`|`token`已过期|
-|`ture`|`删除成功`|成功|
-
-####`DELETE` `api/movie/:movieNum/seen`
-`application/form-data`
-
-`用户删除看过内容`
+#### `用户删除想看内容`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -574,10 +550,34 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`删除成功`|成功|
 
-####`POST` `api/movie/:movieNum/longComment`
-`application/form-data`
+## `DELETE` `api/movie/:movieNum/seen`
+### `application/form-data`
 
-`用户给予影评`
+#### `用户删除看过内容`
+
+| 请求参数     | 类型 | 备注   |
+| -------- | ---- | ------ |
+| :movieNum | 必选 | 电影编号 |
+| label | 非必选 | 存储标签 |
+| token | 必选 | token |
+
+| 返回参数     | 说明         |
+| ------------ | ------------ |
+| status       | 状态码       |
+| data         | 返回消息     |
+
+| status    | data     | 说明   |
+| ------------ | ------------ | ------------ |
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`删除成功`|成功|
+
+## `POST` `api/movie/:movieNum/longComment`
+###`application/form-data`
+
+####`用户给予影评`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -602,10 +602,10 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`成功`|成功|
 
-####`DELETE` `api/movie/:movieNum/longComment`
-`application/form-data`
+## `DELETE` `api/movie/:movieNum/longComment`
+### `application/form-data`
 
-`用户删除影评`
+#### `用户删除影评`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -626,10 +626,10 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`删除成功`|成功|
 
-####`PUT` `api/movie/:movieNum/longComment`
-`application/form-data`
+## `PUT` `api/movie/:movieNum/longComment`
+### `application/form-data`
 
-`用户更新短评`
+#### `用户更新短评`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -653,10 +653,10 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`更新成功`|成功|
 
-####`POST` `api/movie/:movieNum/shortComment`
-`application/form-data`
+## `POST` `api/movie/:movieNum/shortComment`
+###`application/form-data`
 
-`用户给予短评`
+#### `用户给予短评`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -680,10 +680,10 @@ data:{
 |`false`|`token格式不正确`|`token`格式不正确|
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`"成功"`|成功|
-####`DELETE` `api/movie/:movieNum/shortComment`
-`application/form-data`
+## `DELETE` `api/movie/:movieNum/shortComment`
+###`application/form-data`
 
-`用户删除短评`
+####`用户删除短评`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -704,10 +704,10 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`"删除成功"`|成功|
 
-####`PUT` `api/movie/:movieNum/shortComment`
-`application/form-data`
+## `PUT` `api/movie/:movieNum/shortComment`
+### `application/form-data`
 
-`用户更新短评`
+#### `用户更新短评`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -731,10 +731,10 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`更新成功`|成功|
 
-####`POST` `api/movie/:movieNum/commentArea`
-`application/form-data`
+## `POST` `api/movie/:movieNum/commentArea`
+### `application/form-data`
 
-`用户发表讨论区话题`
+#### `用户发表讨论区话题`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -759,10 +759,10 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`成功`|设置成功|
 
-####`DELETE` `api/movie/:movieNum/:areaNum`
-`application/form-data`
+## `DELETE` `api/movie/:movieNum/:areaNum`
+### `application/form-data`
 
-`用户删除讨论区话题`
+#### `用户删除讨论区话题`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -786,10 +786,10 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`删除成功`|设置成功|
 
-####`PUT` `api/movie/:movieNum/commentArea`
-`application/form-data`
+## `PUT` `api/movie/:movieNum/commentArea`
+### `application/form-data`
 
-`用户更新讨论区话题`
+#### `用户更新讨论区话题`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -813,10 +813,10 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`更新成功`|设置成功|
 
-####`POST` `api/movie/:movieNum/:areaNum/like`
-`application/form-data`
+## `POST` `api/movie/:movieNum/:areaNum/like`
+### `application/form-data`
 
-`用户点赞讨论区话题`
+#### `用户点赞讨论区话题`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -838,10 +838,10 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`点赞成功!`|成功|
 
-####`POST` `api/movie/:movieNum/:areaNum/like`
-`application/form-data`
+## `POST` `api/movie/:movieNum/:areaNum/like`
+###`application/form-data`
 
-`用户取消点赞讨论区话题`
+#### `用户取消点赞讨论区话题`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -862,10 +862,11 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`""`|成功|
 
-####`POST` `api/movie/:movieNum/:areaNum/comment`
-`application/form-data`
+##  `POST` `api/movie/:movieNum/:areaNum/comment`
 
-`用户发表评论（讨论区话题`
+###`application/form-data`
+
+####`用户发表评论（讨论区话题`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -889,10 +890,10 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`成功`|设置成功|
 
-####`DELETE` `api/movie/:movieNum/:areaNum/comment`
-`application/form-data`
+## `DELETE` `api/movie/:movieNum/:areaNum/comment`
+### `application/form-data`
 
-`用户删除评论（讨论区话题`
+#### `用户删除评论（讨论区话题`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -915,10 +916,10 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`删除成功`|设置成功|
 
-####`PUT` `api/movie/:movieNum/:areaNum/comment`
-`application/form-data`
+## `PUT` `api/movie/:movieNum/:areaNum/comment`
+### `application/form-data`
 
-`用户更新评论（讨论区话题`
+#### `用户更新评论（讨论区话题`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -942,10 +943,10 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`更新成功`|设置成功|
 
-####`POST` `api/movie/:movieNum/:areaNum/comment/like`
-`application/form-data`
+## `POST` `api/movie/:movieNum/:areaNum/comment/like`
+### `application/form-data`
 
-`用户点赞评论（讨论区话题`
+#### `用户点赞评论（讨论区话题`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -968,10 +969,10 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`点赞成功!`|成功|
 
-####`POST` `api/movie/:movieNum/:areaNum/comment/like`
-`application/form-data`
+## `POST` `api/movie/:movieNum/:areaNum/comment/like`
+### `application/form-data`
 
-`用户取消点赞评论（讨论区话题`
+#### `用户取消点赞评论（讨论区话题`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -993,11 +994,11 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`""`|成功|
 
-###Administrator
-####`POST` `api/administrator/setNewMovie`
-`application/form-data`
+#Administrator
+## `POST` `api/administrator/setNewMovie`
+### `application/form-data`
 
-`管理员添加电影信息`
+#### `管理员添加电影信息`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
