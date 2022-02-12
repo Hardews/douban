@@ -4,7 +4,7 @@ API
 
 ## `POST` `/api/login`
 
-###`application/form-data`
+### `application/form-data`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -28,7 +28,7 @@ API
 # Register
 
 ## `POST` `api/register`
-###`application/form-data`
+### `application/form-data`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -54,9 +54,9 @@ API
 # User
 
 ## `POST` `api/user/change`
-###`application/form-data`
+### `application/form-data`
 
-####`修改密码`
+#### `修改密码`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -129,9 +129,9 @@ API
 |`ture`|`设置成功`|`设置成功`|
 
 ## `POST` `api/user/retrieve`
-`application/form-data`
+### `application/form-data`
 
-`通过密保找回密码`
+#### `通过密保找回密码`
 `只有当question，answer，username都正确时，可发送新密码`
 
 | 请求参数     | 类型 | 备注   |
@@ -194,7 +194,7 @@ API
 ```
 
 ## `GET` `api/:username/wantSee`
-###`获取username为:username的用户的想看文件夹`
+### `获取username为:username的用户的想看文件夹`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -220,7 +220,7 @@ API
 ```
 
 ## `GET` `/api/user/:username/Seen`
-###`获取username为:username的用户的看过文件夹`
+### `获取username为:username的用户的看过文件夹`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -336,9 +336,9 @@ data:{
 }
 ```
 
-#Movie
+# Movie
 ## `GET` `api/movieInfo/:movieNum`
-###`通过:movieNum获取电影信息`
+### `通过:movieNum获取电影信息`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -403,7 +403,7 @@ data:{
 }
 ```
 ## `GET` `api/movieInfo/:movieNum/shortComment`
-###`通过:movieNum获取电影的短评`
+### `通过:movieNum获取电影的短评`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -479,7 +479,7 @@ data:{
 ## `POST` `api/movie/:movieNum/wantSee`
 ### `application/form-data`
 
-####`用户设置想看`
+#### `用户设置想看`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -575,9 +575,9 @@ data:{
 |`ture`|`删除成功`|成功|
 
 ## `POST` `api/movie/:movieNum/longComment`
-###`application/form-data`
+### `application/form-data`
 
-####`用户给予影评`
+#### `用户给予影评`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -654,7 +654,7 @@ data:{
 |`ture`|`更新成功`|成功|
 
 ## `POST` `api/movie/:movieNum/shortComment`
-###`application/form-data`
+### `application/form-data`
 
 #### `用户给予短评`
 
@@ -681,9 +681,9 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`"成功"`|成功|
 ## `DELETE` `api/movie/:movieNum/shortComment`
-###`application/form-data`
+### `application/form-data`
 
-####`用户删除短评`
+#### `用户删除短评`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -839,7 +839,7 @@ data:{
 |`ture`|`点赞成功!`|成功|
 
 ## `POST` `api/movie/:movieNum/:areaNum/like`
-###`application/form-data`
+### `application/form-data`
 
 #### `用户取消点赞讨论区话题`
 
@@ -864,9 +864,9 @@ data:{
 
 ##  `POST` `api/movie/:movieNum/:areaNum/comment`
 
-###`application/form-data`
+### `application/form-data`
 
-####`用户发表评论（讨论区话题`
+#### `用户发表评论（讨论区话题`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
