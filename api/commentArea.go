@@ -14,7 +14,23 @@ func UpdateArea(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	Username := iUsername.(string)
 
-	txt := c.PostForm("comment")
+	txt := c.PostForm("topic")
+
+	if txt == "" {
+		tool.RespErrorWithDate(c, "话题为空")
+		return
+	}
+
+	res := service.CheckSensitiveWords(txt)
+	if !res {
+		tool.RespErrorWithDate(c, "话题含有敏感词汇")
+		return
+	}
+	res = service.CheckTxtLengthL(txt)
+	if !res {
+		tool.RespErrorWithDate(c, "话题长度不合法")
+		return
+	}
 
 	num := c.Param("movieNum")
 	movieNum, err := strconv.Atoi(num)
@@ -38,6 +54,21 @@ func UpdateComment(c *gin.Context) {
 	Username := iUsername.(string)
 
 	txt := c.PostForm("comment")
+
+	if txt == "" {
+		tool.RespErrorWithDate(c, "评论为空")
+		return
+	}
+	res := service.CheckSensitiveWords(txt)
+	if !res {
+		tool.RespErrorWithDate(c, "评论含有敏感词汇")
+		return
+	}
+	res = service.CheckTxtLengthL(txt)
+	if !res {
+		tool.RespErrorWithDate(c, "评论长度不合法")
+		return
+	}
 
 	num1 := c.Param("movieNum")
 	num2 := c.Param("areaNum")
@@ -108,7 +139,7 @@ func doNotLike(c *gin.Context) {
 		tool.RespInternetError(c)
 		return
 	}
-	tool.RespSuccessfulWithDate(c, "取消点赞成功")
+	tool.RespSuccessfulWithDate(c, "")
 }
 
 func deleteComment(c *gin.Context) {
@@ -157,7 +188,7 @@ func deleteCommentArea(c *gin.Context) {
 		return
 	}
 	if !flag {
-		tool.RespErrorWithDate(c, "无此讨论标题")
+		tool.RespErrorWithDate(c, "无此话题")
 		return
 	}
 	tool.RespSuccessfulWithDate(c, "删除成功!")
@@ -264,6 +295,17 @@ func GiveComment(c *gin.Context) {
 	}
 	comment.Comment = c.PostForm("comment")
 
+	res := service.CheckSensitiveWords(comment.Comment)
+	if !res {
+		tool.RespErrorWithDate(c, "评论含有敏感词汇")
+		return
+	}
+	res = service.CheckTxtLengthL(comment.Comment)
+	if !res {
+		tool.RespErrorWithDate(c, "评论长度不合法")
+		return
+	}
+
 	err = service.GiveComment(comment)
 	if err != nil {
 		fmt.Println("give comment failed ,err:", err)
@@ -280,7 +322,7 @@ func GiveCommentLike(c *gin.Context) {
 
 	name := c.PostForm("username")
 	Num1 := c.Param("movieNum")
-	Num2 := c.Param("num")
+	Num2 := c.Param("areaNum")
 	MovieNum, err := strconv.Atoi(Num1)
 	areaNum, err := strconv.Atoi(Num2)
 	if err != nil {
@@ -307,6 +349,22 @@ func SetCommentArea(c *gin.Context) {
 	username := iUsername.(string)
 	Num := c.Param("movieNum")
 	topic := c.PostForm("topic")
+
+	if topic == "" {
+		tool.RespErrorWithDate(c, "话题为空")
+		return
+	}
+
+	res := service.CheckSensitiveWords(topic)
+	if !res {
+		tool.RespErrorWithDate(c, "话题含有敏感词汇")
+		return
+	}
+	res = service.CheckTxtLengthL(topic)
+	if !res {
+		tool.RespErrorWithDate(c, "话题长度不合法")
+		return
+	}
 
 	movieNum, err := strconv.Atoi(Num)
 	if err != nil {

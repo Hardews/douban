@@ -1,8 +1,8 @@
 API
 
-###`Login`
+## `Login`
 
-####`POST` `/api/login` 
+### `POST` `/api/login`
 `application/form-data`
 
 | 请求参数     | 类型 | 备注   |
@@ -724,9 +724,306 @@ data:{
 | ------------ | ------------ | ------------ |
 |`false`|`短评不存在`|`ShortComment`不存在|
 |`false`|`短评含有敏感词汇`|`ShortComment`含有敏感词汇|
-|`false`|"长度不合法"|`ShortComment`过长或过短|
+|`false`|`长度不合法`|`ShortComment`过长或过短|
 |`false`|`token为空`|`token`为空|
 |`false`|`token不正确`|`token`不正确|
 |`false`|`token格式不正确`|`token`格式不正确|
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`更新成功`|成功|
+
+####`POST` `api/movie/:movieNum/commentArea`
+`application/form-data`
+
+`用户发表讨论区话题`
+
+| 请求参数     | 类型 | 备注   |
+| -------- | ---- | ------ |
+| :movieNum | 必选 | 电影编号 |
+| topic | 必选 | 话题 |
+| token | 必选 | token |
+
+| 返回参数     | 说明         |
+| ------------ | ------------ |
+| status       | 状态码       |
+| data         | 返回消息     |
+
+| status    | data     | 说明   |
+| ------------ | ------------ | ------------ |
+|`false`|`"已有话题"`|`topic`已存在|
+|`false`|`"话题为空"`|`topic`为空|
+|`false`|`"话题含有敏感词汇"`|`topic`含有敏感词汇|
+|`false`|`"话题长度不合法"`|`topic`长度不合法|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`成功`|设置成功|
+
+####`DELETE` `api/movie/:movieNum/:areaNum`
+`application/form-data`
+
+`用户删除讨论区话题`
+
+| 请求参数     | 类型 | 备注   |
+| -------- | ---- | ------ |
+| :movieNum | 必选 | 电影编号 |
+|  :areaNum| 必选 | 话题编号 |
+| token | 必选 | token |
+
+| 返回参数     | 说明         |
+| ------------ | ------------ |
+| status       | 状态码       |
+| data         | 返回消息     |
+
+| status    | data     | 说明   |
+| ------------ | ------------ | ------------ |
+|`false`|`"话题不存在"`|`topic`不存在|
+|`false`|`"话题含有敏感词汇"`|`topic`含有敏感词汇|
+|`false`|`"话题长度不合法"`|`topic`不合法|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`删除成功`|设置成功|
+
+####`PUT` `api/movie/:movieNum/commentArea`
+`application/form-data`
+
+`用户更新讨论区话题`
+
+| 请求参数     | 类型 | 备注   |
+| -------- | ---- | ------ |
+| :movieNum | 必选 | 电影编号 |
+| topic | 必选 | 话题 |
+| token | 必选 | token |
+
+| 返回参数     | 说明         |
+| ------------ | ------------ |
+| status       | 状态码       |
+| data         | 返回消息     |
+
+| status    | data     | 说明   |
+| ------------ | ------------ | ------------ |
+|`false`|`"话题为空"`|`topic`为空|
+|`false`|`"话题含有敏感词汇"`|`topic`有敏感词汇|
+|`false`|`"话题长度不合法"`|`topic`长度不合法|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`更新成功`|设置成功|
+
+####`POST` `api/movie/:movieNum/:areaNum/like`
+`application/form-data`
+
+`用户点赞讨论区话题`
+
+| 请求参数     | 类型 | 备注   |
+| -------- | ---- | ------ |
+| :movieNum | 必选 | 电影编号 |
+|  :areaNum| 必选 | 话题编号 |
+| token | 必选 | token |
+
+| 返回参数     | 说明         |
+| ------------ | ------------ |
+| status       | 状态码       |
+| data         | 返回消息     |
+
+| status    | data     | 说明   |
+| ------------ | ------------ | ------------ |
+|`false`|`您已经点过赞啦`|用户点过赞了|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`点赞成功!`|成功|
+
+####`POST` `api/movie/:movieNum/:areaNum/like`
+`application/form-data`
+
+`用户取消点赞讨论区话题`
+
+| 请求参数     | 类型 | 备注   |
+| -------- | ---- | ------ |
+| :movieNum | 必选 | 电影编号 |
+|  :areaNum| 必选 | 话题编号 |
+| token | 必选 | token |
+
+| 返回参数     | 说明         |
+| ------------ | ------------ |
+| status       | 状态码       |
+| data         | 返回消息     |
+
+| status    | data     | 说明   |
+| ------------ | ------------ | ------------ |
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`""`|成功|
+
+####`POST` `api/movie/:movieNum/:areaNum/comment`
+`application/form-data`
+
+`用户发表评论（讨论区话题`
+
+| 请求参数     | 类型 | 备注   |
+| -------- | ---- | ------ |
+| :movieNum | 必选 | 电影编号 |
+|comment | 必选 | 评论 |
+| token | 必选 | token |
+
+| 返回参数     | 说明         |
+| ------------ | ------------ |
+| status       | 状态码       |
+| data         | 返回消息     |
+
+| status    | data     | 说明   |
+| ------------ | ------------ | ------------ |
+|`false`|`"评论为空"`|`comment`为空|
+|`false`|`"评论含有敏感词汇"`|`comment`有敏感词汇|
+|`false`|`"评论长度不合法"`|`comment`长度不合法|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`成功`|设置成功|
+
+####`DELETE` `api/movie/:movieNum/:areaNum/comment`
+`application/form-data`
+
+`用户删除评论（讨论区话题`
+
+| 请求参数     | 类型 | 备注   |
+| -------- | ---- | ------ |
+| :movieNum | 必选 | 电影编号 |
+|  :areaNum| 必选 | 话题编号 |
+| token | 必选 | token |
+
+| 返回参数     | 说明         |
+| ------------ | ------------ |
+| status       | 状态码       |
+| data         | 返回消息     |
+
+| status    | data     | 说明   |
+| ------------ | ------------ | ------------ |
+|`false`|`"话题不存在"`|`comment`不存在|
+|`false`|`"话题为空"`|`comment`为空|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`删除成功`|设置成功|
+
+####`PUT` `api/movie/:movieNum/:areaNum/comment`
+`application/form-data`
+
+`用户更新评论（讨论区话题`
+
+| 请求参数     | 类型 | 备注   |
+| -------- | ---- | ------ |
+| :movieNum | 必选 | 电影编号 |
+| comment | 必选 | 评论 |
+| token | 必选 | token |
+
+| 返回参数     | 说明         |
+| ------------ | ------------ |
+| status       | 状态码       |
+| data         | 返回消息     |
+
+| status    | data     | 说明   |
+| ------------ | ------------ | ------------ |
+|`false`|`"评论为空"`|`comment`为空|
+|`false`|`"评论含有敏感词汇"`|`comment`有敏感词汇|
+|`false`|`"评论长度不合法"`|`comment`长度不合法|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`更新成功`|设置成功|
+
+####`POST` `api/movie/:movieNum/:areaNum/comment/like`
+`application/form-data`
+
+`用户点赞评论（讨论区话题`
+
+| 请求参数     | 类型 | 备注   |
+| -------- | ---- | ------ |
+|username|必选|被点赞人的用户名|
+| :movieNum | 必选 | 电影编号 |
+|  :areaNum| 必选 | 话题编号 |
+| token | 必选 | token |
+
+| 返回参数     | 说明         |
+| ------------ | ------------ |
+| status       | 状态码       |
+| data         | 返回消息     |
+
+| status    | data     | 说明   |
+| ------------ | ------------ | ------------ |
+|`false`|`您已经点过赞啦`|用户点过赞了|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`点赞成功!`|成功|
+
+####`POST` `api/movie/:movieNum/:areaNum/comment/like`
+`application/form-data`
+
+`用户取消点赞评论（讨论区话题`
+
+| 请求参数     | 类型 | 备注   |
+| -------- | ---- | ------ |
+|username|必选|被点赞人的用户名|
+| :movieNum | 必选 | 电影编号 |
+|  :areaNum| 必选 | 话题编号 |
+| token | 必选 | token |
+
+| 返回参数     | 说明         |
+| ------------ | ------------ |
+| status       | 状态码       |
+| data         | 返回消息     |
+
+| status    | data     | 说明   |
+| ------------ | ------------ | ------------ |
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`""`|成功|
+
+###Administrator
+####`POST` `api/administrator/setNewMovie`
+`application/form-data`
+
+`管理员添加电影信息`
+
+| 请求参数     | 类型 | 备注   |
+| -------- | ---- | ------ |
+| movieName | 必选 | 电影编号 |
+| otherName | 必选 | 别名 |
+| score | 必选 | 评分 |
+| Starring | 必选 | 主演 |
+| Area | 必选 | 地区 |
+| Time | 必选 | 时长 |
+| Director | 必选 | 导演 |
+| Types | 必选 | 类型 |
+| Introduce | 必选 | 简介 |
+| Year | 必选 | 出版年份 |
+| token | 必选 | token |
+
+
+| 返回参数     | 说明         |
+| ------------ | ------------ |
+| status       | 状态码       |
+| data         | 返回消息     |
+
+| status    | data     | 说明   |
+| ------------ | ------------ | ------------ |
+|`false`|`"非管理员无权限操作"`|权限不足|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`movieNum`|设置成功,返回电影编号|
