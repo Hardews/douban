@@ -15,8 +15,14 @@ func SetQuestion(username, question, answer string) (error, bool) {
 		return err, false
 	}
 
-	sqlStr := "insert user_encrypted (username,question,answer) values (?,?,?)"
-	_, err = dB.Exec(sqlStr, username, question, answer)
+	sqlStr := "insert user_Encrypted (username,question,answer) values (?,?,?)"
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err, false
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(sqlStr, username, question, answer)
 	if err != nil {
 		return err, false
 	}
@@ -25,8 +31,13 @@ func SetQuestion(username, question, answer string) (error, bool) {
 
 func CheckAnswer(username string) (error, string) {
 	var answer string
-	sqlStr := "select answer from user_encrypted where username = ?"
-	err := dB.QueryRow(sqlStr, username).Scan(&answer)
+	sqlStr := "select answer from user_Encrypted where username = ?"
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err, ""
+	}
+	defer stmt.Close()
+	err = stmt.QueryRow(sqlStr, username).Scan(&answer)
 	if err != nil {
 		return err, answer
 	}
@@ -35,8 +46,14 @@ func CheckAnswer(username string) (error, string) {
 
 func SelectQuestion(username string) (string, error) {
 	var question string
-	sqlStr := "select question from user_encrypted where username = ?"
-	err := dB.QueryRow(sqlStr, username).Scan(&question)
+	sqlStr := "select question from user_Encrypted where username = ?"
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return "", err
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(sqlStr, username).Scan(&question)
 	if err != nil {
 		return question, err
 	}
@@ -45,7 +62,13 @@ func SelectQuestion(username string) (string, error) {
 
 func ChangePassword(user modle.User) error {
 	sqlStr := "update user_Base_Data set password = ? where username = ?"
-	_, err := dB.Exec(sqlStr, user.Password, user.Username)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(sqlStr, user.Password, user.Username)
 	if err != nil {
 		return err
 	}
@@ -55,7 +78,13 @@ func ChangePassword(user modle.User) error {
 func CheckPassword(user modle.User) (error, modle.User) {
 	var check modle.User
 	sqlStr := "select username,password from user_Base_Data where username = ?"
-	err := dB.QueryRow(sqlStr, user.Username).Scan(&check.Username, &check.Password)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err, check
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(sqlStr, user.Username).Scan(&check.Username, &check.Password)
 	if err != nil {
 		return err, check
 	}
@@ -65,7 +94,13 @@ func CheckPassword(user modle.User) (error, modle.User) {
 func CheckUsername(user modle.User) error {
 	var username string
 	sqlStr := "select username from user_Base_Data where username = ?"
-	err := dB.QueryRow(sqlStr, user.Username).Scan(&username)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(sqlStr, user.Username).Scan(&username)
 	if err != nil {
 		return err
 	}
@@ -74,12 +109,24 @@ func CheckUsername(user modle.User) error {
 
 func WriteIn(user modle.User) error {
 	sqlStr := "insert into user_Base_Data (username,password,nickName) values (?,?,?)"
-	_, err := dB.Exec(sqlStr, user.Username, user.Password, user.NickName)
+	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
 		return err
 	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(sqlStr, user.Username, user.Password, user.NickName)
+	if err != nil {
+		return err
+	}
+
 	sqlStr = "insert into user_Menu (username) values (?)"
-	_, err = dB.Exec(sqlStr, user.Username)
+	stmt, err = dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(sqlStr, user.Username)
 	if err != nil {
 		return err
 	}

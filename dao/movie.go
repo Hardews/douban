@@ -9,14 +9,25 @@ import (
 func DeleteShortComment(username string, movieNum int) error {
 	var iUsername string
 	sqlStr := "select FilmCritics from short_Comment where username = ? and movieNum = ?"
-	err := dB.QueryRow(sqlStr, username, movieNum).Scan(&iUsername)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(sqlStr, username, movieNum).Scan(&iUsername)
 	if err != nil {
 		return err
 	}
 
 	username = username + "已删除"
 	sqlStr = "update short_Comment set username = ? where username = ? and movieNum = ?"
-	_, err = dB.Exec(sqlStr, username, iUsername, movieNum)
+	stmt, err = dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(sqlStr, username, iUsername, movieNum)
 	if err != nil {
 		return err
 	}
@@ -26,28 +37,49 @@ func DeleteShortComment(username string, movieNum int) error {
 func DeleteLongComment(username string, movieNum int) error {
 	var iUsername string
 	sqlStr := "select essay from movie_Comment where username = ? and movieNum = ?"
-	err := dB.QueryRow(sqlStr, username, movieNum).Scan(&iUsername)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(sqlStr, username, movieNum).Scan(&iUsername)
 	if err != nil {
 		return err
 	}
 
 	username = username + "已删除"
 	sqlStr = "update essay set username = ? where username = ? and movieNum = ?"
-	_, err = dB.Exec(sqlStr, username, iUsername, movieNum)
+	stmt, err = dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(sqlStr, username, iUsername, movieNum)
 	if err != nil {
 		return err
 	}
 
 	sqlStr = "select commentNum from movie_Extra_Info where num = ?"
+	stmt, err = dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+
 	var num int
-	err = dB.QueryRow(sqlStr, movieNum).Scan(&num)
+	err = stmt.QueryRow(sqlStr, movieNum).Scan(&num)
 	if err != nil {
 		return err
 	}
 
 	num -= 1
 	sqlStr = "update movie_Extra_Info set commentNum = ? where num = ?"
-	_, err = dB.Exec(sqlStr, num, movieNum)
+	stmt, err = dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(sqlStr, num, movieNum)
 	if err != nil {
 		return err
 	}
@@ -58,21 +90,36 @@ func DeleteLongComment(username string, movieNum int) error {
 func DeleteSeen(movieNum int, label, username string) error {
 	username = username + "已删除"
 	sqlStr := "update userSeen set username = ? where movieNum = ? and label = ?"
-	_, err := dB.Exec(sqlStr, username, movieNum, label)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(sqlStr, username, movieNum, label)
 	if err != nil {
 		return err
 	}
 
 	sqlStr = "select seen from movie_Base_Info where num = ?"
+	stmt, err = dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+
 	var num int
-	err = dB.QueryRow(sqlStr, movieNum).Scan(&num)
+	err = stmt.QueryRow(sqlStr, movieNum).Scan(&num)
 	if err != nil {
 		return err
 	}
 
 	num -= 1
 	sqlStr = "update movie_Base_Info set wantSee = ? where num = ?"
-	_, err = dB.Exec(sqlStr, num, movieNum)
+	stmt, err = dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(sqlStr, num, movieNum)
 	if err != nil {
 		return err
 	}
@@ -82,21 +129,37 @@ func DeleteSeen(movieNum int, label, username string) error {
 func DeleteWantSee(movieNum int, label, username string) error {
 	username = username + "已删除"
 	sqlStr := "update user_Want_See set username = ? where movieNum = ? and label = ?"
-	_, err := dB.Exec(sqlStr, username, movieNum, label)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(sqlStr, username, movieNum, label)
 	if err != nil {
 		return err
 	}
 
 	sqlStr = "select wantSee from movie_Base_Info where num = ?"
+	stmt, err = dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+
 	var num int
-	err = dB.QueryRow(sqlStr, movieNum).Scan(&num)
+	err = stmt.QueryRow(sqlStr, movieNum).Scan(&num)
 	if err != nil {
 		return err
 	}
 
 	num -= 1
 	sqlStr = "update movie_Base_Info set wantSee = ? where num = ?"
-	_, err = dB.Exec(sqlStr, num, movieNum)
+	stmt, err = dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(sqlStr, num, movieNum)
 	if err != nil {
 		return err
 	}
@@ -106,7 +169,13 @@ func DeleteWantSee(movieNum int, label, username string) error {
 func GetComment(num int) (error, []modle.UserComment) {
 	var comments []modle.UserComment
 	sqlStr := "select Username,Essay,TIME,commentTopic from movie_Comment where movieNum = ?"
-	rows, err := dB.Query(sqlStr, num)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err, comments
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(sqlStr, num)
 	if err != nil {
 		return err, comments
 	}
@@ -119,7 +188,7 @@ func GetComment(num int) (error, []modle.UserComment) {
 			return err, comments
 		}
 		movieNum := strconv.Itoa(num)
-		comment.Url = "http://101.201.234.29:8080/movieInfo/" + movieNum
+		comment.Url = "http://49.235.99.195:8080/movieInfo/" + movieNum
 		comments = append(comments, comment)
 	}
 	return err, comments
@@ -128,7 +197,13 @@ func GetComment(num int) (error, []modle.UserComment) {
 func GetMovieComment(num int) (error, []modle.UserComment) {
 	var comments []modle.UserComment
 	sqlStr := "select Username,FilmCritics,time from short_Comment where movieNum = ?"
-	rows, err := dB.Query(sqlStr, num)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err, comments
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(sqlStr, num)
 	if err != nil {
 		return err, comments
 	}
@@ -142,7 +217,7 @@ func GetMovieComment(num int) (error, []modle.UserComment) {
 			return err, comments
 		}
 		movieNum := strconv.Itoa(num)
-		comment.Url = "http://101.201.234.29:8080/movieInfo/" + movieNum
+		comment.Url = "http://49.235.99.195:8080/movieInfo/" + movieNum
 		comments = append(comments, comment)
 	}
 	return err, comments
@@ -150,7 +225,13 @@ func GetMovieComment(num int) (error, []modle.UserComment) {
 
 func UpdateShortComment(username, txt string, movieNum int) error {
 	sqlStr := "update short_Comment set FilmCritics = ? where username = ? and movieNum = ?"
-	_, err := dB.Exec(sqlStr, txt, username, movieNum)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(sqlStr, txt, username, movieNum)
 	if err != nil {
 		return err
 	}
@@ -160,7 +241,13 @@ func UpdateShortComment(username, txt string, movieNum int) error {
 func SelectShortComment(username string, movieNum int) (error, bool) {
 	var iTxt string
 	sqlStr := "select FilmCritics from short_Comment where username = ? and movieNum = ?"
-	err := dB.QueryRow(sqlStr, username, movieNum).Scan(&iTxt)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err, false
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(sqlStr, username, movieNum).Scan(&iTxt)
 	switch {
 	case err == nil:
 		return err, false
@@ -173,7 +260,13 @@ func SelectShortComment(username string, movieNum int) (error, bool) {
 
 func Comment(Txt, username string, movieNum int) error {
 	sqlStr := "insert short_Comment (movieNum,Username,FilmCritics) values (?,?,?)"
-	_, err := dB.Exec(sqlStr, movieNum, username, Txt)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(sqlStr, movieNum, username, Txt)
 	if err != nil {
 		return err
 	}
@@ -182,7 +275,13 @@ func Comment(Txt, username string, movieNum int) error {
 
 func UpdateLongComment(username, txt string, movieNum int) error {
 	sqlStr := "update movie_Comment set Essay = ? where username = ? and movieNum = ?"
-	_, err := dB.Exec(sqlStr, txt, username, movieNum)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(sqlStr, txt, username, movieNum)
 	if err != nil {
 		return err
 	}
@@ -192,7 +291,13 @@ func UpdateLongComment(username, txt string, movieNum int) error {
 func SelectLongComment(username string, movieNum int) (error, bool) {
 	var iTxt string
 	sqlStr := "select Essay from movie_Comment where username = ? and movieNum = ?"
-	err := dB.QueryRow(sqlStr, username, movieNum).Scan(&iTxt)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err, false
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(sqlStr, username, movieNum).Scan(&iTxt)
 	switch {
 	case err == nil:
 		return err, false
@@ -205,7 +310,13 @@ func SelectLongComment(username string, movieNum int) (error, bool) {
 
 func CommentMovie(Txt, username, commentTopic string, movieNum int) error {
 	sqlStr := "insert movie_Comment (movieNum,Username,Essay,commentTopic) values (?,?,?,?)"
-	_, err := dB.Exec(sqlStr, movieNum, username, Txt, commentTopic)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(sqlStr, movieNum, username, Txt, commentTopic)
 	if err != nil {
 		return err
 	}
@@ -215,8 +326,14 @@ func CommentMovie(Txt, username, commentTopic string, movieNum int) error {
 func FindWithCategory(category string) (error, []modle.MovieInfo) {
 	var movies []modle.MovieInfo
 	sqlStr := "select num,ChineseName,otherName,score,area,year,types,starring,director from movie_Base_Info where types like ?"
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err, movies
+	}
+	defer stmt.Close()
+
 	category = "%" + category + "%"
-	rows, err := dB.Query(sqlStr, category)
+	rows, err := stmt.Query(sqlStr, category)
 	if err != nil {
 		return err, movies
 	}
@@ -230,7 +347,7 @@ func FindWithCategory(category string) (error, []modle.MovieInfo) {
 			return err, movies
 		}
 		movieNum := strconv.Itoa(movie.Num)
-		movie.Url = "http://101.201.234.29:8080/movieInfo/" + movieNum
+		movie.Url = "http://49.235.99.195:8080/movieInfo/" + movieNum
 		movies = append(movies, movie)
 	}
 	return err, movies
@@ -239,12 +356,19 @@ func FindWithCategory(category string) (error, []modle.MovieInfo) {
 func GetAMovieInfo(movieNum int) (error, modle.MovieInfo) {
 	var movie modle.MovieInfo
 	sqlStr := "select ChineseName,otherName,score,area,year,types,starring,director,commentNum,introduce,howLong,commentNum,seen,wantSee,img from movie_Base_Info,movie_Extra_Info where movie_Base_Info.num = ? and movie_Extra_Info.num = ?"
-	err := dB.QueryRow(sqlStr, movieNum, movieNum).Scan(&movie.Name, &movie.OtherName, &movie.Score, &movie.Area,
+
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err, movie
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(sqlStr, movieNum, movieNum).Scan(&movie.Name, &movie.OtherName, &movie.Score, &movie.Area,
 		&movie.Year, &movie.Types, &movie.Starring, &movie.Director, &movie.CommentNum, &movie.Introduce,
 		&movie.Time, &movie.CommentNum, &movie.Seen, &movie.WantSee, &movie.Img)
 	Num := strconv.Itoa(movieNum)
 	movie.Num = movieNum
-	movie.Url = "http://101.201.234.29:8080/movieInfo/" + Num
+	movie.Url = "http://49.235.99.195:8080/movieInfo/" + Num
 	if err != nil {
 		return err, movie
 	}

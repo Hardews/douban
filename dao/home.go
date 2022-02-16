@@ -4,8 +4,13 @@ func Find(keyWord string) (error, []int) {
 	var movies []int
 	sqlStr := "select Num from movie_Base_Info where ChineseName like ? or otherName like ? or types like ? "
 	keyWord = "%" + keyWord + "%"
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err, movies
+	}
+	defer stmt.Close()
 
-	rows, err := dB.Query(sqlStr, keyWord, keyWord, keyWord)
+	rows, err := stmt.Query(sqlStr, keyWord, keyWord, keyWord)
 	if err != nil {
 		return err, movies
 	}

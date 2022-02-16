@@ -8,7 +8,13 @@ import (
 func GetWantSee(username string) (error, []modle.UserHistory) {
 	var wantSees []modle.UserHistory
 	sqlStr := "select comment,num,label from user_Want_See where username = ?"
-	rows, err := dB.Query(sqlStr, username)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err, wantSees
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(sqlStr, username)
 	if err != nil {
 		return err, wantSees
 	}
@@ -21,7 +27,7 @@ func GetWantSee(username string) (error, []modle.UserHistory) {
 			return err, wantSees
 		}
 		movieNum := strconv.Itoa(wantSee.MovieNum)
-		wantSee.Url = "http://101.201.234.29:8080/movieInfo/" + movieNum
+		wantSee.Url = "http://49.235.99.195:8080/movieInfo/" + movieNum
 		wantSees = append(wantSees, wantSee)
 	}
 	return err, wantSees
@@ -30,7 +36,13 @@ func GetWantSee(username string) (error, []modle.UserHistory) {
 func GetSeen(username string) (error, []modle.UserHistory) {
 	var Seens []modle.UserHistory
 	sqlStr := "select comment,num,label from user_Seen where username = ?"
-	rows, err := dB.Query(sqlStr, username)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err, Seens
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(sqlStr, username)
 	if err != nil {
 		return err, Seens
 	}
@@ -43,7 +55,7 @@ func GetSeen(username string) (error, []modle.UserHistory) {
 			return err, Seens
 		}
 		movieNum := strconv.Itoa(Seen.MovieNum)
-		Seen.Url = "http://101.201.234.29:8080/movieInfo/" + movieNum
+		Seen.Url = "http://49.235.99.195:8080/movieInfo/" + movieNum
 		Seens = append(Seens, Seen)
 	}
 	return err, Seens
@@ -51,21 +63,35 @@ func GetSeen(username string) (error, []modle.UserHistory) {
 
 func UserSeen(username, comment, label string, movieNum int) error {
 	sqlStr := "insert user_Seen (username,comment,num,label) values (?,?,?,?)"
-	_, err := dB.Exec(sqlStr, username, comment, movieNum, label)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(sqlStr, username, comment, movieNum, label)
 	if err != nil {
 		return err
 	}
 
 	sqlStr = "select Seen from movie_Base_Info where num = ?"
+	stmt, err = dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
 	var num int
-	err = dB.QueryRow(sqlStr, movieNum).Scan(&num)
+	err = stmt.QueryRow(sqlStr, movieNum).Scan(&num)
 	if err != nil {
 		return err
 	}
 
 	num += 1
 	sqlStr = "update movie_Base_Info set Seen = ? where num = ?"
-	_, err = dB.Exec(sqlStr, num, movieNum)
+	stmt, err = dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(sqlStr, num, movieNum)
 	if err != nil {
 		return err
 	}
@@ -74,21 +100,34 @@ func UserSeen(username, comment, label string, movieNum int) error {
 
 func UserWantSee(username, comment, label string, movieNum int) error {
 	sqlStr := "insert user_Want_See (username,comment,num,label) values (?,?,?,?)"
-	_, err := dB.Exec(sqlStr, username, comment, movieNum, label)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(sqlStr, username, comment, movieNum, label)
 	if err != nil {
 		return err
 	}
 
 	sqlStr = "select wantSee from movie_Base_Info where num = ?"
+	stmt, err = dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
 	var num int
-	err = dB.QueryRow(sqlStr, movieNum).Scan(&num)
+	err = stmt.QueryRow(sqlStr, movieNum).Scan(&num)
 	if err != nil {
 		return err
 	}
 
 	num += 1
 	sqlStr = "update movie_Base_Info set wantSee = ? where num = ?"
-	_, err = dB.Exec(sqlStr, num, movieNum)
+	stmt, err = dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(sqlStr, num, movieNum)
 	if err != nil {
 		return err
 	}
@@ -98,7 +137,12 @@ func UserWantSee(username, comment, label string, movieNum int) error {
 func GetUserComment(username string) (error, []modle.UserComment, []modle.UserComment) {
 	var shortComments, longComments []modle.UserComment
 	sqlStr := "select movieNum,FilmCritics,time from short_Comment where username = ?"
-	rows, err := dB.Query(sqlStr, username)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err, shortComments, longComments
+	}
+	defer stmt.Close()
+	rows, err := stmt.Query(sqlStr, username)
 	if err != nil {
 		return err, shortComments, longComments
 	}
@@ -110,12 +154,16 @@ func GetUserComment(username string) (error, []modle.UserComment, []modle.UserCo
 			return err, shortComments, longComments
 		}
 		movieNum := strconv.Itoa(shortComment.MovieNum)
-		shortComment.Url = "http://101.201.234.29:8080/movieInfo/" + movieNum
+		shortComment.Url = "http://49.235.99.195:8080/movieInfo/" + movieNum
 		shortComments = append(shortComments, shortComment)
 	}
 
 	sqlStr = "select movieNum,Essay,time from long_Comment where username = ?"
-	rows, err = dB.Query(sqlStr, username)
+	stmt, err = dB.Prepare(sqlStr)
+	if err != nil {
+		return err, shortComments, longComments
+	}
+	rows, err = stmt.Query(sqlStr, username)
 	if err != nil {
 		return err, shortComments, longComments
 	}
@@ -128,7 +176,7 @@ func GetUserComment(username string) (error, []modle.UserComment, []modle.UserCo
 			return err, shortComments, longComments
 		}
 		movieNum := strconv.Itoa(longComment.MovieNum)
-		longComment.Url = "http://101.201.234.29:8080/movieInfo/" + movieNum
+		longComment.Url = "http://49.235.99.195:8080/movieInfo/" + movieNum
 		longComments = append(longComments, longComment)
 	}
 	return err, shortComments, longComments
@@ -136,7 +184,12 @@ func GetUserComment(username string) (error, []modle.UserComment, []modle.UserCo
 
 func SetIntroduce(username, introduce string) error {
 	sqlStr := "update user_Menu set introduce = ? where username = ?"
-	_, err := dB.Exec(sqlStr, introduce, username)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(sqlStr, introduce, username)
 	if err != nil {
 		return err
 	}
@@ -146,13 +199,22 @@ func SetIntroduce(username, introduce string) error {
 func UserMenuInfo(username string) (error, modle.User) {
 	var user modle.User
 	sqlStr := "select username,introduce from user_Menu where username = ?"
-	err := dB.QueryRow(sqlStr, username).Scan(&username, &user.Introduce)
+	stmt, err := dB.Prepare(sqlStr)
+	if err != nil {
+		return err, user
+	}
+	defer stmt.Close()
+	err = stmt.QueryRow(sqlStr, username).Scan(&username, &user.Introduce)
 	if err != nil {
 		return err, user
 	}
 
 	sqlStr = "select nickName from user_Base_Data where username = ?"
-	err = dB.QueryRow(sqlStr, username).Scan(&user.NickName)
+	stmt, err = dB.Prepare(sqlStr)
+	if err != nil {
+		return err, user
+	}
+	err = stmt.QueryRow(sqlStr, username).Scan(&user.NickName)
 	if err != nil {
 		return err, user
 	}
