@@ -15,7 +15,7 @@ func UpdateShortComment(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
 
-	txt := c.PostForm("comment")
+	txt, _ := c.GetPostForm("comment")
 
 	num := c.Param("movieNum")
 	movieNum, err := strconv.Atoi(num)
@@ -49,7 +49,7 @@ func UpdateLongComment(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
 
-	txt := c.PostForm("comment")
+	txt, _ := c.GetPostForm("comment")
 
 	num := c.Param("movieNum")
 	movieNum, err := strconv.Atoi(num)
@@ -129,7 +129,7 @@ func deleteShortComment(c *gin.Context) {
 func deleteUserSeen(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
-	label := c.PostForm("label") //用户存储标签
+	label, _ := c.GetPostForm("label") //用户存储标签
 	Num := c.Param("movieNum")
 
 	movieNum, _ := strconv.Atoi(Num)
@@ -144,7 +144,7 @@ func deleteUserSeen(c *gin.Context) {
 func deleteUserWantSee(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
-	label := c.PostForm("label") //用户存储标签
+	label, _ := c.GetPostForm("label") //用户存储标签
 	Num := c.Param("movieNum")
 
 	movieNum, _ := strconv.Atoi(Num)
@@ -159,8 +159,8 @@ func deleteUserWantSee(c *gin.Context) {
 func userWantSee(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
-	comment := c.PostForm("comment") //简短评论，为甚想看
-	label := c.PostForm("label")     //用户输入存储标签
+	comment, _ := c.GetPostForm("comment") //简短评论，为甚想看
+	label, _ := c.GetPostForm("label")     //用户输入存储标签
 	Num := c.Param("movieNum")
 
 	movieNum, _ := strconv.Atoi(Num)
@@ -177,8 +177,8 @@ func userWantSee(c *gin.Context) {
 func userSeen(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
-	comment := c.PostForm("comment") //简短评论，看过之后的感想（非影评短评
-	label := c.PostForm("label")     //用户输入存储标签
+	comment, _ := c.GetPostForm("comment") //简短评论，看过之后的感想（非影评短评
+	label, _ := c.GetPostForm("label")     //用户输入存储标签
 	Num := c.Param("movieNum")
 
 	movieNum, _ := strconv.Atoi(Num)
@@ -218,7 +218,7 @@ func ShortComment(c *gin.Context) {
 	num := c.Param("movieNum")
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
-	commentTxt := c.PostForm("ShortComment")
+	commentTxt, _ := c.GetPostForm("ShortComment")
 
 	movieNum, err := strconv.Atoi(num)
 	if err != nil {
@@ -277,8 +277,8 @@ func LongComment(c *gin.Context) {
 	num := c.Param("movieNum")
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
-	commentTxt := c.PostForm("LongComment")
-	commentTopic := c.PostForm("topic")
+	commentTxt, _ := c.GetPostForm("LongComment")
+	commentTopic, _ := c.GetPostForm("topic")
 
 	flag := service.CheckSensitiveWords(commentTxt)
 	if !flag {

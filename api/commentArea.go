@@ -14,7 +14,7 @@ func UpdateArea(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	Username := iUsername.(string)
 
-	txt := c.PostForm("topic")
+	txt, _ := c.GetPostForm("topic")
 
 	if txt == "" {
 		tool.RespErrorWithDate(c, "话题为空")
@@ -94,7 +94,7 @@ func doNotLikeComment(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	Username := iUsername.(string)
 	num2 := c.Param("areaNum")
-	num3 := c.PostForm("commentNum")
+	num3, _ := c.GetPostForm("commentNum")
 
 	areaNum, err := strconv.Atoi(num2)
 	commentNum, err := strconv.Atoi(num3)
@@ -293,7 +293,7 @@ func GiveComment(c *gin.Context) {
 		tool.RespInternetError(c)
 		return
 	}
-	comment.Comment = c.PostForm("comment")
+	comment.Comment, _ = c.GetPostForm("comment")
 
 	res := service.CheckSensitiveWords(comment.Comment)
 	if !res {
@@ -320,7 +320,7 @@ func GiveCommentLike(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	Username := iUsername.(string)
 
-	name := c.PostForm("username")
+	name, _ := c.GetPostForm("username")
 	Num1 := c.Param("movieNum")
 	Num2 := c.Param("areaNum")
 	MovieNum, err := strconv.Atoi(Num1)
@@ -348,7 +348,7 @@ func SetCommentArea(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
 	Num := c.Param("movieNum")
-	topic := c.PostForm("topic")
+	topic, _ := c.GetPostForm("topic")
 
 	if topic == "" {
 		tool.RespErrorWithDate(c, "话题为空")

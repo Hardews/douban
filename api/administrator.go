@@ -10,16 +10,16 @@ import (
 
 func NewMovie(c *gin.Context) {
 	var movie modle.MovieInfo
-	movie.Name = c.PostForm("movieName")
-	movie.OtherName = c.PostForm("otherName")
-	movie.Score = c.PostForm("score")
-	movie.Starring = c.PostForm("Starring")
-	movie.Area = c.PostForm("Area")
-	movie.Time = c.PostForm("Time")
-	movie.Director = c.PostForm("Director")
-	movie.Types = c.PostForm("Types")
-	movie.Introduce = c.PostForm("Introduce")
-	year := c.PostForm("Year")
+	movie.Name, _ = c.GetPostForm("movieName")
+	movie.OtherName, _ = c.GetPostForm("otherName")
+	movie.Score, _ = c.GetPostForm("score")
+	movie.Starring, _ = c.GetPostForm("Starring")
+	movie.Area, _ = c.GetPostForm("Area")
+	movie.Time, _ = c.GetPostForm("Time")
+	movie.Director, _ = c.GetPostForm("Director")
+	movie.Types, _ = c.GetPostForm("Types")
+	movie.Introduce, _ = c.GetPostForm("Introduce")
+	year, _ := c.GetPostForm("Year")
 	movie.Year, _ = strconv.Atoi(year)
 
 	err, movieNum := service.NewMovie(movie)

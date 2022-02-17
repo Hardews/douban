@@ -16,9 +16,9 @@ func SetQuestion(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	user.Username = iUsername.(string)
 
-	user.Password = c.PostForm("password")
-	question := c.PostForm("question")
-	answer := c.PostForm("answer")
+	user.Password, _ = c.GetPostForm("password")
+	question, _ := c.GetPostForm("question")
+	answer, _ := c.GetPostForm("answer")
 
 	if user.Password == "" {
 		tool.RespErrorWithDate(c, "密码为空")
@@ -57,7 +57,7 @@ func SetQuestion(c *gin.Context) {
 }
 
 func Retrieve(c *gin.Context) {
-	username := c.PostForm("username")
+	username, _ := c.GetPostForm("username")
 
 	if username == "" {
 		tool.RespErrorWithDate(c, "用户名为空")
@@ -92,7 +92,7 @@ func Retrieve(c *gin.Context) {
 	}
 	var user modle.User
 	user.Username = username
-	user.Password = c.PostForm("newPassword")
+	user.Password, _ = c.GetPostForm("newPassword")
 	if user.Password == "" {
 		tool.RespErrorWithDate(c, "新密码为空")
 		return
@@ -112,8 +112,8 @@ func ChangePassword(ctx *gin.Context) {
 	iUsername, _ := ctx.Get("username")
 	user.Username = iUsername.(string)
 	fmt.Println(user.Username)
-	user.Password = ctx.PostForm("oldPassword")
-	newPassword := ctx.PostForm("newPassword")
+	user.Password, _ = ctx.GetPostForm("oldPassword")
+	newPassword, _ := ctx.GetPostForm("newPassword")
 
 	if user.Password == "" {
 		tool.RespErrorWithDate(ctx, "旧密码为空")
@@ -161,8 +161,8 @@ func ChangePassword(ctx *gin.Context) {
 func Login(ctx *gin.Context) {
 	var user modle.User
 	var identity = "用户"
-	user.Username = ctx.PostForm("logName")
-	user.Password = ctx.PostForm("password")
+	user.Username, _ = ctx.GetPostForm("logName")
+	user.Password, _ = ctx.GetPostForm("password")
 
 	if user.Username == "" {
 		tool.RespErrorWithDate(ctx, "输入的账号为空")
@@ -206,9 +206,9 @@ func Login(ctx *gin.Context) {
 
 func Register(ctx *gin.Context) {
 	var user modle.User
-	user.Username = ctx.PostForm("signName")
-	user.Password = ctx.PostForm("signPassword")
-	user.NickName = ctx.PostForm("nickname")
+	user.Username, _ = ctx.GetPostForm("signName")
+	user.Password, _ = ctx.GetPostForm("signPassword")
+	user.NickName, _ = ctx.GetPostForm("nickname")
 
 	if user.Username == "" {
 		tool.RespErrorWithDate(ctx, "用户名为空")

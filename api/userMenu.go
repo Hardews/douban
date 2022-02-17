@@ -53,7 +53,7 @@ func GetUserComment(c *gin.Context) {
 func SetIntroduce(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
-	introduce := c.PostForm("introduce")
+	introduce, _ := c.GetPostForm("introduce")
 
 	flag := service.CheckSensitiveWords(introduce)
 	if !flag {
