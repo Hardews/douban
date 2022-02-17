@@ -206,6 +206,11 @@ func Login(ctx *gin.Context) {
 
 func Register(ctx *gin.Context) {
 	var user modle.User
+	err := ctx.ShouldBind(&user)
+	if err != nil {
+		tool.RespErrorWithDate(ctx, "服务器错误")
+		return
+	}
 	user.Username, _ = ctx.GetPostForm("signName")
 	user.Password, _ = ctx.GetPostForm("signPassword")
 	user.NickName, _ = ctx.GetPostForm("nickname")
