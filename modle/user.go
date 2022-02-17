@@ -12,4 +12,5 @@ type UserHistory struct {
 	Comment  string
 	Label    string
 	Url      string
+	Img      string
 }

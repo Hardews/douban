@@ -14,11 +14,17 @@ func GetWantSee(username string) (error, []modle.UserHistory) {
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query(sqlStr, username)
+	rows, err := stmt.Query(username)
 	if err != nil {
 		return err, wantSees
 	}
 	defer rows.Close()
+
+	sqlStr = "select img from movie_Base_Info where num = ?"
+	stmt, err = dB.Prepare(sqlStr)
+	if err != nil {
+		return err, wantSees
+	}
 
 	for rows.Next() {
 		var wantSee modle.UserHistory
@@ -26,6 +32,12 @@ func GetWantSee(username string) (error, []modle.UserHistory) {
 		if err != nil {
 			return err, wantSees
 		}
+
+		err = stmt.QueryRow(wantSee.MovieNum).Scan(&wantSee.Img)
+		if err != nil {
+			return err, wantSees
+		}
+
 		movieNum := strconv.Itoa(wantSee.MovieNum)
 		wantSee.Url = "http://49.235.99.195:8080/movieInfo/" + movieNum
 		wantSees = append(wantSees, wantSee)
@@ -42,11 +54,17 @@ func GetSeen(username string) (error, []modle.UserHistory) {
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query(sqlStr, username)
+	rows, err := stmt.Query(username)
 	if err != nil {
 		return err, Seens
 	}
 	defer rows.Close()
+
+	sqlStr = "select img from movie_Base_Info where num = ?"
+	stmt, err = dB.Prepare(sqlStr)
+	if err != nil {
+		return err, Seens
+	}
 
 	for rows.Next() {
 		var Seen modle.UserHistory
@@ -54,6 +72,8 @@ func GetSeen(username string) (error, []modle.UserHistory) {
 		if err != nil {
 			return err, Seens
 		}
+		err = stmt.QueryRow(Seen.MovieNum).Scan(&Seen.Img)
+
 		movieNum := strconv.Itoa(Seen.MovieNum)
 		Seen.Url = "http://49.235.99.195:8080/movieInfo/" + movieNum
 		Seens = append(Seens, Seen)
@@ -69,7 +89,7 @@ func UserSeen(username, comment, label string, movieNum int) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, username, comment, movieNum, label)
+	_, err = stmt.Exec(username, comment, movieNum, label)
 	if err != nil {
 		return err
 	}
@@ -80,7 +100,7 @@ func UserSeen(username, comment, label string, movieNum int) error {
 		return err
 	}
 	var num int
-	err = stmt.QueryRow(sqlStr, movieNum).Scan(&num)
+	err = stmt.QueryRow(movieNum).Scan(&num)
 	if err != nil {
 		return err
 	}
@@ -91,7 +111,7 @@ func UserSeen(username, comment, label string, movieNum int) error {
 	if err != nil {
 		return err
 	}
-	_, err = stmt.Exec(sqlStr, num, movieNum)
+	_, err = stmt.Exec(num, movieNum)
 	if err != nil {
 		return err
 	}
@@ -105,7 +125,7 @@ func UserWantSee(username, comment, label string, movieNum int) error {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(sqlStr, username, comment, movieNum, label)
+	_, err = stmt.Exec(username, comment, movieNum, label)
 	if err != nil {
 		return err
 	}
@@ -116,7 +136,7 @@ func UserWantSee(username, comment, label string, movieNum int) error {
 		return err
 	}
 	var num int
-	err = stmt.QueryRow(sqlStr, movieNum).Scan(&num)
+	err = stmt.QueryRow(movieNum).Scan(&num)
 	if err != nil {
 		return err
 	}
@@ -127,7 +147,7 @@ func UserWantSee(username, comment, label string, movieNum int) error {
 	if err != nil {
 		return err
 	}
-	_, err = stmt.Exec(sqlStr, num, movieNum)
+	_, err = stmt.Exec(num, movieNum)
 	if err != nil {
 		return err
 	}
@@ -142,7 +162,7 @@ func GetUserComment(username string) (error, []modle.UserComment, []modle.UserCo
 		return err, shortComments, longComments
 	}
 	defer stmt.Close()
-	rows, err := stmt.Query(sqlStr, username)
+	rows, err := stmt.Query(username)
 	if err != nil {
 		return err, shortComments, longComments
 	}
@@ -163,7 +183,7 @@ func GetUserComment(username string) (error, []modle.UserComment, []modle.UserCo
 	if err != nil {
 		return err, shortComments, longComments
 	}
-	rows, err = stmt.Query(sqlStr, username)
+	rows, err = stmt.Query(username)
 	if err != nil {
 		return err, shortComments, longComments
 	}
@@ -189,7 +209,7 @@ func SetIntroduce(username, introduce string) error {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(sqlStr, introduce, username)
+	_, err = stmt.Exec(introduce, username)
 	if err != nil {
 		return err
 	}
@@ -204,7 +224,7 @@ func UserMenuInfo(username string) (error, modle.User) {
 		return err, user
 	}
 	defer stmt.Close()
-	err = stmt.QueryRow(sqlStr, username).Scan(&username, &user.Introduce)
+	err = stmt.QueryRow(username).Scan(&username, &user.Introduce)
 	if err != nil {
 		return err, user
 	}
@@ -214,7 +234,7 @@ func UserMenuInfo(username string) (error, modle.User) {
 	if err != nil {
 		return err, user
 	}
-	err = stmt.QueryRow(sqlStr, username).Scan(&user.NickName)
+	err = stmt.QueryRow(username).Scan(&user.NickName)
 	if err != nil {
 		return err, user
 	}
