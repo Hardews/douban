@@ -93,5 +93,5 @@ func InitEngine() {
 		administrator.POST("/setNewMovie", NewMovie)
 	}
 
-	engine.Run()
+	engine.Run(":8090")
 }
