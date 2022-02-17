@@ -15,7 +15,7 @@ func DeleteShortComment(username string, movieNum int) error {
 	}
 	defer stmt.Close()
 
-	err = stmt.QueryRow(sqlStr, username, movieNum).Scan(&iUsername)
+	err = stmt.QueryRow(username, movieNum).Scan(&iUsername)
 	if err != nil {
 		return err
 	}
@@ -27,7 +27,7 @@ func DeleteShortComment(username string, movieNum int) error {
 		return err
 	}
 
-	_, err = stmt.Exec(sqlStr, username, iUsername, movieNum)
+	_, err = stmt.Exec(username, iUsername, movieNum)
 	if err != nil {
 		return err
 	}
@@ -43,7 +43,7 @@ func DeleteLongComment(username string, movieNum int) error {
 	}
 	defer stmt.Close()
 
-	err = stmt.QueryRow(sqlStr, username, movieNum).Scan(&iUsername)
+	err = stmt.QueryRow(username, movieNum).Scan(&iUsername)
 	if err != nil {
 		return err
 	}
@@ -55,7 +55,7 @@ func DeleteLongComment(username string, movieNum int) error {
 		return err
 	}
 
-	_, err = stmt.Exec(sqlStr, username, iUsername, movieNum)
+	_, err = stmt.Exec(username, iUsername, movieNum)
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func DeleteLongComment(username string, movieNum int) error {
 	}
 
 	var num int
-	err = stmt.QueryRow(sqlStr, movieNum).Scan(&num)
+	err = stmt.QueryRow(movieNum).Scan(&num)
 	if err != nil {
 		return err
 	}
@@ -79,7 +79,7 @@ func DeleteLongComment(username string, movieNum int) error {
 		return err
 	}
 
-	_, err = stmt.Exec(sqlStr, num, movieNum)
+	_, err = stmt.Exec(num, movieNum)
 	if err != nil {
 		return err
 	}
@@ -95,7 +95,7 @@ func DeleteSeen(movieNum int, label, username string) error {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(sqlStr, username, movieNum, label)
+	_, err = stmt.Exec(username, movieNum, label)
 	if err != nil {
 		return err
 	}
@@ -107,7 +107,7 @@ func DeleteSeen(movieNum int, label, username string) error {
 	}
 
 	var num int
-	err = stmt.QueryRow(sqlStr, movieNum).Scan(&num)
+	err = stmt.QueryRow(movieNum).Scan(&num)
 	if err != nil {
 		return err
 	}
@@ -119,7 +119,7 @@ func DeleteSeen(movieNum int, label, username string) error {
 		return err
 	}
 
-	_, err = stmt.Exec(sqlStr, num, movieNum)
+	_, err = stmt.Exec(num, movieNum)
 	if err != nil {
 		return err
 	}
@@ -135,7 +135,7 @@ func DeleteWantSee(movieNum int, label, username string) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, username, movieNum, label)
+	_, err = stmt.Exec(username, movieNum, label)
 	if err != nil {
 		return err
 	}
@@ -147,7 +147,7 @@ func DeleteWantSee(movieNum int, label, username string) error {
 	}
 
 	var num int
-	err = stmt.QueryRow(sqlStr, movieNum).Scan(&num)
+	err = stmt.QueryRow(movieNum).Scan(&num)
 	if err != nil {
 		return err
 	}
@@ -159,7 +159,7 @@ func DeleteWantSee(movieNum int, label, username string) error {
 		return err
 	}
 
-	_, err = stmt.Exec(sqlStr, num, movieNum)
+	_, err = stmt.Exec(num, movieNum)
 	if err != nil {
 		return err
 	}
@@ -175,7 +175,7 @@ func GetComment(num int) (error, []modle.UserComment) {
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query(sqlStr, num)
+	rows, err := stmt.Query(num)
 	if err != nil {
 		return err, comments
 	}
@@ -203,7 +203,7 @@ func GetMovieComment(num int) (error, []modle.UserComment) {
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query(sqlStr, num)
+	rows, err := stmt.Query(num)
 	if err != nil {
 		return err, comments
 	}
@@ -231,7 +231,7 @@ func UpdateShortComment(username, txt string, movieNum int) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, txt, username, movieNum)
+	_, err = stmt.Exec(txt, username, movieNum)
 	if err != nil {
 		return err
 	}
@@ -247,7 +247,7 @@ func SelectShortComment(username string, movieNum int) (error, bool) {
 	}
 	defer stmt.Close()
 
-	err = stmt.QueryRow(sqlStr, username, movieNum).Scan(&iTxt)
+	err = stmt.QueryRow(username, movieNum).Scan(&iTxt)
 	switch {
 	case err == nil:
 		return err, false
@@ -266,7 +266,7 @@ func Comment(Txt, username string, movieNum int) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, movieNum, username, Txt)
+	_, err = stmt.Exec(movieNum, username, Txt)
 	if err != nil {
 		return err
 	}
@@ -281,7 +281,7 @@ func UpdateLongComment(username, txt string, movieNum int) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, txt, username, movieNum)
+	_, err = stmt.Exec(txt, username, movieNum)
 	if err != nil {
 		return err
 	}
@@ -297,7 +297,7 @@ func SelectLongComment(username string, movieNum int) (error, bool) {
 	}
 	defer stmt.Close()
 
-	err = stmt.QueryRow(sqlStr, username, movieNum).Scan(&iTxt)
+	err = stmt.QueryRow(username, movieNum).Scan(&iTxt)
 	switch {
 	case err == nil:
 		return err, false
@@ -316,7 +316,7 @@ func CommentMovie(Txt, username, commentTopic string, movieNum int) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, movieNum, username, Txt, commentTopic)
+	_, err = stmt.Exec(movieNum, username, Txt, commentTopic)
 	if err != nil {
 		return err
 	}
@@ -333,7 +333,7 @@ func FindWithCategory(category string) (error, []modle.MovieInfo) {
 	defer stmt.Close()
 
 	category = "%" + category + "%"
-	rows, err := stmt.Query(sqlStr, category)
+	rows, err := stmt.Query(category)
 	if err != nil {
 		return err, movies
 	}
@@ -363,7 +363,7 @@ func GetAMovieInfo(movieNum int) (error, modle.MovieInfo) {
 	}
 	defer stmt.Close()
 
-	err = stmt.QueryRow(sqlStr, movieNum, movieNum).Scan(&movie.Name, &movie.OtherName, &movie.Score, &movie.Area,
+	err = stmt.QueryRow(movieNum, movieNum).Scan(&movie.Name, &movie.OtherName, &movie.Score, &movie.Area,
 		&movie.Year, &movie.Types, &movie.Starring, &movie.Director, &movie.CommentNum, &movie.Introduce,
 		&movie.Time, &movie.CommentNum, &movie.Seen, &movie.WantSee, &movie.Img)
 	Num := strconv.Itoa(movieNum)

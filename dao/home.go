@@ -10,7 +10,7 @@ func Find(keyWord string) (error, []int) {
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query(sqlStr, keyWord, keyWord, keyWord)
+	rows, err := stmt.Query(keyWord, keyWord, keyWord)
 	if err != nil {
 		return err, movies
 	}

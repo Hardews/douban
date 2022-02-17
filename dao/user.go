@@ -22,7 +22,7 @@ func SetQuestion(username, question, answer string) (error, bool) {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, username, question, answer)
+	_, err = stmt.Exec(username, question, answer)
 	if err != nil {
 		return err, false
 	}
@@ -37,7 +37,7 @@ func CheckAnswer(username string) (error, string) {
 		return err, ""
 	}
 	defer stmt.Close()
-	err = stmt.QueryRow(sqlStr, username).Scan(&answer)
+	err = stmt.QueryRow(username).Scan(&answer)
 	if err != nil {
 		return err, answer
 	}
@@ -53,7 +53,7 @@ func SelectQuestion(username string) (string, error) {
 	}
 	defer stmt.Close()
 
-	err = stmt.QueryRow(sqlStr, username).Scan(&question)
+	err = stmt.QueryRow(username).Scan(&question)
 	if err != nil {
 		return question, err
 	}
@@ -68,7 +68,7 @@ func ChangePassword(user modle.User) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, user.Password, user.Username)
+	_, err = stmt.Exec(user.Password, user.Username)
 	if err != nil {
 		return err
 	}
@@ -84,7 +84,7 @@ func CheckPassword(user modle.User) (error, modle.User) {
 	}
 	defer stmt.Close()
 
-	err = stmt.QueryRow(sqlStr, user.Username).Scan(&check.Username, &check.Password)
+	err = stmt.QueryRow(user.Username).Scan(&check.Username, &check.Password)
 	if err != nil {
 		return err, check
 	}
@@ -100,7 +100,7 @@ func CheckUsername(user modle.User) error {
 	}
 	defer stmt.Close()
 
-	err = stmt.QueryRow(sqlStr, user.Username).Scan(&username)
+	err = stmt.QueryRow(user.Username).Scan(&username)
 	if err != nil {
 		return err
 	}
@@ -115,7 +115,7 @@ func WriteIn(user modle.User) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, user.Username, user.Password, user.NickName)
+	_, err = stmt.Exec(user.Username, user.Password, user.NickName)
 	if err != nil {
 		return err
 	}
@@ -126,7 +126,7 @@ func WriteIn(user modle.User) error {
 		return err
 	}
 
-	_, err = stmt.Exec(sqlStr, user.Username)
+	_, err = stmt.Exec(user.Username)
 	if err != nil {
 		return err
 	}

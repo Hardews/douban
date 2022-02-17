@@ -12,7 +12,7 @@ func NewMovie(movie modle.MovieInfo) (error, int) {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, movie.Name, movie.OtherName, movie.Score, movie.Area, movie.Year, movie.Starring, movie.Director, movie.Types)
+	_, err = stmt.Exec(movie.Name, movie.OtherName, movie.Score, movie.Area, movie.Year, movie.Starring, movie.Director, movie.Types)
 	if err != nil {
 		return err, 0
 	}
@@ -24,7 +24,7 @@ func NewMovie(movie modle.MovieInfo) (error, int) {
 		return err, 0
 	}
 
-	err = stmt.QueryRow(sqlStr).Scan(&movieNum)
+	err = stmt.QueryRow().Scan(&movieNum)
 	if err != nil {
 		return err, 0
 	}
@@ -35,7 +35,7 @@ func NewMovie(movie modle.MovieInfo) (error, int) {
 		return err, 0
 	}
 
-	_, err = stmt.Exec(sqlStr, movieNum, movie.Name, movie.Introduce, movie.Time)
+	_, err = stmt.Exec(movieNum, movie.Name, movie.Introduce, movie.Time)
 	if err != nil {
 		return err, 0
 	}

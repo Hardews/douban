@@ -14,7 +14,7 @@ func SelectArea(username string, movieNum int) (error, bool, int) {
 	}
 	defer stmt.Close()
 
-	err = stmt.QueryRow(sqlStr, username, movieNum).Scan(&num)
+	err = stmt.QueryRow(username, movieNum).Scan(&num)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			err = nil
@@ -34,7 +34,7 @@ func SelectComment(username string, movieNum, areaNum int) (error, bool, int) {
 	}
 	defer stmt.Close()
 
-	err = stmt.QueryRow(sqlStr, username, movieNum, areaNum).Scan(&num)
+	err = stmt.QueryRow(username, movieNum, areaNum).Scan(&num)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return err, true, 0
@@ -52,7 +52,7 @@ func UpdateComment(username, txt string, movieNum, areaNum int) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, txt, movieNum, username, areaNum)
+	_, err = stmt.Exec(txt, movieNum, username, areaNum)
 	if err != nil {
 		return err
 	}
@@ -66,7 +66,7 @@ func UpdateCommentArea(username, txt string, movieNum int) error {
 		return err
 	}
 
-	_, err = stmt.Exec(sqlStr, txt, movieNum, username)
+	_, err = stmt.Exec(txt, movieNum, username)
 	if err != nil {
 		return err
 	}
@@ -87,7 +87,7 @@ func UpdateCommentArea(username, txt string, movieNum int) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, areaNum, movieNum)
+	_, err = stmt.Exec(areaNum, movieNum)
 	if err != nil {
 		return err
 	}
@@ -102,7 +102,7 @@ func DoNotLikeTopic(username string, areaNum int) error {
 		return err
 	}
 
-	err = stmt.QueryRow(sqlStr, areaNum).Scan(&likeNum)
+	err = stmt.QueryRow(areaNum).Scan(&likeNum)
 	if err != nil {
 		return err
 	}
@@ -114,7 +114,7 @@ func DoNotLikeTopic(username string, areaNum int) error {
 		return err
 	}
 
-	err = stmt.QueryRow(sqlStr, username, areaNum).Scan(&iUsername)
+	err = stmt.QueryRow(username, areaNum).Scan(&iUsername)
 	if err != nil {
 		return err
 	}
@@ -125,7 +125,7 @@ func DoNotLikeTopic(username string, areaNum int) error {
 		return err
 	}
 
-	_, err = stmt.Exec(sqlStr, username, areaNum)
+	_, err = stmt.Exec(username, areaNum)
 	if err != nil {
 		return err
 	}
@@ -138,7 +138,7 @@ func DoNotLikeTopic(username string, areaNum int) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, likeNum, areaNum)
+	_, err = stmt.Exec(likeNum, areaNum)
 	return err
 }
 
@@ -150,7 +150,7 @@ func DoNotLikeComment(username string, areaNum, commentNum int) error {
 		return err
 	}
 
-	err = stmt.QueryRow(sqlStr, areaNum, commentNum).Scan(&likeNum)
+	err = stmt.QueryRow(areaNum, commentNum).Scan(&likeNum)
 	if err != nil {
 		return err
 	}
@@ -162,7 +162,7 @@ func DoNotLikeComment(username string, areaNum, commentNum int) error {
 		return err
 	}
 
-	err = stmt.QueryRow(sqlStr, username, areaNum, commentNum).Scan(&iUsername)
+	err = stmt.QueryRow(username, areaNum, commentNum).Scan(&iUsername)
 	if err != nil {
 		return err
 	}
@@ -173,7 +173,7 @@ func DoNotLikeComment(username string, areaNum, commentNum int) error {
 		return err
 	}
 
-	_, err = stmt.Exec(sqlStr, username, areaNum, commentNum)
+	_, err = stmt.Exec(username, areaNum, commentNum)
 	if err != nil {
 		return err
 	}
@@ -186,7 +186,7 @@ func DoNotLikeComment(username string, areaNum, commentNum int) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, likeNum, areaNum)
+	_, err = stmt.Exec(likeNum, areaNum)
 	return err
 }
 
@@ -198,7 +198,7 @@ func DeleteComment(username string, movieNum, areaNum int) error {
 		return err
 	}
 
-	err = stmt.QueryRow(sqlStr, movieNum, areaNum, username).Scan(&iMovieNum, &iAreaNum, &iCommentNum)
+	err = stmt.QueryRow(movieNum, areaNum, username).Scan(&iMovieNum, &iAreaNum, &iCommentNum)
 	if err != nil {
 		return err
 	}
@@ -211,7 +211,7 @@ func DeleteComment(username string, movieNum, areaNum int) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, iMovieNum, iAreaNum, iCommentNum, movieNum, areaNum, username)
+	_, err = stmt.Exec(iMovieNum, iAreaNum, iCommentNum, movieNum, areaNum, username)
 	if err != nil {
 		return err
 	}
@@ -226,7 +226,7 @@ func DeleteCommentArea(movieNum, areaNum int) error {
 		return err
 	}
 
-	err = stmt.QueryRow(sqlStr, movieNum, areaNum).Scan(&iAreaNum)
+	err = stmt.QueryRow(movieNum, areaNum).Scan(&iAreaNum)
 	if err != nil {
 		return err
 	}
@@ -239,7 +239,7 @@ func DeleteCommentArea(movieNum, areaNum int) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, iAreaNum, movieNum, areaNum)
+	_, err = stmt.Exec(iAreaNum, movieNum, areaNum)
 	if err != nil {
 		return err
 	}
@@ -253,7 +253,7 @@ func GiveCommentLike(username, name string, movieNum, areaNum int) (error, bool)
 	if err != nil {
 		return err, false
 	}
-	err = stmt.QueryRow(sqlStr, movieNum, areaNum, username).Scan(&iUsername)
+	err = stmt.QueryRow(movieNum, areaNum, username).Scan(&iUsername)
 	switch err {
 	case nil:
 		return err, false
@@ -269,7 +269,7 @@ func GiveCommentLike(username, name string, movieNum, areaNum int) (error, bool)
 		return err, false
 	}
 
-	_, err = stmt.Exec(sqlStr, username, movieNum, areaNum)
+	_, err = stmt.Exec(username, movieNum, areaNum)
 	if err != nil {
 		return err, false
 	}
@@ -281,7 +281,7 @@ func GiveCommentLike(username, name string, movieNum, areaNum int) (error, bool)
 		return err, false
 	}
 
-	err = stmt.QueryRow(sqlStr, movieNum, areaNum, name).Scan(&likeNum)
+	err = stmt.QueryRow(movieNum, areaNum, name).Scan(&likeNum)
 	if err != nil {
 		return err, false
 	}
@@ -294,7 +294,7 @@ func GiveCommentLike(username, name string, movieNum, areaNum int) (error, bool)
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, likeNum)
+	_, err = stmt.Exec(likeNum)
 	if err != nil {
 		return err, false
 	}
@@ -309,7 +309,7 @@ func GiveTopicLike(username string, movieNum, num int) (error, bool) {
 		return err, false
 	}
 
-	err = stmt.QueryRow(sqlStr, username, movieNum, num).Scan(&iUsername)
+	err = stmt.QueryRow(username, movieNum, num).Scan(&iUsername)
 	switch err {
 	case nil:
 		return err, false
@@ -325,7 +325,7 @@ func GiveTopicLike(username string, movieNum, num int) (error, bool) {
 		return err, false
 	}
 
-	_, err = stmt.Exec(sqlStr, username, movieNum, num)
+	_, err = stmt.Exec(username, movieNum, num)
 	if err != nil {
 		return err, false
 	}
@@ -337,7 +337,7 @@ func GiveTopicLike(username string, movieNum, num int) (error, bool) {
 		return err, false
 	}
 
-	err = stmt.QueryRow(sqlStr, movieNum, num).Scan(&likeNum)
+	err = stmt.QueryRow(movieNum, num).Scan(&likeNum)
 	if err != nil {
 		return err, false
 	}
@@ -350,7 +350,7 @@ func GiveTopicLike(username string, movieNum, num int) (error, bool) {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, likeNum, movieNum, num)
+	_, err = stmt.Exec(likeNum, movieNum, num)
 	if err != nil {
 		return err, false
 	}
@@ -364,7 +364,7 @@ func GiveComment(comment modle.CommentArea) error {
 		return err
 	}
 
-	_, err = stmt.Exec(sqlStr, comment.Num, comment.Username, comment.Comment, comment.MovieNum)
+	_, err = stmt.Exec(comment.Num, comment.Username, comment.Comment, comment.MovieNum)
 	if err != nil {
 		return err
 	}
@@ -376,7 +376,7 @@ func GiveComment(comment modle.CommentArea) error {
 		return err
 	}
 
-	err = stmt.QueryRow(sqlStr, comment.Num, comment.MovieNum).Scan(&commentNum)
+	err = stmt.QueryRow(comment.Num, comment.MovieNum).Scan(&commentNum)
 	if err != nil {
 		return err
 	}
@@ -389,7 +389,7 @@ func GiveComment(comment modle.CommentArea) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, commentNum, comment.Num, comment.MovieNum)
+	_, err = stmt.Exec(commentNum, comment.Num, comment.MovieNum)
 	if err != nil {
 		return err
 	}
@@ -405,7 +405,7 @@ func SetCommentArea(username, topic string, movieNum int) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sqlStr, username, topic, movieNum)
+	_, err = stmt.Exec(username, topic, movieNum)
 	if err != nil {
 		return err
 	}
@@ -421,7 +421,7 @@ func GetCommentByNum(movieNum, areaNum int) (error, []modle.CommentArea) {
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query(sqlStr, movieNum, areaNum)
+	rows, err := stmt.Query(movieNum, areaNum)
 	if err != nil {
 		return err, comments
 	}
@@ -448,7 +448,7 @@ func GetCommentArea(movieNum int) (error, []modle.CommentArea) {
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query(sqlStr1, movieNum)
+	rows, err := stmt.Query(movieNum)
 	if err != nil {
 		return err, commentTopics
 	}
