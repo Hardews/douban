@@ -7,9 +7,55 @@ import (
 	"douban/service"
 	"douban/tool"
 	"fmt"
+	"path"
+	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
+
+func uploadAvatar(c *gin.Context) {
+	iUsername, _ := c.Get("username")
+	username := iUsername.(string)
+
+	file, err := c.FormFile("avatar")
+	if err != nil {
+		fmt.Println("get file failed,err:", err)
+		tool.RespErrorWithDate(c, "上传失败")
+		return
+	}
+
+	if file.Size > 1024*1024*5 {
+		tool.RespErrorWithDate(c, "文件大小不合适")
+
+		return
+	}
+
+	fileSuffix := path.Ext(file.Filename)
+	if !(fileSuffix == ".jpg" || fileSuffix == ".png") {
+		tool.RespErrorWithDate(c, "文件格式错误")
+		return
+	}
+
+	//保存到本地
+	fileName := "./uploadFile/" + strconv.FormatInt(time.Now().Unix(), 10) + file.Filename
+	err = c.SaveUploadedFile(file, fileName)
+	if err != nil {
+		tool.RespInternetError(c)
+		fmt.Println("保存错误,err", err)
+		return
+	}
+
+	loadString := "http://49.235.99.195:8080/" + fileName[1:]
+
+	err = service.UploadAvatar(username, loadString)
+	if err != nil {
+		tool.RespErrorWithDate(c, "上传失败")
+		fmt.Println("upload avatar failed ,err :", err)
+		return
+	}
+	tool.RespSuccessful(c)
+}
 
 func SetQuestion(c *gin.Context) {
 	var user modle.User
@@ -208,7 +254,7 @@ func Register(ctx *gin.Context) {
 	var user modle.User
 	user.Username, _ = ctx.GetPostForm("signName")
 	user.Password, _ = ctx.GetPostForm("signPassword")
-	user.NickName, _ = ctx.GetPostForm("nickname")
+	user.NickName, _ = ctx.GetPostForm("nickName")
 
 	if user.Username == "" {
 		tool.RespErrorWithDate(ctx, "用户名为空")

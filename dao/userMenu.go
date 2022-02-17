@@ -229,12 +229,12 @@ func UserMenuInfo(username string) (error, modle.User) {
 		return err, user
 	}
 
-	sqlStr = "select nickName from user_Base_Data where username = ?"
+	sqlStr = "select nickName,avatar from user_Base_Data where username = ?"
 	stmt, err = dB.Prepare(sqlStr)
 	if err != nil {
 		return err, user
 	}
-	err = stmt.QueryRow(username).Scan(&user.NickName)
+	err = stmt.QueryRow(username).Scan(&user.NickName, &user.Img)
 	if err != nil {
 		return err, user
 	}

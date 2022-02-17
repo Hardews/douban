@@ -88,5 +88,6 @@ func GetUserInfo(c *gin.Context) {
 		"username":  username,
 		"nickName":  user.NickName,
 		"introduce": user.Introduce,
+		"img":       user.Img,
 	})
 }

@@ -81,10 +81,28 @@ API
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`修改成功`|修改成功|
 
+## `POST` `api/user/uploadAvatar`
+### `multipart/form-data`
+#### `用户上传头像`
+| 请求参数     | 类型 | 备注   |
+| -------- | ---- | ------ |
+| avatar | 必选 | 头像文件 |
+| token | 必选 | token |
+
+| status    | data     | 说明   |
+| ------------ | ------------ | ------------ |
+|`false`|`文件大小不合适`|`avatar`太大|
+|`false`|`文件格式不正确`|`avatar`格式不正确，非png，jpg格式|
+|`false`|`上传失败`|服务器错误|
+|`false`|`保存失败`|服务器错误|
+|`false`|`token为空`|`token`为空|
+|`false`|`token不正确`|`token`不正确|
+|`false`|`token格式不正确`|`token`格式不正确|
+|`false`|`token已过期`|`token`已过期|
+|`ture`|`设置成功`|设置成功|
 
 ## `POST` `api/user/introduce`
 ### `application/x-www-form-urlencoded`
-
 #### `设置自我介绍`
 
 | 请求参数     | 类型 | 备注   |
@@ -167,6 +185,7 @@ API
         "username":  username,
         "nickName":  user.NickName || nil,
         "introduce": user.Introduce || nil,
+        "img":       user.img || nil
 }
 ```
 

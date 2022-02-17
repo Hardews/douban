@@ -16,6 +16,7 @@ func InitEngine() {
 	userGroup := engine.Group("/user")
 	{
 		userGroup.Use(middleware.JwtToken)
+		userGroup.POST("/uploadAvatar", uploadAvatar)
 		userGroup.POST("/change", ChangePassword)
 		userGroup.POST("/introduce", SetIntroduce)
 		userGroup.POST("/setQuestion", SetQuestion)

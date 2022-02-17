@@ -5,6 +5,7 @@ type User struct {
 	Username  string `json:"username"`
 	Password  string `json:"password"`
 	Introduce string `json:"introduce"`
+	Img       string `json:"img"`
 }
 
 type UserHistory struct {
