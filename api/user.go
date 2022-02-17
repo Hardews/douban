@@ -46,7 +46,7 @@ func uploadAvatar(c *gin.Context) {
 		return
 	}
 
-	loadString := "http://49.235.99.195:8080/" + fileName[1:]
+	loadString := "http://49.235.99.195:8080" + fileName[1:]
 
 	err = service.UploadAvatar(username, loadString)
 	if err != nil {
