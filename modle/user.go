@@ -1,9 +1,9 @@
 package modle
 
 type User struct {
-	NickName  string `form:"nikeName"`
-	Username  string `form:"signUsername"`
-	Password  string `form:"signPassword"`
+	NickName  string `json:"nick_name"`
+	Username  string `json:"username"`
+	Password  string `json:"password"`
 	Introduce string
 }
 
