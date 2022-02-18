@@ -38,7 +38,7 @@ func uploadAvatar(c *gin.Context) {
 	}
 
 	//保存到本地
-	fileName := "./uploadFile/" + strconv.FormatInt(time.Now().Unix(), 10) + file.Filename
+	fileName := "./uploadFile/" + strconv.FormatInt(time.Now().Unix(), 10) + username + fileSuffix
 	err = c.SaveUploadedFile(file, fileName)
 	if err != nil {
 		tool.RespInternetError(c)
@@ -46,7 +46,8 @@ func uploadAvatar(c *gin.Context) {
 		return
 	}
 
-	loadString := "http://49.235.99.195:8080" + fileName[1:]
+	fmt.Println(fileName[13:])
+	loadString := "http://49.235.99.195:8080/pictures" + fileName[13:]
 
 	err = service.UploadAvatar(username, loadString)
 	if err != nil {
