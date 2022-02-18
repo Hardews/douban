@@ -1,12 +1,12 @@
 package dao
 
 import (
-	"douban/modle"
+	"douban/model"
 	"strconv"
 )
 
-func GetWantSee(username string) (error, []modle.UserHistory) {
-	var wantSees []modle.UserHistory
+func GetWantSee(username string) (error, []model.UserHistory) {
+	var wantSees []model.UserHistory
 	sqlStr := "select comment,num,label from user_Want_See where username = ?"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
@@ -27,7 +27,7 @@ func GetWantSee(username string) (error, []modle.UserHistory) {
 	}
 
 	for rows.Next() {
-		var wantSee modle.UserHistory
+		var wantSee model.UserHistory
 		err := rows.Scan(&wantSee.Comment, &wantSee.MovieNum, &wantSee.Label)
 		if err != nil {
 			return err, wantSees
@@ -45,8 +45,8 @@ func GetWantSee(username string) (error, []modle.UserHistory) {
 	return err, wantSees
 }
 
-func GetSeen(username string) (error, []modle.UserHistory) {
-	var Seens []modle.UserHistory
+func GetSeen(username string) (error, []model.UserHistory) {
+	var Seens []model.UserHistory
 	sqlStr := "select comment,num,label from user_Seen where username = ?"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
@@ -67,7 +67,7 @@ func GetSeen(username string) (error, []modle.UserHistory) {
 	}
 
 	for rows.Next() {
-		var Seen modle.UserHistory
+		var Seen model.UserHistory
 		err := rows.Scan(&Seen.Comment, &Seen.MovieNum, &Seen.Label)
 		if err != nil {
 			return err, Seens
@@ -154,8 +154,8 @@ func UserWantSee(username, comment, label string, movieNum int) error {
 	return err
 }
 
-func GetUserComment(username string) (error, []modle.UserComment, []modle.UserComment) {
-	var shortComments, longComments []modle.UserComment
+func GetUserComment(username string) (error, []model.UserComment, []model.UserComment) {
+	var shortComments, longComments []model.UserComment
 	sqlStr := "select movieNum,FilmCritics,time from short_Comment where username = ?"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
@@ -168,7 +168,7 @@ func GetUserComment(username string) (error, []modle.UserComment, []modle.UserCo
 	}
 
 	for rows.Next() {
-		var shortComment modle.UserComment
+		var shortComment model.UserComment
 		err := rows.Scan(&shortComment.MovieNum, &shortComment.Txt, &shortComment.Time)
 		if err != nil {
 			return err, shortComments, longComments
@@ -190,7 +190,7 @@ func GetUserComment(username string) (error, []modle.UserComment, []modle.UserCo
 	defer rows.Close()
 
 	for rows.Next() {
-		var longComment modle.UserComment
+		var longComment model.UserComment
 		err := rows.Scan(&longComment.MovieNum, &longComment.Txt, &longComment.Time)
 		if err != nil {
 			return err, shortComments, longComments
@@ -216,8 +216,8 @@ func SetIntroduce(username, introduce string) error {
 	return err
 }
 
-func UserMenuInfo(username string) (error, modle.User) {
-	var user modle.User
+func UserMenuInfo(username string) (error, model.User) {
+	var user model.User
 	sqlStr := "select username,introduce from user_Menu where username = ?"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {

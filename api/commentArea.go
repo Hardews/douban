@@ -2,7 +2,7 @@ package api
 
 import (
 	"database/sql"
-	"douban/modle"
+	"douban/model"
 	"douban/service"
 	"douban/tool"
 	"fmt"
@@ -279,7 +279,7 @@ func GiveTopicLike(c *gin.Context) {
 }
 
 func GiveComment(c *gin.Context) {
-	var comment modle.CommentArea
+	var comment model.CommentArea
 	var err error
 	iUsername, _ := c.Get("username")
 	comment.Username = iUsername.(string)

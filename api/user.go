@@ -3,7 +3,7 @@ package api
 import (
 	"database/sql"
 	"douban/middleware"
-	"douban/modle"
+	"douban/model"
 	"douban/service"
 	"douban/tool"
 	"fmt"
@@ -61,7 +61,7 @@ func uploadAvatar(c *gin.Context) {
 }
 
 func SetQuestion(c *gin.Context) {
-	var user modle.User
+	var user model.User
 	iUsername, _ := c.Get("username")
 	user.Username = iUsername.(string)
 
@@ -139,7 +139,7 @@ func Retrieve(c *gin.Context) {
 		tool.RespErrorWithDate(c, "答案错误！")
 		return
 	}
-	var user modle.User
+	var user model.User
 	user.Username = username
 	user.Password, _ = c.GetPostForm("newPassword")
 	if user.Password == "" {
@@ -157,7 +157,7 @@ func Retrieve(c *gin.Context) {
 }
 
 func ChangePassword(ctx *gin.Context) {
-	var user modle.User
+	var user model.User
 	iUsername, _ := ctx.Get("username")
 	user.Username = iUsername.(string)
 	fmt.Println(user.Username)
@@ -208,7 +208,7 @@ func ChangePassword(ctx *gin.Context) {
 }
 
 func Login(ctx *gin.Context) {
-	var user modle.User
+	var user model.User
 	var identity = "用户"
 	user.Username, _ = ctx.GetPostForm("logName")
 	user.Password, _ = ctx.GetPostForm("password")
@@ -254,7 +254,7 @@ func Login(ctx *gin.Context) {
 }
 
 func Register(ctx *gin.Context) {
-	var user modle.User
+	var user model.User
 	user.Username, _ = ctx.GetPostForm("signName")
 	user.Password, _ = ctx.GetPostForm("signPassword")
 	user.NickName, _ = ctx.GetPostForm("nickName")

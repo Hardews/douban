@@ -2,7 +2,7 @@ package dao
 
 import (
 	"database/sql"
-	"douban/modle"
+	"douban/model"
 )
 
 func SelectArea(username string, movieNum int) (error, bool, int) {
@@ -357,7 +357,7 @@ func GiveTopicLike(username string, movieNum, num int) (error, bool) {
 	return err, true
 }
 
-func GiveComment(comment modle.CommentArea) error {
+func GiveComment(comment model.CommentArea) error {
 	sqlStr := "insert comment (areaNum,username,txt,movieNum) values (?,?,?,?)"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
@@ -412,8 +412,8 @@ func SetCommentArea(username, topic string, movieNum int) error {
 	return err
 }
 
-func GetCommentByNum(movieNum, areaNum int) (error, []modle.CommentArea) {
-	var comments []modle.CommentArea
+func GetCommentByNum(movieNum, areaNum int) (error, []model.CommentArea) {
+	var comments []model.CommentArea
 	sqlStr := "select username,txt,time,likeNum from comment where movieNum = ? and areaNum = ?"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
@@ -429,7 +429,7 @@ func GetCommentByNum(movieNum, areaNum int) (error, []modle.CommentArea) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var comment modle.CommentArea
+		var comment model.CommentArea
 		err = rows.Scan(&comment.Username, &comment.Comment, &comment.Time, &comment.LikeNum)
 		if err != nil {
 			return err, comments
@@ -439,8 +439,8 @@ func GetCommentByNum(movieNum, areaNum int) (error, []modle.CommentArea) {
 	return err, comments
 }
 
-func GetCommentArea(movieNum int) (error, []modle.CommentArea) {
-	var commentTopics []modle.CommentArea
+func GetCommentArea(movieNum int) (error, []model.CommentArea) {
+	var commentTopics []model.CommentArea
 	sqlStr1 := "select num,username,topic,time,likeNum,commentNum from comment_Area where movieNum = ?"
 	stmt, err := dB.Prepare(sqlStr1)
 	if err != nil {
@@ -455,7 +455,7 @@ func GetCommentArea(movieNum int) (error, []modle.CommentArea) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var commentTopic modle.CommentArea
+		var commentTopic model.CommentArea
 		err := rows.Scan(&commentTopic.Num, &commentTopic.Username, &commentTopic.Topic, &commentTopic.Time, &commentTopic.LikeNum, &commentTopic.CommentNum)
 		if err != nil {
 			return err, commentTopics

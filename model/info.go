@@ -1,4 +1,4 @@
-package modle
+package model
 
 type MovieInfo struct {
 	Num int //编号

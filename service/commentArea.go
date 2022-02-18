@@ -3,7 +3,7 @@ package service
 import (
 	"database/sql"
 	"douban/dao"
-	"douban/modle"
+	"douban/model"
 )
 
 func DoNotLikeTopic(username string, areaNum int) error {
@@ -62,7 +62,7 @@ func GiveTopicLike(username string, movieNum, num int) (error, bool) {
 	return err, flag
 }
 
-func GetCommentArea(movieNum int) (error, []modle.CommentArea) {
+func GetCommentArea(movieNum int) (error, []model.CommentArea) {
 	err, commentAreas := dao.GetCommentArea(movieNum)
 	if err != nil {
 		return err, commentAreas
@@ -70,7 +70,7 @@ func GetCommentArea(movieNum int) (error, []modle.CommentArea) {
 	return err, commentAreas
 }
 
-func GetCommentByNum(movieNum, areaNum int) (error, []modle.CommentArea) {
+func GetCommentByNum(movieNum, areaNum int) (error, []model.CommentArea) {
 	err, comments := dao.GetCommentByNum(movieNum, areaNum)
 	if err != nil {
 		return err, comments
@@ -78,7 +78,7 @@ func GetCommentByNum(movieNum, areaNum int) (error, []modle.CommentArea) {
 	return err, comments
 }
 
-func GiveComment(comment modle.CommentArea) error {
+func GiveComment(comment model.CommentArea) error {
 	err := dao.GiveComment(comment)
 	if err != nil {
 		return err

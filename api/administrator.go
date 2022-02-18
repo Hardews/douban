@@ -1,7 +1,7 @@
 package api
 
 import (
-	"douban/modle"
+	"douban/model"
 	"douban/service"
 	"douban/tool"
 	"github.com/gin-gonic/gin"
@@ -9,7 +9,7 @@ import (
 )
 
 func NewMovie(c *gin.Context) {
-	var movie modle.MovieInfo
+	var movie model.MovieInfo
 	movie.Name, _ = c.GetPostForm("movieName")
 	movie.OtherName, _ = c.GetPostForm("otherName")
 	movie.Score, _ = c.GetPostForm("score")

@@ -2,7 +2,7 @@ package dao
 
 import (
 	"database/sql"
-	"douban/modle"
+	"douban/model"
 	"strconv"
 )
 
@@ -166,8 +166,8 @@ func DeleteWantSee(movieNum int, label, username string) error {
 	return err
 }
 
-func GetComment(num int) (error, []modle.UserComment) {
-	var comments []modle.UserComment
+func GetComment(num int) (error, []model.UserComment) {
+	var comments []model.UserComment
 	sqlStr := "select Username,Essay,TIME,commentTopic from movie_Comment where movieNum = ?"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
@@ -182,7 +182,7 @@ func GetComment(num int) (error, []modle.UserComment) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var comment modle.UserComment
+		var comment model.UserComment
 		err = rows.Scan(&comment.Username, &comment.Txt, &comment.Time, &comment.Topic)
 		if err != nil {
 			return err, comments
@@ -194,8 +194,8 @@ func GetComment(num int) (error, []modle.UserComment) {
 	return err, comments
 }
 
-func GetMovieComment(num int) (error, []modle.UserComment) {
-	var comments []modle.UserComment
+func GetMovieComment(num int) (error, []model.UserComment) {
+	var comments []model.UserComment
 	sqlStr := "select Username,FilmCritics,time from short_Comment where movieNum = ?"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
@@ -210,7 +210,7 @@ func GetMovieComment(num int) (error, []modle.UserComment) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var comment modle.UserComment
+		var comment model.UserComment
 		comment.MovieNum = num
 		err = rows.Scan(&comment.Username, &comment.Txt, &comment.Time)
 		if err != nil {
@@ -323,8 +323,8 @@ func CommentMovie(Txt, username, commentTopic string, movieNum int) error {
 	return err
 }
 
-func FindWithCategory(category string) (error, []modle.MovieInfo) {
-	var movies []modle.MovieInfo
+func FindWithCategory(category string) (error, []model.MovieInfo) {
+	var movies []model.MovieInfo
 	sqlStr := "select num,ChineseName,otherName,score,area,year,types,starring,director from movie_Base_Info where types like ?"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
@@ -340,7 +340,7 @@ func FindWithCategory(category string) (error, []modle.MovieInfo) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var movie modle.MovieInfo
+		var movie model.MovieInfo
 		err := rows.Scan(&movie.Num, &movie.Name, &movie.OtherName, &movie.Score, &movie.Area,
 			&movie.Year, &movie.Types, &movie.Starring, &movie.Director)
 		if err != nil {
@@ -353,8 +353,8 @@ func FindWithCategory(category string) (error, []modle.MovieInfo) {
 	return err, movies
 }
 
-func GetAMovieInfo(movieNum int) (error, modle.MovieInfo) {
-	var movie modle.MovieInfo
+func GetAMovieInfo(movieNum int) (error, model.MovieInfo) {
+	var movie model.MovieInfo
 	sqlStr := "select ChineseName,otherName,score,area,year,types,starring,director,commentNum,introduce,howLong,commentNum,seen,wantSee,img from movie_Base_Info,movie_Extra_Info where movie_Base_Info.num = ? and movie_Extra_Info.num = ?"
 
 	stmt, err := dB.Prepare(sqlStr)

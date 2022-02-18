@@ -2,7 +2,7 @@ package dao
 
 import (
 	"database/sql"
-	"douban/modle"
+	"douban/model"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -69,7 +69,7 @@ func SelectQuestion(username string) (string, error) {
 	return question, err
 }
 
-func ChangePassword(user modle.User) error {
+func ChangePassword(user model.User) error {
 	sqlStr := "update user_Base_Data set password = ? where username = ?"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
@@ -84,8 +84,8 @@ func ChangePassword(user modle.User) error {
 	return err
 }
 
-func CheckPassword(user modle.User) (error, modle.User) {
-	var check modle.User
+func CheckPassword(user model.User) (error, model.User) {
+	var check model.User
 	sqlStr := "select username,password from user_Base_Data where username = ?"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
@@ -100,7 +100,7 @@ func CheckPassword(user modle.User) (error, modle.User) {
 	return err, check
 }
 
-func CheckUsername(user modle.User) error {
+func CheckUsername(user model.User) error {
 	var username string
 	sqlStr := "select username from user_Base_Data where username = ?"
 	stmt, err := dB.Prepare(sqlStr)
@@ -116,7 +116,7 @@ func CheckUsername(user modle.User) error {
 	return err
 }
 
-func WriteIn(user modle.User) error {
+func WriteIn(user model.User) error {
 	sqlStr := "insert into user_Base_Data (username,password,nickName) values (?,?,?)"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {

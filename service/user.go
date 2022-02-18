@@ -3,7 +3,7 @@ package service
 import (
 	"database/sql"
 	"douban/dao"
-	"douban/modle"
+	"douban/model"
 )
 
 func UploadAvatar(username, loadString, fileAddress string) error {
@@ -69,7 +69,7 @@ func UpdateComment(username, txt string, movieNum, choose, areaNum int) error {
 	return nil
 }
 
-func GetUserWantSee(username string) (error, []modle.UserHistory) {
+func GetUserWantSee(username string) (error, []model.UserHistory) {
 	err, wantSee := dao.GetWantSee(username)
 	if err != nil {
 		return err, wantSee
@@ -77,7 +77,7 @@ func GetUserWantSee(username string) (error, []modle.UserHistory) {
 	return err, wantSee
 }
 
-func GetUserSeen(username string) (error, []modle.UserHistory) {
+func GetUserSeen(username string) (error, []model.UserHistory) {
 	err, seen := dao.GetSeen(username)
 	if err != nil {
 		return err, seen
@@ -101,7 +101,7 @@ func UserWantSee(username, comment, label string, movieNum int) error {
 	return err
 }
 
-func GetUserComment(username string) (error, []modle.UserComment, []modle.UserComment) {
+func GetUserComment(username string) (error, []model.UserComment, []model.UserComment) {
 	err, shortComments, longComments := dao.GetUserComment(username)
 	if err != nil {
 		return err, shortComments, longComments
@@ -163,7 +163,7 @@ func SetIntroduce(username, introduce string) error {
 	return err
 }
 
-func GetUserMenu(username string) (error, modle.User) {
+func GetUserMenu(username string) (error, model.User) {
 	err, user := dao.UserMenuInfo(username)
 	if err != nil {
 		return err, user
@@ -171,7 +171,7 @@ func GetUserMenu(username string) (error, modle.User) {
 	return err, user
 }
 
-func ChangePassword(user modle.User) error {
+func ChangePassword(user model.User) error {
 	var err error
 	err, user.Password = Encryption(user.Password)
 	if err != nil {
@@ -184,7 +184,7 @@ func ChangePassword(user modle.User) error {
 	return err
 }
 
-func CheckPassword(user modle.User) (error, bool) {
+func CheckPassword(user model.User) (error, bool) {
 	err, check := dao.CheckPassword(user)
 	if err != nil {
 		return err, false
@@ -193,7 +193,7 @@ func CheckPassword(user modle.User) (error, bool) {
 	return err, res
 }
 
-func CheckUsername(user modle.User) (error, bool) {
+func CheckUsername(user model.User) (error, bool) {
 	err := dao.CheckUsername(user)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -205,7 +205,7 @@ func CheckUsername(user modle.User) (error, bool) {
 	return err, false
 }
 
-func WriteIn(user modle.User) error {
+func WriteIn(user model.User) error {
 	err := dao.WriteIn(user)
 	if err != nil {
 		return err

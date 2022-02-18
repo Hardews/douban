@@ -1,10 +1,10 @@
 package dao
 
 import (
-	"douban/modle"
+	"douban/model"
 )
 
-func NewMovie(movie modle.MovieInfo) (error, int) {
+func NewMovie(movie model.MovieInfo) (error, int) {
 	sqlStr := "insert movie_Base_Info (chineseName,otherName,score,area,year,starring,director,types) values (?,?,?,?,?,?,?,?)"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {

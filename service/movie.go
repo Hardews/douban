@@ -3,7 +3,7 @@ package service
 import (
 	"database/sql"
 	"douban/dao"
-	"douban/modle"
+	"douban/model"
 )
 
 func DeleteShortComment(username string, movieNum int) (error, bool) {
@@ -54,7 +54,7 @@ func SetCommentArea(username, topic string, movieNum int) error {
 	return err
 }
 
-func GetComment(num int) (error, []modle.UserComment) {
+func GetComment(num int) (error, []model.UserComment) {
 	err, comments := dao.GetComment(num)
 	if err != nil {
 		return err, comments
@@ -62,7 +62,7 @@ func GetComment(num int) (error, []modle.UserComment) {
 	return err, comments
 }
 
-func GetMovieComment(num int) (error, []modle.UserComment) {
+func GetMovieComment(num int) (error, []model.UserComment) {
 	err, comments := dao.GetMovieComment(num)
 	if err != nil {
 		return err, comments
@@ -70,7 +70,7 @@ func GetMovieComment(num int) (error, []modle.UserComment) {
 	return err, comments
 }
 
-func GetAMovieInfo(movieNum int) (error, modle.MovieInfo) {
+func GetAMovieInfo(movieNum int) (error, model.MovieInfo) {
 	err, movie := dao.GetAMovieInfo(movieNum)
 	if err != nil {
 		return err, movie

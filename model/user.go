@@ -1,4 +1,4 @@
-package modle
+package model
 
 type User struct {
 	NickName   string `json:"nick_name"`
