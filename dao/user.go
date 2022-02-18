@@ -6,9 +6,9 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func UploadAvatar(username, loadString string) error {
-	sqlStr := "update user_Base_Data set avatar = ? where username = ?"
-	_, err := dB.Exec(sqlStr, loadString, username)
+func UploadAvatar(username, loadString, fileAddress string) error {
+	sqlStr := "update user_Base_Data set avatar = ? ,address = ? where username = ?"
+	_, err := dB.Exec(sqlStr, loadString, fileAddress, username)
 	if err != nil {
 		return err
 	}

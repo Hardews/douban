@@ -18,6 +18,7 @@ func uploadAvatar(c *gin.Context) {
 	iUsername, _ := c.Get("username")
 	username := iUsername.(string)
 
+	//借鉴B站教程
 	file, err := c.FormFile("avatar")
 	if err != nil {
 		fmt.Println("get file failed,err:", err)
@@ -39,6 +40,7 @@ func uploadAvatar(c *gin.Context) {
 
 	//保存到本地
 	fileName := "./uploadFile/" + strconv.FormatInt(time.Now().Unix(), 10) + username + fileSuffix
+	fileAddress := "/opt/gocode/src/douban" + fileName[1:]
 	err = c.SaveUploadedFile(file, fileName)
 	if err != nil {
 		tool.RespInternetError(c)
@@ -49,7 +51,7 @@ func uploadAvatar(c *gin.Context) {
 	fmt.Println(fileName[13:])
 	loadString := "http://49.235.99.195:8080/pictures/" + fileName[13:]
 
-	err = service.UploadAvatar(username, loadString)
+	err = service.UploadAvatar(username, loadString, fileAddress)
 	if err != nil {
 		tool.RespErrorWithDate(c, "上传失败")
 		fmt.Println("upload avatar failed ,err :", err)

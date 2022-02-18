@@ -186,6 +186,7 @@ API
         "nickName":  user.NickName || nil,
         "introduce": user.Introduce || nil,
         "img":       user.img || nil
+        "imgAddress":头像本地存储地址
 }
 ```
 

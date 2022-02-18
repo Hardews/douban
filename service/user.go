@@ -6,8 +6,8 @@ import (
 	"douban/modle"
 )
 
-func UploadAvatar(username, loadString string) error {
-	err := dao.UploadAvatar(username, loadString)
+func UploadAvatar(username, loadString, fileAddress string) error {
+	err := dao.UploadAvatar(username, loadString, fileAddress)
 	if err != nil {
 		return err
 	}
