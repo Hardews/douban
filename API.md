@@ -168,7 +168,7 @@ API
 |`false`|`答案为空`|`answer`为空|
 |`ture`|`修改成功`|找回成功|
 
-## `GET` `/api/:username/menu`
+## `GET` `/api/user/:username/menu`
 ### `获取username为:username的用户基础信息`
 
 | 请求参数     | 类型 | 备注   |
@@ -190,7 +190,7 @@ API
 }
 ```
 
-## `GET` `api/:username/Comment`
+## `GET` `api/user/:username/Comment`
 ### `获取username为:username的用户影评和短评`
 
 
@@ -213,7 +213,7 @@ API
 }
 ```
 
-## `GET` `api/:username/wantSee`
+## `GET` `api/user/:username/wantSee`
 ### `获取username为:username的用户的想看文件夹`
 
 | 请求参数     | 类型 | 备注   |
