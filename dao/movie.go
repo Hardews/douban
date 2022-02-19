@@ -355,7 +355,7 @@ func FindWithCategory(category string) (error, []model.MovieInfo) {
 
 func GetAMovieInfo(movieNum int) (error, model.MovieInfo) {
 	var movie model.MovieInfo
-	sqlStr := "select ChineseName,otherName,score,area,year,types,starring,director,commentNum,introduce,howLong,commentNum,seen,wantSee,img from movie_Base_Info,movie_Extra_Info where movie_Base_Info.num = ? and movie_Extra_Info.num = ?"
+	sqlStr := "select ChineseName,otherName,score,area,year,types,starring,director,commentNum,introduce,howLong,commentNum,seen,wantSee,img,address from movie_Base_Info,movie_Extra_Info where movie_Base_Info.num = ? and movie_Extra_Info.num = ?"
 
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
@@ -365,7 +365,7 @@ func GetAMovieInfo(movieNum int) (error, model.MovieInfo) {
 
 	err = stmt.QueryRow(movieNum, movieNum).Scan(&movie.Name, &movie.OtherName, &movie.Score, &movie.Area,
 		&movie.Year, &movie.Types, &movie.Starring, &movie.Director, &movie.CommentNum, &movie.Introduce,
-		&movie.Time, &movie.CommentNum, &movie.Seen, &movie.WantSee, &movie.Img)
+		&movie.Time, &movie.CommentNum, &movie.Seen, &movie.WantSee, &movie.Img, &movie.ImgAddress)
 	Num := strconv.Itoa(movieNum)
 	movie.Num = movieNum
 	movie.Url = "http://49.235.99.195:8080/movieInfo/" + Num

@@ -295,6 +295,7 @@ data:{
 	"Seen":       movieInfo.Seen,          //看过人数
 	"types":      movieInfo.Types,         //类型
 	"img":        movieInfo.Img,           //图片url
+	"address":    电影本地存储地址
 	"url":        "http://101.201.234.29:8080/movie/" + movieNum,
 }
 ```
@@ -322,6 +323,7 @@ data:{
 	"Seen":       movieInfo.Seen,          //看过人数
 	"types":      movieInfo.Types,         //类型
 	"img":        movieInfo.Img,           //图片url
+	"address":    电影本地存储地址
 	"url":        "http://101.201.234.29:8080/movie/" + movieNum,
 }
 ```
@@ -354,6 +356,7 @@ data:{
 	"Seen":       movieInfo.Seen,          //看过人数
 	"types":      movieInfo.Types,         //类型
 	"img":        movieInfo.Img,           //图片url
+	"address":    电影本地存储地址
 	"url":        "http://101.201.234.29:8080/movie/" + movieNum,
 }
 ```
@@ -386,6 +389,7 @@ data:{
         "Seen":       movieInfo.Seen,          //看过人数
         "types":      movieInfo.Types,         //类型
         "img":        movieInfo.Img,           //图片url
+        "address":    电影本地存储地址
         "url":        "http://101.201.234.29:8080/movie/" + movieNum,
 }
 ```

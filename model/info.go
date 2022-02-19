@@ -1,7 +1,8 @@
 package model
 
 type MovieInfo struct {
-	Num int //编号
+	Num        int    //编号
+	ImgAddress string //存储地址
 
 	Name      string
 	OtherName string
