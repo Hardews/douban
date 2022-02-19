@@ -1022,7 +1022,7 @@ data:{
 
 #Administrator
 ## `POST` `api/administrator/setNewMovie`
-### `application/x-www-form-urlencoded`
+### `multipart/form-data`
 
 #### `管理员添加电影信息`
 
@@ -1038,6 +1038,8 @@ data:{
 | Types | 必选 | 类型 |
 | Introduce | 必选 | 简介 |
 | Year | 必选 | 出版年份 |
+| img  | 非必选 | 图片  |
+| img  | 非必选 | 图片文件|
 | token | 必选 | token |
 
 

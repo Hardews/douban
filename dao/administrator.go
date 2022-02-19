@@ -5,14 +5,14 @@ import (
 )
 
 func NewMovie(movie model.MovieInfo) (error, int) {
-	sqlStr := "insert movie_Base_Info (chineseName,otherName,score,area,year,starring,director,types) values (?,?,?,?,?,?,?,?)"
+	sqlStr := "insert movie_Base_Info (chineseName,otherName,score,area,year,starring,director,types,img,address) values (?,?,?,?,?,?,?,?)"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
 		return err, 0
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(movie.Name, movie.OtherName, movie.Score, movie.Area, movie.Year, movie.Starring, movie.Director, movie.Types)
+	_, err = stmt.Exec(movie.Name, movie.OtherName, movie.Score, movie.Area, movie.Year, movie.Starring, movie.Director, movie.Types, movie.Img, movie.ImgAddress)
 	if err != nil {
 		return err, 0
 	}
