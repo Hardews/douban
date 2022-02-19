@@ -160,7 +160,6 @@ func ChangePassword(ctx *gin.Context) {
 	var user model.User
 	iUsername, _ := ctx.Get("username")
 	user.Username = iUsername.(string)
-	fmt.Println(user.Username)
 	user.Password, _ = ctx.GetPostForm("oldPassword")
 	newPassword, _ := ctx.GetPostForm("newPassword")
 

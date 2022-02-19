@@ -6,6 +6,25 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+func Write(path, movieNum string) error {
+	sqlStr := "update movie_base_info set address = ? where num = ?"
+	_, err := dB.Exec(sqlStr, path, movieNum)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func Select(movieName string) (error, string) {
+	var movieNums string
+	sqlStr := "select num from movie_base_info where num = ?"
+	err := dB.QueryRow(sqlStr, movieName).Scan(&movieNums)
+	if err != nil {
+		return err, movieNums
+	}
+	return err, movieNums
+}
+
 func UploadAvatar(username, loadString, fileAddress string) error {
 	sqlStr := "update user_Base_Data set avatar = ? ,address = ? where username = ?"
 	_, err := dB.Exec(sqlStr, loadString, fileAddress, username)
