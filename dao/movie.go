@@ -325,7 +325,7 @@ func CommentMovie(Txt, username, commentTopic string, movieNum int) error {
 
 func FindWithCategory(category string) (error, []model.MovieInfo) {
 	var movies []model.MovieInfo
-	sqlStr := "select num,ChineseName,otherName,score,area,year,types,starring,director from movie_Base_Info where types like ?"
+	sqlStr := "select num,ChineseName,otherName,score,area,year,types,starring,director,address from movie_Base_Info where types like ?"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
 		return err, movies
@@ -342,7 +342,7 @@ func FindWithCategory(category string) (error, []model.MovieInfo) {
 	for rows.Next() {
 		var movie model.MovieInfo
 		err := rows.Scan(&movie.Num, &movie.Name, &movie.OtherName, &movie.Score, &movie.Area,
-			&movie.Year, &movie.Types, &movie.Starring, &movie.Director)
+			&movie.Year, &movie.Types, &movie.Starring, &movie.Director, &movie.ImgAddress)
 		if err != nil {
 			return err, movies
 		}
