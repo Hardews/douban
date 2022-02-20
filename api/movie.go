@@ -245,21 +245,8 @@ func ShortComment(c *gin.Context) {
 		return
 	}
 	if !flag {
-		tool.RespErrorWithDate(c, "已有影评，是否更新")
-		num1 := c.PostForm("choose")
-		choose, _ := strconv.Atoi(num1)
-
-		switch choose {
-		case 1:
-			return
-		case 2:
-			err = service.UpdateComment(username, commentTxt, movieNum, 2, 0)
-			if err != nil {
-				fmt.Println("update short comment failed,err:", err)
-				tool.RespInternetError(c)
-				return
-			}
-		}
+		tool.RespErrorWithDate(c, "已有影评")
+		return
 	}
 
 	err = service.Comment(commentTxt, username, movieNum)
@@ -295,6 +282,9 @@ func LongComment(c *gin.Context) {
 
 	err, flag, _ := service.SelectComment(username, movieNum, 1, 0)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			err = nil
+		}
 		fmt.Println("select long comment failed,err:", err)
 		tool.RespInternetError(c)
 		return

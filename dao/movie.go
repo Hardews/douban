@@ -298,14 +298,10 @@ func SelectLongComment(username string, movieNum int) (error, bool) {
 	defer stmt.Close()
 
 	err = stmt.QueryRow(username, movieNum).Scan(&iTxt)
-	switch {
-	case err == nil:
-		return err, false
-	case err != nil && err == sql.ErrNoRows:
-		return nil, true
-	default:
+	if err != nil {
 		return err, false
 	}
+	return err, true
 }
 
 func CommentMovie(Txt, username, commentTopic string, movieNum int) error {
