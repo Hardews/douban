@@ -94,7 +94,7 @@ func UserSeen(username, comment, label string, movieNum int) error {
 		return err
 	}
 
-	sqlStr = "select Seen from movie_Base_Info where num = ?"
+	sqlStr = "select Seen from movie_Extra_Info where num = ?"
 	stmt, err = dB.Prepare(sqlStr)
 	if err != nil {
 		return err
@@ -106,7 +106,7 @@ func UserSeen(username, comment, label string, movieNum int) error {
 	}
 
 	num += 1
-	sqlStr = "update movie_Base_Info set Seen = ? where num = ?"
+	sqlStr = "update movie_Extra_Info set Seen = ? where num = ?"
 	stmt, err = dB.Prepare(sqlStr)
 	if err != nil {
 		return err
@@ -130,7 +130,7 @@ func UserWantSee(username, comment, label string, movieNum int) error {
 		return err
 	}
 
-	sqlStr = "select wantSee from movie_Base_Info where num = ?"
+	sqlStr = "select wantSee from movie_Extra_Info where num = ?"
 	stmt, err = dB.Prepare(sqlStr)
 	if err != nil {
 		return err
@@ -142,7 +142,7 @@ func UserWantSee(username, comment, label string, movieNum int) error {
 	}
 
 	num += 1
-	sqlStr = "update movie_Base_Info set wantSee = ? where num = ?"
+	sqlStr = "update movie_Extra_Info set wantSee = ? where num = ?"
 	stmt, err = dB.Prepare(sqlStr)
 	if err != nil {
 		return err

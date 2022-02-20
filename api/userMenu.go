@@ -80,6 +80,10 @@ func GetUserInfo(c *gin.Context) {
 
 	err, user := service.GetUserMenu(username)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			tool.RespErrorWithDate(c, "没有该用户的信息")
+			return
+		}
 		tool.RespInternetError(c)
 		fmt.Println("get menu info failed, err :", err)
 		return
