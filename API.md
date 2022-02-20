@@ -46,7 +46,7 @@ API
 |`false`|`输入的账号为空`|`signName`为空|
 |`false`|`输入的密码为空`|`signPassword`为空|
 |`false`|`用户名已存在`|`signName`已存在|
-|`false`|`用户名含有敏感词汇`|`nickName`含有敏感词汇|
+|`false`|`用户名含有敏感词汇`|`signName`含有敏感词汇|
 |`false`|`昵称含有敏感词汇`|`nickName`含有敏感词汇|
 |`false`|`密码长度不合法`|`signPassword`太长或太短|
 |`ture`|`成功`|注册成功|
@@ -74,12 +74,12 @@ API
 |`false`|`输入的旧密码为空`|`oldPassword`为空|
 |`false`|`输入的新密码为空`|`newPassword`为空|
 |`false`|`旧密码不正确`|`oldPassword`已存在|
-|`false`|`新密码长度不合法`|`newPassword`含有敏感词汇|
+|`false`|`新密码长度不合法`|`newPassword`长度不合法|
 |`false`|`token为空`|`token`为空|
 |`false`|`token不正确`|`token`不正确|
 |`false`|`token格式不正确`|`token`格式不正确|
 |`false`|`token已过期`|`token`已过期|
-|`ture`|`修改成功`|修改成功|
+|`ture`|`"修改成功"`|修改成功|
 
 ## `POST` `api/user/uploadAvatar`
 ### `multipart/form-data`
@@ -150,7 +150,6 @@ API
 ### `application/x-www-form-urlencoded`
 
 #### `通过密保找回密码`
-`只有当question，answer，username都正确时，可发送新密码`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -250,7 +249,7 @@ API
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
 |false|"无此用户"|`username`不存在|
-|true|"该用户暂时无评论”|获取成功|
+|true|"该用户暂时无想看内容”|获取成功|
 |true|参见以下代码|获取成功|
 
 ```

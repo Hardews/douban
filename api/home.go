@@ -35,7 +35,7 @@ func Find(c *gin.Context) {
 	for i, _ := range nums {
 		err, info := service.GetAMovieInfo(nums[i])
 		movieNum := strconv.Itoa(nums[i])
-		info.Url = "http://49.235.99.195:8080/movieInfo/" + movieNum
+		info.Url = "http://49.235.99.195:8090/movieInfo/" + movieNum
 		if err != nil {
 			fmt.Println("find movie failed,err:", err)
 			tool.RespInternetError(c)

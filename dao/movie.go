@@ -188,7 +188,7 @@ func GetComment(num int) (error, []model.UserComment) {
 			return err, comments
 		}
 		movieNum := strconv.Itoa(num)
-		comment.Url = "http://49.235.99.195:8080/movieInfo/" + movieNum
+		comment.Url = "http://49.235.99.195:8090/movieInfo/" + movieNum
 		comments = append(comments, comment)
 	}
 	return err, comments
@@ -217,7 +217,7 @@ func GetMovieComment(num int) (error, []model.UserComment) {
 			return err, comments
 		}
 		movieNum := strconv.Itoa(num)
-		comment.Url = "http://49.235.99.195:8080/movieInfo/" + movieNum
+		comment.Url = "http://49.235.99.195:8090/movieInfo/" + movieNum
 		comments = append(comments, comment)
 	}
 	return err, comments
@@ -347,7 +347,7 @@ func FindWithCategory(category string) (error, []model.MovieInfo) {
 			return err, movies
 		}
 		movieNum := strconv.Itoa(movie.Num)
-		movie.Url = "http://49.235.99.195:8080/movieInfo/" + movieNum
+		movie.Url = "http://49.235.99.195:8090/movieInfo/" + movieNum
 		movies = append(movies, movie)
 	}
 	return err, movies
@@ -368,7 +368,7 @@ func GetAMovieInfo(movieNum int) (error, model.MovieInfo) {
 		&movie.Time, &movie.CommentNum, &movie.Seen, &movie.WantSee, &movie.Img, &movie.ImgAddress)
 	Num := strconv.Itoa(movieNum)
 	movie.Num = movieNum
-	movie.Url = "http://49.235.99.195:8080/movieInfo/" + Num
+	movie.Url = "http://49.235.99.195:8090/movieInfo/" + Num
 	if err != nil {
 		return err, movie
 	}

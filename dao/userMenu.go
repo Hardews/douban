@@ -39,7 +39,7 @@ func GetWantSee(username string) (error, []model.UserHistory) {
 		}
 
 		movieNum := strconv.Itoa(wantSee.MovieNum)
-		wantSee.Url = "http://49.235.99.195:8080/movieInfo/" + movieNum
+		wantSee.Url = "http://49.235.99.195:8090/movieInfo/" + movieNum
 		wantSees = append(wantSees, wantSee)
 	}
 	return err, wantSees
@@ -75,7 +75,7 @@ func GetSeen(username string) (error, []model.UserHistory) {
 		err = stmt.QueryRow(Seen.MovieNum).Scan(&Seen.Img)
 
 		movieNum := strconv.Itoa(Seen.MovieNum)
-		Seen.Url = "http://49.235.99.195:8080/movieInfo/" + movieNum
+		Seen.Url = "http://49.235.99.195:8090/movieInfo/" + movieNum
 		Seens = append(Seens, Seen)
 	}
 	return err, Seens
@@ -174,7 +174,7 @@ func GetUserComment(username string) (error, []model.UserComment, []model.UserCo
 			return err, shortComments, longComments
 		}
 		movieNum := strconv.Itoa(shortComment.MovieNum)
-		shortComment.Url = "http://49.235.99.195:8080/movieInfo/" + movieNum
+		shortComment.Url = "http://49.235.99.195:8090/movieInfo/" + movieNum
 		shortComments = append(shortComments, shortComment)
 	}
 
@@ -196,7 +196,7 @@ func GetUserComment(username string) (error, []model.UserComment, []model.UserCo
 			return err, shortComments, longComments
 		}
 		movieNum := strconv.Itoa(longComment.MovieNum)
-		longComment.Url = "http://49.235.99.195:8080/movieInfo/" + movieNum
+		longComment.Url = "http://49.235.99.195:8090/movieInfo/" + movieNum
 		longComments = append(longComments, longComment)
 	}
 	return err, shortComments, longComments
