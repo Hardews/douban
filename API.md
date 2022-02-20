@@ -2,7 +2,7 @@ API
 
 # Login
 
-## `POST` `/api/login`
+## `POST` `/login`
 
 ### `application/x-www-form-urlencoded`
 
@@ -27,7 +27,7 @@ API
 
 # Register
 
-## `POST` `api/register`
+## `POST` `register`
 ### `application/x-www-form-urlencoded`
 
 | 请求参数     | 类型 | 备注   |
@@ -53,7 +53,7 @@ API
 
 # User
 
-## `POST` `api/user/change`
+## `POST` `/user/change`
 ### `application/x-www-form-urlencoded`
 
 #### `修改密码`
@@ -81,7 +81,7 @@ API
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`"修改成功"`|修改成功|
 
-## `POST` `api/user/uploadAvatar`
+## `POST` `/user/uploadAvatar`
 ### `multipart/form-data`
 #### `用户上传头像`
 | 请求参数     | 类型 | 备注   |
@@ -101,7 +101,7 @@ API
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`设置成功`|设置成功|
 
-## `POST` `api/user/introduce`
+## `POST` `/user/introduce`
 ### `application/x-www-form-urlencoded`
 #### `设置自我介绍`
 
@@ -121,7 +121,7 @@ API
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`设置成功`|设置成功|
 
-## `POST` `api/user/setQuestion`
+## `POST` `/user/setQuestion`
 ### `application/x-www-form-urlencoded`
 
 #### `设置密保问题`
@@ -146,7 +146,7 @@ API
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`设置成功`|`设置成功`|
 
-## `POST` `api/user/retrieve`
+## `POST` `/user/retrieve`
 ### `application/x-www-form-urlencoded`
 
 #### `通过密保找回密码`
@@ -167,7 +167,7 @@ API
 |`false`|`答案为空`|`answer`为空|
 |`ture`|`修改成功`|找回成功|
 
-## `GET` `/api/user/:username/menu`
+## `GET` `/user/:username/menu`
 ### `获取username为:username的用户基础信息`
 
 | 请求参数     | 类型 | 备注   |
@@ -189,7 +189,7 @@ API
 }
 ```
 
-## `GET` `api/user/:username/Comment`
+## `GET` `/user/:username/Comment`
 ### `获取username为:username的用户影评和短评`
 
 
@@ -212,7 +212,7 @@ API
 }
 ```
 
-## `GET` `api/user/:username/wantSee`
+## `GET` `/user/:username/wantSee`
 ### `获取username为:username的用户的想看文件夹`
 
 | 请求参数     | 类型 | 备注   |
@@ -239,7 +239,7 @@ API
 }
 ```
 
-## `GET` `/api/user/:username/Seen`
+## `GET` `/user/:username/Seen`
 ### `获取username为:username的用户的看过文件夹`
 
 | 请求参数     | 类型 | 备注   |
@@ -266,7 +266,7 @@ API
 }
 ```
 # `Home`
-## `GET` `/api/home/research/:find`
+## `GET` `/home/research/:find`
 ### `搜索功能`
 
 | 请求参数     | 类型 | 备注   |
@@ -298,7 +298,7 @@ data:{
 	"url":        "http://101.201.234.29:8080/movie/" + movieNum,
 }
 ```
-## `GET` `/api/home/recommend`
+## `GET` `/home/recommend`
 ### `推荐功能（随机`
 
 
@@ -327,7 +327,7 @@ data:{
 }
 ```
 
-## `GET` `/api/home/:category`
+## `GET` `/home/:category`
 ###`分类功能`
 
 | 请求参数     | 类型 | 备注   |
@@ -361,7 +361,7 @@ data:{
 ```
 
 # Movie
-## `GET` `api/movieInfo/:movieNum`
+## `GET` `/movieInfo/:movieNum`
 ### `通过:movieNum获取电影信息`
 
 | 请求参数     | 类型 | 备注   |
@@ -392,7 +392,7 @@ data:{
         "url":        "http://101.201.234.29:8080/movie/" + movieNum,
 }
 ```
-## `GET` `api/movieInfo/:movieNum/longComment`
+## `GET` `/movieInfo/:movieNum/longComment`
 ### `通过:movieNum获取电影的影评`
 
 | 请求参数     | 类型 | 备注   |
@@ -427,7 +427,7 @@ data:{
     ]
 }
 ```
-## `GET` `api/movieInfo/:movieNum/shortComment`
+## `GET` `/movieInfo/:movieNum/shortComment`
 ### `通过:movieNum获取电影的短评`
 
 | 请求参数     | 类型 | 备注   |
@@ -462,7 +462,7 @@ data:{
     ]
 }
 ```
-## `GET` `api/movieInfo/:movieNum/commentArea`
+## `GET` `/movieInfo/:movieNum/commentArea`
 ### `通过:movieNum获取电影的讨论区`
 
 | 请求参数     | 类型 | 备注   |
@@ -501,7 +501,7 @@ data:{
     "data": "无评论"
 }
 ```
-## `POST` `api/movie/:movieNum/wantSee`
+## `POST` `/movie/:movieNum/wantSee`
 ### `application/x-www-form-urlencoded`
 
 #### `用户设置想看`
@@ -526,7 +526,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`成功`|设置成功|
 
-## `POST` `api/movie/:movieNum/seen`
+## `POST` `/movie/:movieNum/seen`
 ### `application/x-www-form-urlencoded`
 
 #### `用户设置看过`
@@ -551,7 +551,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`"成功"`|设置成功|
 
-## `DELETE` `api/movie/:movieNum/wantSee`
+## `DELETE` `/movie/:movieNum/wantSee`
 ### `application/x-www-form-urlencoded`
 
 #### `用户删除想看内容`
@@ -575,7 +575,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`删除成功`|成功|
 
-## `DELETE` `api/movie/:movieNum/seen`
+## `DELETE` `/movie/:movieNum/seen`
 ### `application/x-www-form-urlencoded`
 
 #### `用户删除看过内容`
@@ -599,7 +599,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`删除成功`|成功|
 
-## `POST` `api/movie/:movieNum/longComment`
+## `POST` `/movie/:movieNum/longComment`
 ### `application/x-www-form-urlencoded`
 
 #### `用户给予影评`
@@ -627,7 +627,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`成功`|成功|
 
-## `DELETE` `api/movie/:movieNum/longComment`
+## `DELETE` `/movie/:movieNum/longComment`
 ### `application/x-www-form-urlencoded`
 
 #### `用户删除影评`
@@ -651,7 +651,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`删除成功`|成功|
 
-## `PUT` `api/movie/:movieNum/longComment`
+## `PUT` `/movie/:movieNum/longComment`
 ### `application/x-www-form-urlencoded`
 
 #### `用户更新短评`
@@ -678,7 +678,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`更新成功`|成功|
 
-## `POST` `api/movie/:movieNum/shortComment`
+## `POST` `/movie/:movieNum/shortComment`
 ### `application/x-www-form-urlencoded`
 
 #### `用户给予短评`
@@ -705,7 +705,7 @@ data:{
 |`false`|`token格式不正确`|`token`格式不正确|
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`"成功"`|成功|
-## `DELETE` `api/movie/:movieNum/shortComment`
+## `DELETE` `/movie/:movieNum/shortComment`
 ### `application/x-www-form-urlencoded`
 
 #### `用户删除短评`
@@ -729,7 +729,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`"删除成功"`|成功|
 
-## `PUT` `api/movie/:movieNum/shortComment`
+## `PUT` `/movie/:movieNum/shortComment`
 ### `application/x-www-form-urlencoded`
 
 #### `用户更新短评`
@@ -756,7 +756,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`更新成功`|成功|
 
-## `POST` `api/movie/:movieNum/commentArea`
+## `POST` `/movie/:movieNum/commentArea`
 ### `application/x-www-form-urlencoded`
 
 #### `用户发表讨论区话题`
@@ -784,7 +784,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`成功`|设置成功|
 
-## `DELETE` `api/movie/:movieNum/:areaNum`
+## `DELETE` `/movie/:movieNum/:areaNum`
 ### `application/x-www-form-urlencoded`
 
 #### `用户删除讨论区话题`
@@ -811,7 +811,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`删除成功`|设置成功|
 
-## `PUT` `api/movie/:movieNum/commentArea`
+## `PUT` `/movie/:movieNum/commentArea`
 ### `application/x-www-form-urlencoded`
 
 #### `用户更新讨论区话题`
@@ -838,7 +838,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`更新成功`|设置成功|
 
-## `POST` `api/movie/:movieNum/:areaNum/like`
+## `POST` `/movie/:movieNum/:areaNum/like`
 ### `application/x-www-form-urlencoded`
 
 #### `用户点赞讨论区话题`
@@ -863,7 +863,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`点赞成功!`|成功|
 
-## `POST` `api/movie/:movieNum/:areaNum/like`
+## `POST` `/movie/:movieNum/:areaNum/like`
 ### `application/x-www-form-urlencoded`
 
 #### `用户取消点赞讨论区话题`
@@ -887,7 +887,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`""`|成功|
 
-##  `POST` `api/movie/:movieNum/:areaNum/comment`
+##  `POST` `/movie/:movieNum/:areaNum/comment`
 
 ### `application/x-www-form-urlencoded`
 
@@ -915,7 +915,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`成功`|设置成功|
 
-## `DELETE` `api/movie/:movieNum/:areaNum/comment`
+## `DELETE` `/movie/:movieNum/:areaNum/comment`
 ### `application/x-www-form-urlencoded`
 
 #### `用户删除评论（讨论区话题`
@@ -941,7 +941,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`删除成功`|设置成功|
 
-## `PUT` `api/movie/:movieNum/:areaNum/comment`
+## `PUT` `/movie/:movieNum/:areaNum/comment`
 ### `application/x-www-form-urlencoded`
 
 #### `用户更新评论（讨论区话题`
@@ -968,7 +968,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`更新成功`|设置成功|
 
-## `POST` `api/movie/:movieNum/:areaNum/comment/like`
+## `POST` `/movie/:movieNum/:areaNum/comment/like`
 ### `application/x-www-form-urlencoded`
 
 #### `用户点赞评论（讨论区话题`
@@ -994,7 +994,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`点赞成功!`|成功|
 
-## `POST` `api/movie/:movieNum/:areaNum/comment/like`
+## `POST` `/movie/:movieNum/:areaNum/comment/like`
 ### `application/x-www-form-urlencoded`
 
 #### `用户取消点赞评论（讨论区话题`
@@ -1020,7 +1020,7 @@ data:{
 |`ture`|`""`|成功|
 
 #Administrator
-## `POST` `api/administrator/setNewMovie`
+## `POST` `/administrator/setNewMovie`
 ### `multipart/form-data`
 
 #### `管理员添加电影信息`
