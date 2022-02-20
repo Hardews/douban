@@ -8,7 +8,7 @@ import (
 
 func DeleteShortComment(username string, movieNum int) error {
 	var iUsername string
-	sqlStr := "select FilmCritics from short_Comment where username = ? and movieNum = ?"
+	sqlStr := "select username from short_Comment where username = ? and movieNum = ?"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
 		return err
@@ -36,7 +36,7 @@ func DeleteShortComment(username string, movieNum int) error {
 
 func DeleteLongComment(username string, movieNum int) error {
 	var iUsername string
-	sqlStr := "select essay from movie_Comment where username = ? and movieNum = ?"
+	sqlStr := "select username from movie_Comment where username = ? and movieNum = ?"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
 		return err
@@ -100,7 +100,7 @@ func DeleteSeen(movieNum int, label, username string) error {
 		return err
 	}
 
-	sqlStr = "select seen from movie_Base_Info where num = ?"
+	sqlStr = "select seen from movie_Extra_Info where num = ?"
 	stmt, err = dB.Prepare(sqlStr)
 	if err != nil {
 		return err
@@ -113,7 +113,7 @@ func DeleteSeen(movieNum int, label, username string) error {
 	}
 
 	num -= 1
-	sqlStr = "update movie_Base_Info set wantSee = ? where num = ?"
+	sqlStr = "update movie_Extra_Info set wantSee = ? where num = ?"
 	stmt, err = dB.Prepare(sqlStr)
 	if err != nil {
 		return err
@@ -140,7 +140,7 @@ func DeleteWantSee(movieNum int, label, username string) error {
 		return err
 	}
 
-	sqlStr = "select wantSee from movie_Base_Info where num = ?"
+	sqlStr = "select wantSee from movie_Extra_Info where num = ?"
 	stmt, err = dB.Prepare(sqlStr)
 	if err != nil {
 		return err
@@ -153,7 +153,7 @@ func DeleteWantSee(movieNum int, label, username string) error {
 	}
 
 	num -= 1
-	sqlStr = "update movie_Base_Info set wantSee = ? where num = ?"
+	sqlStr = "update movie_Extra_Info set wantSee = ? where num = ?"
 	stmt, err = dB.Prepare(sqlStr)
 	if err != nil {
 		return err
