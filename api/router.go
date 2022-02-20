@@ -12,7 +12,7 @@ func InitEngine() {
 	engine.Use(middleware.Cors)
 
 	//部署前端静态网页
-	engine.Use(static.Serve("/", static.LocalFile("../static", false)))
+	engine.Use(static.Serve("/", static.LocalFile("./static", false)))
 
 	engine.POST("/register", Register)
 	engine.POST("/login", Login)

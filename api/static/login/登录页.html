@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>longin</title>
+    <style>
+        /* 预处理一下所有东西 */
+        body,
+        div,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        li,
+        ol,
+        p,
+        ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        /*最上面的头头 */
+        #head {
+            background: #edf4ed;
+            height: 70px;
+        }
+
+        /* 导航图片 */
+        #navtu {
+            padding-left: 20%;
+            padding-top: 20px;
+            display: block;
+        }
+
+        /* 登录页左侧 */
+        .login-left {
+            display: inline-block;
+            height: 584px;
+            width: 494px;
+            position: relative;
+            left: 50%;
+            margin-left: -432px;
+            vertical-align: top;
+            background: url(./sourse/left.png) 0 0 no-repeat;
+            background-size: 92%;
+            top: 20px;
+            overflow: visible;
+        }
+
+        .login-left .app-download {
+            margin-top: 72px;
+            text-align: center;
+            position: relative;
+            z-index: 20;
+
+        }
+
+
+        .lnk-app {
+            height: 37px;
+            width: 131px;
+            display: inline-block;
+            margin-right: 2px;
+            vertical-align: 16px;
+            font-size: 0;
+            background: url(./sourse/下载.png) 0 no-repeat;
+            background-size: 131px;
+        }
+
+        .login-left .app-qr {
+            display: inline-block;
+            vertical-align: top;
+            position: relative;
+
+        }
+
+        .login-left .login-slide {
+            height: 452px;
+            width: 195px;
+            border-radius: 18px;
+            position: relative;
+        }
+
+        /* 登录页右边(外框架) */
+        .login-right {
+            display: inline-block;
+            border: 1px solid #7ce65c;
+            width: 340px;
+            position: relative;
+            left: 50%;
+            margin-top: 25px;
+            margin-left: -46px;
+            vertical-align: top;
+            padding: 20px;
+            /* background-color: aqua; */
+        }
+
+
+
+        .change {
+            /* border: 2px solid #1dca43; */
+            width: 100%;
+            height: 53px;
+            /* background-color: #71f0b5; */
+            font-size: 18px;
+            color: #cac7c7;
+        }
+
+        .change ul {
+            width: 100%;
+            margin-left: 25%;
+            margin-right: 25%;
+            padding: 0;
+
+        }
+
+        .change ul li {
+            cursor: pointer;
+            height: 53px;
+            float: left;
+            list-style: none;
+            line-height: 53px;
+            color: rgb(185, 184, 184);
+            padding: 0 20px;
+            border-bottom: 5px solid rgb(230, 226, 226);
+        }
+
+        .change .current {
+            font-weight: 600;
+            /* background-color: #1fd61f; */
+            color: black;
+            border-bottom: 5px solid #070d0e;
+        }
+
+        .tab {
+            width: 100%;
+            padding-top: 30px;
+        }
+
+        .item {
+            display: none;
+        }
+
+        .tips a {
+            color: #1fd61f;
+        }
+
+        .tips {
+            color: #9b9b9b;
+            font-size: 14px;
+        }
+
+        .label {
+            font-size: large;
+        }
+
+        input {
+            padding: 7px 7px;
+            width: 70%;
+        }
+
+        #login {
+
+            margin-top: 30px;
+            padding: 0px;
+            font-weight: 600;
+            font-size: 15px;
+            display: inline-block;
+            height: 36px;
+            border-radius: 3px;
+            color: #fff;
+            text-align: center;
+            outline: 0;
+            cursor: pointer;
+            background-color: #41ac52;
+            width: 100%;
+        }
+
+        #sign {
+            margin-top: 30px;
+            padding: 0px;
+            font-weight: 600;
+            font-size: 15px;
+            display: inline-block;
+            height: 36px;
+            border-radius: 3px;
+            color: #fff;
+            text-align: center;
+            outline: 0;
+            cursor: pointer;
+            background-color: #41ac52;
+            width: 100%;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- 上方导航栏 -->
+    <div id="head">
+        <div id="navtu">
+            <a href="https://www.douban.com">
+                <img src="https://img3.doubanio.com/f/accounts/4fd84763a74089b20eb02ba0225d6e7739d2c432/passport/pics/douban_logo@2x.png"
+                    width="142" height="30" alt="豆瓣">
+            </a>
+        </div>
+    </div>
+
+    <div id="body">
+
+        <!-- 左边 -->
+        <div class="login-left">
+            <div class="login-slide">
+                <!-- 拿一个div把右下二维码顶下去 -->
+            </div>
+
+            <!-- 下面（左跳转按钮）（图片在CSS里引用） -->
+            <div class="app-download">
+                <a href="https://www.douban.com/doubanapp/app?channel=nimingye" class="lnk-app">下载豆瓣 App</a>
+                <!-- 下右二维码 -->
+                <div class="app-qr">
+                    <a href="javascript: ;"><img src="./sourse/erweuma.png" width="37" height="37"></a>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- 右边登录表单 -->
+        <!-- 这里用到了tab翻页，稍后出blog教程 -->
+        <div class="login-right">
+
+            <div class="change">
+                <ul>
+                    <li>&nbsp;&nbsp;登录&nbsp;&nbsp;</li>
+
+                    <li>&nbsp;&nbsp;注册&nbsp;&nbsp;</li>
+                </ul>
+            </div>
+
+
+            <div>
+                <!-- 拿一个空格来占一行位 -->
+                &nbsp;
+                <h4>&nbsp;</h4>
+            </div>
+
+            <div class="tips">请仔细阅读 <a target="_blank"
+                    href="https://accounts.douban.com/passport/agreement">豆瓣使用协议、豆瓣个人信息保护政策</a></div>
+            <div><span class="hide"></span></div>
+
+            <div class="tab">
+                <!-- 登录部分 -->
+                <div class="item" style="display: block;">
+
+                    <div class="lognamebox"><label class="label">用户名</label>
+
+                        <div class="input-logname">
+                            <input type="text" id="loginname" required="required" placeholder="输入用户名">
+                        </div>
+
+                    </div>
+
+                    <div class="passwordbox"><label class="label">密码</label>
+
+                        <div class="input-password">
+                            <input type="password" id="password" required="required" placeholder="请输入密码">
+                        </div>
+                    </div>
+
+                    <div class="btn">
+                        <button type="button" id="login">
+                            <span>登录</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="item">
+                    <!-- 注册部分 -->
+                    <div class="signbox"><label class="label">用户名</label>
+
+                        <div class="input-signname">
+                            <input type="text" id="signname" required="required" placeholder="你的用户名是什么呢">
+                        </div>
+
+                    </div>
+
+                    <div class="passwordbox"><label class="label">密码</label>
+
+                        <div class="input-signpassword">
+                            <input type="password" id="signpassword" required="required" placeholder="这个记得保密哦">
+                        </div>
+                    </div>
+
+
+                    <div class="nickname"><label class="label">昵称</label>
+                        <div class="input-nickname">
+                            <input type="text" id="nickname" required="required" placeholder="好好想想自己要叫什么吧~">
+                        </div>
+                    </div>
+
+                    <div class="btn">
+                        <button type="button" id="sign">
+                            <span>注册</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 登录部分 -->
+    <!-- <h2 class="title" id="dl">登录</h2>
+
+            <div class="tips">请仔细阅读 <a target="_blank"
+                    href="https://accounts.douban.com/passport/agreement">豆瓣使用协议、豆瓣个人信息保护政策</a></div>
+            <div><span class="hide"></span></div>
+
+
+            <div class="lognamebox"><label class="label">用户名</label>
+
+                <div class="input-logname">
+                    <input type="text" id="loginname" required="required">
+                </div>
+
+            </div>
+
+            <div class="passwordbox"><label>密码</label>
+
+                <div class="input-password">
+                    <input type="password" id="password" required="required">
+                </div>
+            </div>
+
+            <div class="btn">
+
+
+                <button type="button" id="login">
+                    <span>登录</span>
+                </button>
+            </div> -->
+    <!-- 注册部分 -->
+    <!-- <h2 class="title" id="zc">注册</h2>
+            <div class="signbox"><label>用户名</label>
+
+                <div class="input-signname">
+                    <input type="text" id="signname" required="required">
+                </div>
+
+            </div>
+
+            <div class="passwordbox"><label>密码</label>
+
+                <div class="input-signpassword">
+                    <input type="password" id="signpassword" required="required">
+                </div>
+            </div>
+
+
+            <div class="nickname"><label>昵称</label>
+                <div class="input-nickname">
+                    <input type="text" id="nickname" required="required">
+                </div>
+            </div>
+
+            <div class="btn">
+                <button type="button" id="sign">
+                    <span>注册</span>
+                </button>
+            </div>
+        </div>
+    </div> -->
+
+
+</body>
+<script src="./登录页.js"></script>
+
+</html>
