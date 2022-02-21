@@ -14,7 +14,7 @@ API
 | 返回参数     | 说明         |
 | ------------ | ------------ |
 | data         | 返回消息     |
-| token        | 用户token    |
+| msg      | 用户token    |
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
@@ -60,7 +60,7 @@ API
 | -------- | ---- | ------ |
 | oldPassword | 必选 | 旧密码 |
 | newPassword | 必选 | 新密码 |
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -84,7 +84,7 @@ API
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
 | avatar | 必选 | 头像文件 |
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
@@ -105,7 +105,7 @@ API
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
 | introduce | 必选 | 自我介绍 |
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
@@ -128,7 +128,7 @@ API
 | question | 必选 | 密保问题 |
 | answer | 必选 | 密保答案 |
 | password | 必选 | 密码 |
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | status    | data     | 说明   |
 | ------------ | ------------ | ------------ |
@@ -506,9 +506,9 @@ data:{
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
 | :movieNum | 必选 | 电影编号 |
-| comment | 必选 | 收藏的简短评论 |
-| label | 必选 | 存储标签 |
-| token | 必选 | token |
+| comment | 非必选 | 收藏的简短评论 |
+| label | 非必选 | 存储标签 |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -530,9 +530,9 @@ data:{
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
 | :movieNum | 必选 | 电影编号 |
-| comment | 必选 | 收藏的简短评论 |
-| label | 必选 | 存储标签 |
-| token | 必选 | token |
+| comment | 非必选 | 收藏的简短评论 |
+| label | 非必选 | 存储标签 |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -555,7 +555,7 @@ data:{
 | -------- | ---- | ------ |
 | :movieNum | 必选 | 电影编号 |
 | label | 非必选 | 存储标签 |
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -578,7 +578,7 @@ data:{
 | -------- | ---- | ------ |
 | :movieNum | 必选 | 电影编号 |
 | label | 非必选 | 存储标签 |
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -602,7 +602,7 @@ data:{
 | :movieNum | 必选 | 电影编号 |
 | topic | 必选 | 影评标题 |
 |LongComment|必选|影评内容|
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -627,7 +627,7 @@ data:{
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
 | :movieNum | 必选 | 电影编号 |
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -651,7 +651,7 @@ data:{
 | -------- | ---- | ------ |
 | :movieNum | 必选 | 电影编号 |
 |comment|必选|新影评|
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -678,7 +678,7 @@ data:{
 | :movieNum | 必选 | 电影编号 |
 | topic | 必选 | 影评标题 |
 |ShortComment|必选|影评内容|
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -702,7 +702,7 @@ data:{
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
 | :movieNum | 必选 | 电影编号 |
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -726,7 +726,7 @@ data:{
 | -------- | ---- | ------ |
 | :movieNum | 必选 | 电影编号 |
 |comment|必选|新短评|
-| token | 必选 | token |
+|Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -752,7 +752,7 @@ data:{
 | -------- | ---- | ------ |
 | :movieNum | 必选 | 电影编号 |
 | topic | 必选 | 话题 |
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -779,7 +779,7 @@ data:{
 | -------- | ---- | ------ |
 | :movieNum | 必选 | 电影编号 |
 |  :areaNum| 必选 | 话题编号 |
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -805,7 +805,7 @@ data:{
 | -------- | ---- | ------ |
 | :movieNum | 必选 | 电影编号 |
 | topic | 必选 | 话题 |
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -831,7 +831,7 @@ data:{
 | -------- | ---- | ------ |
 | :movieNum | 必选 | 电影编号 |
 |  :areaNum| 必选 | 话题编号 |
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -855,7 +855,7 @@ data:{
 | -------- | ---- | ------ |
 | :movieNum | 必选 | 电影编号 |
 |  :areaNum| 必选 | 话题编号 |
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -879,7 +879,7 @@ data:{
 | -------- | ---- | ------ |
 | :movieNum | 必选 | 电影编号 |
 |comment | 必选 | 评论 |
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -905,7 +905,7 @@ data:{
 | -------- | ---- | ------ |
 | :movieNum | 必选 | 电影编号 |
 |  :areaNum| 必选 | 话题编号 |
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -930,7 +930,7 @@ data:{
 | -------- | ---- | ------ |
 | :movieNum | 必选 | 电影编号 |
 | comment | 必选 | 评论 |
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -957,7 +957,7 @@ data:{
 |username|必选|被点赞人的用户名|
 | :movieNum | 必选 | 电影编号 |
 |  :areaNum| 必选 | 话题编号 |
-| token | 必选 | token |
+|Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -982,7 +982,7 @@ data:{
 |username|必选|被点赞人的用户名|
 | :movieNum | 必选 | 电影编号 |
 |  :areaNum| 必选 | 话题编号 |
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 | 返回参数     | 说明         |
 | ------------ | ------------ |
@@ -1005,7 +1005,7 @@ data:{
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
 | movieName | 必选 | 电影编号 |
-| otherName | 必选 | 别名 |
+| otherName | 非必选 | 别名 |
 | score | 必选 | 评分 |
 | Starring | 必选 | 主演 |
 | Area | 必选 | 地区 |
@@ -1016,7 +1016,7 @@ data:{
 | Year | 必选 | 出版年份 |
 | img  | 非必选 | 图片  |
 | img  | 非必选 | 图片文件|
-| token | 必选 | token |
+| Authorization | 必选 | token |
 
 
 | 返回参数     | 说明         |
