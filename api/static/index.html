@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style type="text/css">
+        /* 顶层导航栏 */
+        .top {
+            /* 处理顶层 */
+            position: fixed;
+            top: 0;
+            height: 28px;
+            color: #d5d5d5;
+            background-color: #545652;
+            min-width: 950px;
+            width: 100%;
+            left: 0;
+            z-index: 10;
+        }
+
+        .top ul {
+            list-style-type: none;
+            white-space: nowrap;
+            overflow: hidden;
+            margin-left: 0;
+            margin-top: 0;
+            padding: 0;
+        }
+
+        .left {
+            float: left;
+            /* 使li内容横向浮动，即横向排列  */
+            margin-right: 1%;
+            /* 两个li之间的距离*/
+            position: relative;
+            overflow: hidden;
+        }
+
+        .top li a {
+            /* 设置链接内容显示的格式*/
+            display: block;
+            /* 把链接显示为块元素可使整个链接区域可点击 */
+            color: #d5d5d5;
+            text-align: center;
+            padding: 6px;
+            overflow: hidden;
+            text-decoration: none;
+            font-size: 12px;
+            /* 去除下划线 */
+
+        }
+
+
+
+        .top ul li ul {
+            /* 设置二级菜单 */
+            margin-left: -0.2px;
+            background: #545652;
+            position: relative;
+            display: none;
+            /* 默认隐藏二级菜单的内容 */
+
+        }
+
+        .top ul li ul li {
+            /* 二级菜单li内容的显示 */
+
+            float: none;
+            text-align: center;
+        }
+
+        .top ul li:hover ul {
+            /* 鼠标选中二级菜单内容时 */
+            display: block;
+        }
+
+        .right {
+            float: right;
+            margin-right: 1%;
+            /* 两个li之间的距离*/
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 第二层导航栏 */
+
+        #navtu {
+            padding-left: 10%;
+            /* padding-top: 10px; */
+            display: block;
+
+        }
+
+        .nav-top {
+            background: #cfdbe4;
+            height: 140px;
+            /* 设置宽度高度背景颜色 */
+            width: 100%;
+            margin-left: 0;
+            /* background: rgb(181, 241, 168); */
+            position: fixed;
+            /*固定在顶部*/
+            top: 28px;
+            /*离顶部的距离为0*/
+            margin-bottom: 0px;
+            left: 0;
+            z-index: 9;
+        }
+
+        .nav-top ul {
+            /* 清除ul标签的默认样式 */
+            width: auto;
+            /*宽度也改为自动*/
+            list-style-type: none;
+            white-space: nowrap;
+            overflow: hidden;
+            margin-left: 5%;
+            /* margin-top: 0;          */
+            padding: 0;
+
+        }
+
+        .nav-top li {
+            float: left;
+            /* 使li内容横向浮动，即横向排列  */
+            margin-right: 2%;
+            /* 两个li之间的距离*/
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-top li a {
+            /* 设置链接内容显示的格式*/
+            display: block;
+            /* 把链接显示为块元素可使整个链接区域可点击 */
+            color: blue;
+            text-align: center;
+            padding: 3px;
+            overflow: hidden;
+            text-decoration: none;
+            /* 去除下划线 */
+
+        }
+
+        .nav-top li a:hover {
+            /* 鼠标选中时背景变为黑色 */
+            background-color: rgb(78, 187, 230);
+            color: white;
+        }
+
+        .nav-top ul li ul {
+            /* 设置二级菜单 */
+            margin-left: -0.2px;
+            background: rgb(189, 181, 181);
+            position: relative;
+            display: none;
+            /* 默认隐藏二级菜单的内容 */
+
+        }
+
+        .nav-top ul li ul li {
+            /* 二级菜单li内容的显示 */
+
+            float: none;
+            text-align: center;
+        }
+
+        .nav-top ul li:hover ul {
+            /* 鼠标选中二级菜单内容时 */
+            display: block;
+        }
+
+
+        /* 搜索栏 */
+        .bar1 {
+            background: #A3D0C3;
+        }
+
+        .bar1 input {
+            /* margin-left: 20%; */
+            border: 2px solid #7BA7AB;
+            width: 600px;
+            border-radius: 5px;
+            background: #F9F0DA;
+            color: #9E9C9C;
+            height: 40px;
+
+        }
+
+        .bar1 button {
+            top: 0;
+            /* : 0; */
+            background: #7BA7AB;
+            border-radius: 0 5px 5px 0;
+            height: 40px;
+        }
+
+        /* body */
+
+        .bodyinfo {
+            display: inline-block;
+            padding: auto;
+            width: 60%;
+            position: relative;
+            left: 60%;
+            margin-left: -550px;
+            vertical-align: top;
+            border: #545652;
+            background-size: 92%;
+            top: 170px;
+            overflow: visible;
+        }
+
+        /* 推荐 */
+        #ol1 li {
+            float: left;
+            padding: 20px 30px 30px 20px;
+            list-style: none;
+
+        }
+
+        .tjbtn {
+            display: inline-block;
+            margin: auto;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .tjbtn a {
+            /* text-decoration: none */
+            font-size: 30px;
+            text-decoration: none;
+            padding: 0px 30px 0px 30px;
+        }
+
+        /* 推荐轮播图 */
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul li {
+            list-style: none;
+        }
+
+        .imgdiv {
+            /* margin: 200px auto 0; */
+            overflow: hidden;
+            position: relative;
+        }
+
+        .imgdiv ul {
+            display: flex;
+            transition: left 1s linear;
+            /*动画效果*/
+            position: absolute;
+        }
+
+        .imgdiv span {
+            cursor: pointer;
+        }
+
+        .imgdiv span.lf {
+            position: absolute;
+            left: 250px;
+        }
+
+        .imgdiv span.rf {
+            position: absolute;
+            right: 10px;
+        }
+
+        .imgdiv>div {
+            margin: 0 auto;
+            position: absolute;
+            left: 0;
+            bottom: 20px;
+            display: flex;
+        }
+
+        .newsdiv {
+            width: 0;
+            height: 0;
+            border: 10px solid rgb(139, 138, 138);
+            border-radius: 50%;
+            margin: 0 20px;
+            cursor: pointer;
+            opacity: 0.3;
+        }
+
+        .lf {
+            background-color: rgb(0, 162, 255);
+            color: white;
+            border-radius: 50%;
+            /* float: right; */
+            height: 30px;
+            width: 30px;
+            font-size: 25px;
+            font-weight: 3000px;
+        }
+
+        .rf {
+            background-color: rgb(0, 162, 255);
+            color: white;
+            border-radius: 50%;
+            float: right;
+            height: 30px;
+            width: 30px;
+            font-size: 25px;
+            font-weight: 3000px;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+
+    <!-- 顶层导航栏 -->
+    <div class="top">
+        <ul>
+            <li class="left"><a href="https://www.douban.com/">豆瓣</a></li>
+            <li class="left"><a href="https://book.douban.com/">读书</a></li>
+            <li class="left"><a href="我的链接">电影</a></li>
+            <li class="left"><a href="https://music.douban.com/">音乐</a></li>
+            <li class="left"><a href="https://www.douban.com/location">同城</a></li>
+            <li class="left"><a href="https://www.douban.com/group">小组</a></li>
+            <li class="left"><a href="https://read.douban.com/?dcs=top-nav&dcm=douban">阅读</a></li>
+            <li class="left"><a href="https://douban.fm/?from_=shire_top_nav">FM</a></li>
+            <li class="left"><a href="https://time.douban.com/?dt_time_source=douban-web_top_nav">时间</a></li>
+            <li class="left"><a
+                    href="https://market.douban.com/?utm_campaign=douban_top_nav&utm_source=douban&utm_medium=pc_web">豆品</a>
+            </li>
+
+            <li class="right"><a href="#">注册/登录</a>
+            <li class="right"><a href="#">下载豆瓣客户端</a>
+                <ul>
+                    <li> <a href="javascript: ;"><img src="../模块/logo.png" width="150px" height="150px"></a></li>
+                    <li> <a href="javascript: ;"><img src="../模块/pin.png" width="150px" height="150px"></a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 第二层导航栏 -->
+    <div class="nav-top">
+
+        <ul class="search">
+            <li>
+            <li id="navtu"><a href="https://movie.douban.com/">
+                    <img src="../模块/lg_movie@2x.png" width="142" height="30" alt="豆瓣">
+                </a></li>
+            </li>
+            <li>
+                <div class="bar1">
+                    <form>
+                        <input type="text" id="find" placeholder="来看看你想要找什么">
+                        <button id="ssbtn">🔍</button>
+                    </form>
+                </div>
+            </li>
+        </ul>
+        <HR style="FILTER: alpha(opacity=100,finishopacity=0,style=3)" width="100%" color=lightblue SIZE=1>
+
+        <ul class="sec">
+
+            <li><a href="#">我看</a></li>
+            <li><a href="#">影讯&购票</a></li>
+            <li><a href="#">选电影</a></li>
+            <li><a href="#">电视剧</a></li>
+            <li><a href="#">排行榜</a></li>
+            <li><a href="#">分类</a></li>
+            <li><a href="#">影评</a></li>
+            <li><a href="#">2021年度榜单</a></li>
+            <li><a href="#">2021影音报告</a></li>
+        </ul>
+    </div>
+
+    <div class="bodyinfo">
+        <!-- 推荐电影 -->
+        <div style="border: green; padding-bottom: 30px;">
+            <p style="font-size: 20px;">最近热门电影</p>
+            <div>
+                <ol id="ol1">
+
+                </ol>
+            </div>
+            <br>
+            <div class="tjbtn">
+                <a href="#" class="pagez"> ﹤ </a>
+                <a href="#" class="pageChange" pageNum="0">·</a>
+                <a href="#" class="pageChange" pageNum="1">·</a>
+                <a href="#" class="pageChange" pageNum="2">·</a>
+                <a href="#" class="pagej"> ﹥ </a>
+            </div>
+        </div>
+
+        <!-- 热门推荐(轮播图) -->
+        <div class="imgdiv" style="width: 350px; height:240px;">
+            <span style="font-size: 30px;">热门推荐</span>
+            <span class="lf">﹤</span>
+            <span class="rf">﹥</span>
+            <ul style="left: 0;">
+                <li><a href="https://movie.douban.com/trailer/281510/?from=gallery" target="_blank" data-fid="3636">
+                        <img src="https://img2.doubanio.com/view/movie_gallery_frame_hot_rec/m/public/cc5e7f948d3f8a1.jpg"
+                            alt="《权游》前传《龙之家族》预告" width="350" height="240">
+                    </a>
+                </li>
+                <li><a href="https://movie.douban.com/trailer/286312/?from=gallery" target="_blank" data-fid="3661">
+                        <img src="https://img2.doubanio.com/view/movie_gallery_frame_hot_rec/m/public/2f9e84350932c7e.jpg"
+                            alt="《奇异博士2》官方中字预告" width="350" height="240">
+                    </a>
+                </li>
+                <li><a href="https://movie.douban.com/trailer/283940/?from=gallery" target="_blank" data-fid="3654">
+                        <img src="https://img9.doubanio.com/view/movie_gallery_frame_hot_rec/m/public/6b2ca4cd4ec4716.jpg"
+                            alt="《蜘蛛侠：平行宇宙》续集中字预告" width="350" height="240">
+                    </a>
+                </li>
+                <li><a href="https://movie.douban.com/annual/2021?from=gallery" target="_blank" data-fid="3662">
+                        <img src="https://img9.doubanio.com/view/movie_gallery_frame_hot_rec/m/public/9fa60a39642e964.jpg"
+                            alt="「豆瓣2021年度电影榜单」揭晓" width="350" height="240">
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+
+
+</body>
+<script src="./main/推荐.js"></script>
+<script src="./main/推荐轮播图.js"></script>
+<script src="./main/搜索.js"></script>
+
+</html>
