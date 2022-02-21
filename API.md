@@ -4,7 +4,7 @@ API
 
 ## `POST` `/login`
 
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -27,7 +27,7 @@ API
 # Register
 
 ## `POST` `register`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -52,7 +52,7 @@ API
 # User
 
 ## `POST` `/user/change`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `修改密码`
 
@@ -79,7 +79,7 @@ API
 |`ture`|`"修改成功"`|修改成功|
 
 ## `POST` `/user/uploadAvatar`
-### `multipart/form-data`
+### `multipart/form-data` `Headers`
 #### `用户上传头像`
 | 请求参数     | 类型 | 备注   |
 | -------- | ---- | ------ |
@@ -99,7 +99,7 @@ API
 |`ture`|`设置成功`|设置成功|
 
 ## `POST` `/user/introduce`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 #### `设置自我介绍`
 
 | 请求参数     | 类型 | 备注   |
@@ -119,7 +119,7 @@ API
 |`ture`|`设置成功`|设置成功|
 
 ## `POST` `/user/setQuestion`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `设置密保问题`
 
@@ -144,7 +144,7 @@ API
 |`ture`|`设置成功`|`设置成功`|
 
 ## `POST` `/user/retrieve`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `通过密保找回密码`
 
@@ -499,7 +499,7 @@ data:{
 }
 ```
 ## `POST` `/movie/:movieNum/wantSee`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户设置想看`
 
@@ -523,7 +523,7 @@ data:{
 |`ture`|`成功`|设置成功|
 
 ## `POST` `/movie/:movieNum/seen`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户设置看过`
 
@@ -547,7 +547,7 @@ data:{
 |`ture`|`"成功"`|设置成功|
 
 ## `DELETE` `/movie/:movieNum/wantSee`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户删除想看内容`
 
@@ -570,7 +570,7 @@ data:{
 |`ture`|`删除成功`|成功|
 
 ## `DELETE` `/movie/:movieNum/seen`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户删除看过内容`
 
@@ -593,7 +593,7 @@ data:{
 |`ture`|`删除成功`|成功|
 
 ## `POST` `/movie/:movieNum/longComment`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户给予影评`
 
@@ -620,7 +620,7 @@ data:{
 |`ture`|`成功`|成功|
 
 ## `DELETE` `/movie/:movieNum/longComment`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户删除影评`
 
@@ -643,7 +643,7 @@ data:{
 |`ture`|`删除成功`|成功|
 
 ## `PUT` `/movie/:movieNum/longComment`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户更新短评`
 
@@ -669,7 +669,7 @@ data:{
 |`ture`|`更新成功`|成功|
 
 ## `POST` `/movie/:movieNum/shortComment`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户给予短评`
 
@@ -695,7 +695,7 @@ data:{
 |`false`|`token已过期`|`token`已过期|
 |`ture`|`"成功"`|成功|
 ## `DELETE` `/movie/:movieNum/shortComment`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户删除短评`
 
@@ -718,7 +718,7 @@ data:{
 |`ture`|`"删除成功"`|成功|
 
 ## `PUT` `/movie/:movieNum/shortComment`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户更新短评`
 
@@ -744,7 +744,7 @@ data:{
 |`ture`|`更新成功`|成功|
 
 ## `POST` `/movie/:movieNum/commentArea`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户发表讨论区话题`
 
@@ -771,7 +771,7 @@ data:{
 |`ture`|`成功`|设置成功|
 
 ## `DELETE` `/movie/:movieNum/:areaNum`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户删除讨论区话题`
 
@@ -797,7 +797,7 @@ data:{
 |`ture`|`删除成功`|设置成功|
 
 ## `PUT` `/movie/:movieNum/commentArea`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户更新讨论区话题`
 
@@ -823,7 +823,7 @@ data:{
 |`ture`|`更新成功`|设置成功|
 
 ## `POST` `/movie/:movieNum/:areaNum/like`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户点赞讨论区话题`
 
@@ -847,7 +847,7 @@ data:{
 |`ture`|`点赞成功!`|成功|
 
 ## `POST` `/movie/:movieNum/:areaNum/like`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户取消点赞讨论区话题`
 
@@ -871,7 +871,7 @@ data:{
 
 ##  `POST` `/movie/:movieNum/:areaNum/comment`
 
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户发表评论（讨论区话题`
 
@@ -897,7 +897,7 @@ data:{
 |`ture`|`成功`|设置成功|
 
 ## `DELETE` `/movie/:movieNum/:areaNum/comment`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户删除评论（讨论区话题`
 
@@ -922,7 +922,7 @@ data:{
 |`ture`|`删除成功`|设置成功|
 
 ## `PUT` `/movie/:movieNum/:areaNum/comment`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户更新评论（讨论区话题`
 
@@ -948,7 +948,7 @@ data:{
 |`ture`|`更新成功`|设置成功|
 
 ## `POST` `/movie/:movieNum/:areaNum/comment/like`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户点赞评论（讨论区话题`
 
@@ -973,7 +973,7 @@ data:{
 |`ture`|`点赞成功!`|成功|
 
 ## `POST` `/movie/:movieNum/:areaNum/comment/like`
-### `application/x-www-form-urlencoded`
+### `application/x-www-form-urlencoded` `Headers`
 
 #### `用户取消点赞评论（讨论区话题`
 
@@ -998,7 +998,7 @@ data:{
 
 #Administrator
 ## `POST` `/administrator/setNewMovie`
-### `multipart/form-data`
+### `multipart/form-data` `Headers`
 
 #### `管理员添加电影信息`
 
