@@ -1,0 +1,122 @@
+<html>
+
+<head>
+    <style type="text/css">
+        .top {
+            /* 处理顶层 */
+            position: fixed;
+            top: 0;
+            height: 28px;
+            color: #d5d5d5;
+            background-color: #545652;
+            min-width: 950px;
+            width: 100%;
+            left: 0;
+        }
+
+        .top ul {
+            list-style-type: none;
+            white-space: nowrap;
+            overflow: hidden;
+            margin-left: 0;
+            margin-top: 0;
+            padding: 0;
+        }
+
+        .left {
+            float: left;
+            /* 使li内容横向浮动，即横向排列  */
+            margin-right: 1%;
+            /* 两个li之间的距离*/
+            position: relative;
+            overflow: hidden;
+        }
+
+        .top li a {
+            /* 设置链接内容显示的格式*/
+            display: block;
+            /* 把链接显示为块元素可使整个链接区域可点击 */
+            color: #d5d5d5;
+            text-align: center;
+            padding: 6px;
+            overflow: hidden;
+            text-decoration: none;
+            font-size: 12px;
+            /* 去除下划线 */
+
+        }
+
+
+
+        .top ul li ul {
+            /* 设置二级菜单 */
+            margin-left: -0.2px;
+            background: #545652;
+            position: relative;
+            display: none;
+            /* 默认隐藏二级菜单的内容 */
+
+        }
+
+        .top ul li ul li {
+            /* 二级菜单li内容的显示 */
+
+            float: none;
+            text-align: center;
+        }
+
+        .top ul li:hover ul {
+            /* 鼠标选中二级菜单内容时 */
+            display: block;
+        }
+
+        .right {
+            float: right;
+            margin-right: 1%;
+            /* 两个li之间的距离*/
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
+
+<body>
+    <div class="top">
+        <ul>
+            <li class="left"><a href="https://www.douban.com/">豆瓣</a></li>
+            <li class="left"><a href="https://book.douban.com/">读书</a></li>
+            <li class="left"><a href="我的链接">电影</a></li>
+            <li class="left"><a href="https://music.douban.com/">音乐</a></li>
+            <li class="left"><a href="https://www.douban.com/location">同城</a></li>
+            <li class="left"><a href="https://www.douban.com/group">小组</a></li>
+            <li class="left"><a href="https://read.douban.com/?dcs=top-nav&dcm=douban">阅读</a></li>
+            <li class="left"><a href="https://douban.fm/?from_=shire_top_nav">FM</a></li>
+            <li class="left"><a href="https://time.douban.com/?dt_time_source=douban-web_top_nav">时间</a></li>
+            <li class="left"><a
+                    href="https://market.douban.com/?utm_campaign=douban_top_nav&utm_source=douban&utm_medium=pc_web">豆品</a>
+            </li>
+
+            <li class="right"><a href="#">nickname的账号</a>
+                <ul>
+                    <li><a href="主页地址">个人主页</a></li>
+                    <li><a href="#">我的订单</a></li>
+                    <li><a href="#">我的钱包</a></li>
+                    <li><a href="#">账号设置</a></li>
+                    <li><a href="#">退出</a></li>
+                </ul>
+            </li>
+            <li class="right"><a href="#">豆邮</a></li>
+            <li class="right"><a href="#">提醒</a></li>
+            <li class="right"><a href="#">下载豆瓣客户端</a>
+                <ul>
+                    <li> <a href="javascript: ;"><img src="./logo.png" width="150px" height="150px"></a></li>
+                    <li> <a href="javascript: ;"><img src="./pin.png" width="150px" height="150px"></a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</body>
+</head>
+
+<!-- 本页内容部分参考blog：https://blog.csdn.net/man_zuo/article/details/82790384 -->
+
+</html>
