@@ -36,7 +36,7 @@ function getin() {
                     document.getElementById('introduce').innerHTML = introduce;
                 }
                 else {
-                    document.getElementById('introduce').innerHTML = "快来更新你的简介吧";
+                    document.getElementById('intro').innerHTML = "快来更新你的简介吧";
                 }
             }
         }
@@ -51,6 +51,8 @@ getin();
 
 let fix = document.getElementById('fix')
 let fixb = document.getElementById('fixbox')
+let signature = document.getElementById('signature')
+
 fix.onclick = function () {
     fixb.style.display = "inline"
     fix.style.display = "none"
@@ -60,6 +62,7 @@ let fixa = document.getElementById('fixa')
 fixa.onclick = function () {
     fixb.style.display = "none";
     fix.style.display = "inline"
+    document.getElementById('intro').innerHTML = signature.value;
 }
 
 let can = document.getElementById('cancel')

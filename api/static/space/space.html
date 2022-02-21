@@ -208,7 +208,7 @@
             left: 50%;
             margin-left: -550px;
             vertical-align: top;
-            background-color: aqua;
+            /* background-color: aqua; */
             background-size: 92%;
             top: 150px;
             overflow: visible;
@@ -278,6 +278,10 @@
 
         .wantSee {
             float: left;
+        }
+
+        .class {
+            background-color: rgb(166, 247, 220);
         }
     </style>
 
@@ -370,10 +374,9 @@
                             <div><span id="intro">introduce</span>
                                 <span><button id="fix">修改</button></span>
                                 <div>
-                                    <form style="display: none;" action="接口" method="post" id="fixbox"
-                                        enctype='application/json'>
+                                    <form style="display: none;" method="post" id="fixbox" enctype='application/json'>
                                         <input id="signature" type="text" size="30" maxlength="30" />
-                                        <input class="submit" type="submit" value="修改" id="fixa" />
+                                        <input class="submit" type="button" value="修改" id="fixa" />
                                         <input class="cancel" type="button" value="取消" id='cancel' />
                                     </form>
                                 </div>
@@ -419,16 +422,24 @@
                 </div>
             </div>
 
-            <div class="movie">
+            <div class="diray">
+                我看——————————————（1部想看，2部看过）
+                <h4>想看</h4>
                 <div class="WantSeebox">
-
+                    <img src="https://img2.doubanio.com/view/photo/s_ratio_poster/public/p480747492.webp" width="185px"
+                        height="250px"></li>
                 </div>
+                <h4>看过</h4>
                 <div class="Seen">
-
+                    <img src="https://img2.doubanio.com/view/photo/s_ratio_poster/public/p480747492.webp" width="185px"
+                        height="250px">
+                    <img src="https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2678298618.webp" width="185px"
+                        height="250px">
                 </div>
             </div>
-            <script src="space.js"></script>
-            <script src="see.js"></script>
+        </div>
+        <script src="space.js"></script>
+        <script src="see.js"></script>
 </body>
 
 
