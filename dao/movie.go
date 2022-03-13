@@ -36,54 +36,68 @@ func DeleteShortComment(username string, movieNum int) error {
 
 func DeleteLongComment(username string, movieNum int) error {
 	var iUsername string
-	sqlStr := "select username from movie_Comment where username = ? and movieNum = ?"
+
+	//创建一个事务
+	sqlStr := "start transaction"
+	_, err := dB.Exec(sqlStr)
+	if err != nil {
+		return err
+	}
+
+	//查询影评
+	sqlStr = "select username from movie_Comment where username = ? and movieNum = ?"
 	stmt, err := dB.Prepare(sqlStr)
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
-
 	err = stmt.QueryRow(username, movieNum).Scan(&iUsername)
 	if err != nil {
 		return err
 	}
 
+	//删除影评
 	username = username + "已删除"
 	sqlStr = "update essay set username = ? where username = ? and movieNum = ?"
 	stmt, err = dB.Prepare(sqlStr)
 	if err != nil {
 		return err
 	}
-
 	_, err = stmt.Exec(username, iUsername, movieNum)
 	if err != nil {
 		return err
 	}
 
+	//查询相应影评数
 	sqlStr = "select commentNum from movie_Extra_Info where num = ?"
 	stmt, err = dB.Prepare(sqlStr)
 	if err != nil {
 		return err
 	}
-
 	var num int
 	err = stmt.QueryRow(movieNum).Scan(&num)
 	if err != nil {
 		return err
 	}
 
+	//更新影评数
 	num -= 1
 	sqlStr = "update movie_Extra_Info set commentNum = ? where num = ?"
 	stmt, err = dB.Prepare(sqlStr)
 	if err != nil {
 		return err
 	}
-
 	_, err = stmt.Exec(num, movieNum)
 	if err != nil {
 		return err
 	}
 
+	//无误后提交
+	sqlStr = "commit"
+	_, err = dB.Exec(sqlStr)
+	if err != nil {
+		return err
+	}
 	return err
 }
 

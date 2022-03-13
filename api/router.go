@@ -20,15 +20,15 @@ func InitEngine() {
 	userGroup := engine.Group("/user")
 	{
 		userGroup.Use(middleware.JwtToken)
-		userGroup.POST("/uploadAvatar", uploadAvatar)
-		userGroup.POST("/change", ChangePassword)
-		userGroup.POST("/introduce", SetIntroduce)
-		userGroup.POST("/setQuestion", SetQuestion)
+		userGroup.POST("/uploadAvatar", uploadAvatar) //上传头像
+		userGroup.POST("/change", ChangePassword)     //改密码
+		userGroup.POST("/introduce", SetIntroduce)    //设置自我介绍
+		userGroup.POST("/setQuestion", SetQuestion)   //设置密保
 	}
 
 	userInfo := engine.Group("/user")
 	{
-		userInfo.POST("/retrieve", Retrieve)
+		userInfo.POST("/retrieve", Retrieve)               //找回密码
 		userInfo.GET("/:username/menu", GetUserInfo)       //用户的信息（包括自我介绍,头像
 		userInfo.GET("/:username/Comment", GetUserComment) //获取用户的影评和短评
 		userInfo.GET("/:username/wantSee", WantSee)        //收藏夹
@@ -37,8 +37,8 @@ func InitEngine() {
 
 	home := engine.Group("/home")
 	{
-		home.GET("/research/:find", Find)
-		home.GET("/recommend", Recommend)
+		home.GET("/research/:find", Find) //搜索
+		home.GET("/recommend", Recommend) //推荐
 		home.GET("/:category", FindWithCategory)
 	}
 
