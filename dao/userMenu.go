@@ -43,7 +43,7 @@ func UserSeen(seen model.UserSeen) error {
 
 	// 人数加一并更新
 	movieExtra.SeenNum += 1
-	tX := tx.Model(&movieExtra).Update("seen_num = ?", movieExtra.SeenNum)
+	tX := tx.Model(&movieExtra).Update("seen_num", movieExtra.SeenNum)
 	if tX.Error != nil {
 		tx.Rollback()
 		return tX.Error
@@ -76,7 +76,7 @@ func UserWantSee(want model.UserWantSee) error {
 
 	// 人数加一并更新
 	movieExtra.WantSeeNum += 1
-	tX := tx.Model(&movieExtra).Update("want_see_num = ?", movieExtra.WantSeeNum)
+	tX := tx.Model(&movieExtra).Update("want_see_num", movieExtra.WantSeeNum)
 	if tX.Error != nil {
 		tx.Rollback()
 		return tX.Error
