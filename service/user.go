@@ -1,9 +1,9 @@
 package service
 
 import (
-	"database/sql"
 	"douban/dao"
 	"douban/model"
+	"gorm.io/gorm"
 )
 
 func UploadAvatar(user model.UserMenu) error {
@@ -15,6 +15,7 @@ func UploadAvatar(user model.UserMenu) error {
 }
 
 func SetQuestion(user model.UserEncrypted) (error, bool) {
+	// 对答案进行加密
 	var err error
 	err, user.Answer = Encryption(user.Answer)
 	if err != nil {
@@ -86,16 +87,16 @@ func GetUserSeen(username string) (error, []model.UserSeen) {
 	return err, seen
 }
 
-func UserSeen(user model.UserSeen) error {
-	err := dao.UserSeen(user)
+func UserSeen(seen model.UserSeen) error {
+	err := dao.UserSeen(seen)
 	if err != nil {
 		return err
 	}
 	return err
 }
 
-func UserWantSee(user model.UserWantSee) error {
-	err := dao.UserWantSee(user)
+func UserWantSee(wantSee model.UserWantSee) error {
+	err := dao.UserWantSee(wantSee)
 	if err != nil {
 		return err
 	}
@@ -103,7 +104,11 @@ func UserWantSee(user model.UserWantSee) error {
 }
 
 func GetUserComment(username string) (error, []model.ShortReview, []model.MovieReview) {
-	return dao.GetUserComment(username)
+	err, shortComments, longComments := dao.GetUserComment(username)
+	if err != nil {
+		return err, shortComments, longComments
+	}
+	return err, shortComments, longComments
 }
 
 func SelectComment(username string, movieNum, choose, areaNum int) (error, bool, int) {
@@ -136,20 +141,36 @@ func SelectComment(username string, movieNum, choose, areaNum int) (error, bool,
 	return nil, false, 0
 }
 
-func CommentMovie(movie model.MovieReview) error {
-	return dao.CommentMovie(movie)
+func CommentMovie(movieReview model.MovieReview) error {
+	err := dao.CommentMovie(movieReview)
+	if err != nil {
+		return err
+	}
+	return err
 }
 
-func Comment(movie model.ShortReview) error {
-	return dao.Comment(movie)
+func Comment(shortReview model.ShortReview) error {
+	err := dao.Comment(shortReview)
+	if err != nil {
+		return err
+	}
+	return err
 }
 
 func SetIntroduce(user model.UserMenu) error {
-	return dao.SetIntroduce(user)
+	err := dao.SetIntroduce(user)
+	if err != nil {
+		return err
+	}
+	return err
 }
 
 func GetUserMenu(username string) (error, model.UserMenu) {
-	return dao.UserMenuInfo(username)
+	err, user := dao.UserMenuInfo(username)
+	if err != nil {
+		return err, user
+	}
+	return err, user
 }
 
 func ChangePassword(user model.User) error {
@@ -165,19 +186,22 @@ func ChangePassword(user model.User) error {
 	return err
 }
 
-func CheckPassword(user model.User) (error, bool) {
-	err, check := dao.CheckPassword(user)
+func CheckPassword(username, password string) (error, bool) {
+	err, check := dao.CheckPassword(username)
 	if err != nil {
 		return err, false
 	}
-	err, res := Interpretation(check, user.Password)
+	err, res := Interpretation(check.Password, password)
+	if err != nil {
+		return err, false
+	}
 	return err, res
 }
 
 func CheckUsername(user model.User) (error, bool) {
 	err := dao.CheckUsername(user)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == gorm.ErrRecordNotFound {
 			err = nil
 			return err, true
 		}

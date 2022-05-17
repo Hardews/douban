@@ -1,12 +1,16 @@
 package api
 
 import (
-	"douban/middleware"
+	"context"
 	"douban/model"
+	"douban/proto"
 	"douban/service"
 	"douban/tool"
 	"fmt"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"gorm.io/gorm"
+	"log"
 	"path"
 	"strconv"
 	"time"
@@ -14,7 +18,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const address = "localhost:8070"
+const address = "127.0.0.1:8070"
 
 func uploadAvatar(c *gin.Context) {
 	var user model.UserMenu
@@ -86,7 +90,7 @@ func SetQuestion(c *gin.Context) {
 	}
 
 	// 检查输入密码是否正确
-	err, flag := service.CheckPassword(user)
+	err, flag := service.CheckPassword(user.Username, user.Password)
 	if err != nil {
 		tool.RespInternetError(c)
 		fmt.Println("check password failed,err:", err)
@@ -195,7 +199,7 @@ func ChangePassword(ctx *gin.Context) {
 		return
 	}
 
-	err, res := service.CheckPassword(user)
+	err, res := service.CheckPassword(user.Username, user.Password)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			tool.RespErrorWithDate(ctx, "无此账号")
@@ -230,72 +234,63 @@ func ChangePassword(ctx *gin.Context) {
 }
 
 func Login(ctx *gin.Context) {
-	var user model.User
 	var res bool
-	user.Username, res = ctx.GetPostForm("logName")
+	Username, res := ctx.GetPostForm("username")
 	if !res {
 		tool.RespErrorWithDate(ctx, "输入的账号为空")
 		return
 	}
-	user.Password, res = ctx.GetPostForm("password")
+	Password, res := ctx.GetPostForm("password")
 	if !res {
 		tool.RespErrorWithDate(ctx, "输入的密码为空")
 		return
 	}
 
-	err, flag := service.CheckPassword(user)
+	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		tool.RespInternetError(ctx)
-		fmt.Println("check password failed,err:", err)
-		return
+		log.Fatalf("did not connect: %v", err)
 	}
+	defer conn.Close()
 
-	if !flag {
-		tool.RespErrorWithDate(ctx, "密码错误")
+	c := proto.NewDoubanClient(conn)
+
+	resp, err := c.Login(context.Background(), &proto.User{UserName: Username, PassWord: Password, Nickname: ""})
+	if err != nil && !resp.OK {
+		tool.RespInternetError(ctx)
+		fmt.Println(err)
 		return
-	} else {
-		token, flag := middleware.SetToken(user.Username, "")
-		if !flag {
-			tool.RespInternetError(ctx)
-			return
-		}
-		tool.RespSuccessfulWithDate(ctx, token)
 	}
+	tool.RespSuccessfulWithDate(ctx, resp.Token)
+
 }
 
 func Register(ctx *gin.Context) {
-	var user model.User
-	user.Username, _ = ctx.GetPostForm("signName")
-	user.Password, _ = ctx.GetPostForm("signPassword")
-	user.Nickname, _ = ctx.GetPostForm("nickName")
+	Username, _ := ctx.GetPostForm("signName")
+	Password, _ := ctx.GetPostForm("signPassword")
+	Nickname, _ := ctx.GetPostForm("nickName")
 
-	if user.Username == "" {
+	if Username == "" {
 		tool.RespErrorWithDate(ctx, "用户名为空")
 		return
 	}
-	if user.Password == "" {
+	if Password == "" {
 		tool.RespErrorWithDate(ctx, "密码为空")
 		return
 	}
 
-	err, flag := service.CheckUsername(user)
+	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := proto.NewDoubanClient(conn)
+
+	resp, err := c.Register(ctx, &proto.User{UserName: Username, PassWord: Password, Nickname: Nickname})
+	if err != nil && !resp.OK {
 		tool.RespInternetError(ctx)
-		fmt.Println("check username failed,err:", err)
+		fmt.Println(err)
 		return
 	}
 
-	if !flag {
-		tool.RespErrorWithDate(ctx, "账号已存在")
-		return
-	}
-
-	err = service.WriteIn(user)
-	if err != nil {
-		tool.RespInternetError(ctx)
-		fmt.Println("set new user failed,err:", err)
-		return
-	}
-
-	tool.RespSuccessful(ctx)
+	tool.RespSuccessfulWithDate(ctx, resp.Token)
 }

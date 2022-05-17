@@ -25,8 +25,8 @@ func SetQuestion(user model.UserEncrypted) (error, bool) {
 	}
 
 	// 创建密保
-	t := dB.Create(&user)
-	if err := t.Error; err != nil {
+	dB.Create(&user)
+	if err := dB.Create(&user).Error; err != nil {
 		return err, false
 	}
 	return nil, true
@@ -58,13 +58,13 @@ func ChangePassword(user model.User) error {
 	return nil
 }
 
-func CheckPassword(user model.User) (error, string) {
+func CheckPassword(username string) (error, model.User) {
 	var check model.User
-	tx := dB.Where("username = ?", user.Username).First(&model.User{}).Scan(&check)
+	tx := dB.Where("username = ?", username).First(&model.User{}).Scan(&check)
 	if err := tx.Error; err != nil {
-		return err, check.Password
+		return err, check
 	}
-	return nil, check.Password
+	return nil, check
 }
 
 func CheckUsername(user model.User) error {
@@ -79,8 +79,8 @@ func CheckUsername(user model.User) error {
 func WriteIn(user model.User) error {
 	tx := dB.Begin()
 
-	t := tx.Create(&user)
-	if err := t.Error; err != nil {
+	dx := tx.Create(&user)
+	if err := dx.Error; err != nil {
 		tx.Rollback()
 		return err
 	}
@@ -88,8 +88,8 @@ func WriteIn(user model.User) error {
 	// 创建个人信息初始数据
 	var userMenu model.UserMenu
 	userMenu.Username = user.Username
-	t = tx.Create(&userMenu)
-	if err := t.Error; err != nil {
+	dx = tx.Create(&userMenu)
+	if err := dx.Error; err != nil {
 		tx.Rollback()
 		return err
 	}

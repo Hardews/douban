@@ -24,5 +24,4 @@ func Cors(c *gin.Context) {
 	if method == "OPTIONS" {
 		c.AbortWithStatus(http.StatusNoContent)
 	}
-	c.Next()
 }
