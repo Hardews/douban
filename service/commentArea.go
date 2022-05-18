@@ -15,11 +15,7 @@ func DoNotLikeTopic(username string, areaNum int) error {
 }
 
 func DoNotLikeComment(username string, areaNum, commentNum int) error {
-	err := dao.DoNotLikeComment(username, areaNum, commentNum)
-	if err != nil {
-		return err
-	}
-	return err
+	return dao.DoNotLikeComment(username, areaNum, commentNum)
 }
 
 func DeleteComment(username string, movieNum, areaNum int) (error, bool) {

@@ -90,7 +90,7 @@ func GetUserInfo(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"username":  username,
-		"nickName":  user.NickName,
+		"nickName":  user.Nickname,
 		"introduce": user.Introduce,
 		"img":       user.Img,
 		"address":   user.ImgAddress,

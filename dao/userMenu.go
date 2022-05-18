@@ -234,7 +234,7 @@ func UserMenuInfo(username string) (error, model.User) {
 	if err != nil {
 		return err, user
 	}
-	err = stmt.QueryRow(username).Scan(&user.NickName, &user.Img, &user.ImgAddress)
+	err = stmt.QueryRow(username).Scan(&user.Nickname, &user.Img, &user.ImgAddress)
 	if err != nil {
 		return err, user
 	}

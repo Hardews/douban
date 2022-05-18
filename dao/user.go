@@ -125,7 +125,7 @@ func WriteIn(user model.User) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(user.Username, user.Password, user.NickName)
+	_, err = stmt.Exec(user.Username, user.Password, user.Nickname)
 	if err != nil {
 		return err
 	}
