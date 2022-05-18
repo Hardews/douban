@@ -30,50 +30,26 @@ func DeleteLongComment(username string, movieNum int) (error, bool) {
 	return err, true
 }
 
-func DeleteSeen(movieNum int, label, username string) error {
-	err := dao.DeleteSeen(movieNum, label, username)
-	if err != nil {
-		return err
-	}
-	return err
+func DeleteSeen(user model.UserSeen) error {
+	return dao.DeleteSeen(user)
 }
 
-func DeleteWantSee(movieNum int, label, username string) error {
-	err := dao.DeleteWantSee(movieNum, label, username)
-	if err != nil {
-		return err
-	}
-	return err
+func DeleteWantSee(user model.UserWantSee) error {
+	return dao.DeleteWantSee(user)
 }
 
-func SetCommentArea(username, topic string, movieNum int) error {
-	err := dao.SetCommentArea(username, topic, movieNum)
-	if err != nil {
-		return err
-	}
-	return err
+func SetCommentArea(area model.CommentArea) error {
+	return dao.SetCommentArea(area)
 }
 
-func GetComment(num int) (error, []model.UserComment) {
-	err, comments := dao.GetComment(num)
-	if err != nil {
-		return err, comments
-	}
-	return err, comments
+func GetComment(num int) (error, []model.MovieReview) {
+	return dao.GetComment(num)
 }
 
-func GetMovieComment(num int) (error, []model.UserComment) {
-	err, comments := dao.GetMovieComment(num)
-	if err != nil {
-		return err, comments
-	}
-	return err, comments
+func GetMovieComment(num int) (error, []model.ShortReview) {
+	return dao.GetMovieComment(num)
 }
 
 func GetAMovieInfo(movieNum int) (error, model.MovieInfo) {
-	err, movie := dao.GetAMovieInfo(movieNum)
-	if err != nil {
-		return err, movie
-	}
-	return err, movie
+	return dao.GetAMovieInfo(movieNum)
 }

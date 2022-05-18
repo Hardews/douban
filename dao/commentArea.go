@@ -1,468 +1,286 @@
 package dao
 
 import (
-	"database/sql"
 	"douban/model"
+	"gorm.io/gorm"
 )
 
 func SelectArea(username string, movieNum int) (error, bool, int) {
 	var num int
-	sqlStr := "select num from comment_Area where username = ? and movieNum = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err, false, 0
-	}
-	defer stmt.Close()
-
-	err = stmt.QueryRow(username, movieNum).Scan(&num)
-	if err != nil {
-		if err == sql.ErrNoRows {
+	tx := dB.Model(&model.CommentArea{}).Select("num").Where("username = ? AND movie_num = ?", username, movieNum).Scan(&num)
+	if err := tx.Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
 			err = nil
 			return err, true, 0
 		}
 		return err, false, 0
 	}
-	return err, true, num
+	return nil, true, num
 }
 
 func SelectComment(username string, movieNum, areaNum int) (error, bool, int) {
 	var num int
-	sqlStr := "select no from comment where username = ? and movieNum = ? and areaNum = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err, false, 0
-	}
-	defer stmt.Close()
-
-	err = stmt.QueryRow(username, movieNum, areaNum).Scan(&num)
-	if err != nil {
-		if err == sql.ErrNoRows {
+	tx := dB.Model(&model.Comment{}).Select("num").Where("username = ? AND movie_num = ? AND comment_id = ?", username, movieNum, areaNum).Scan(&num)
+	if err := tx.Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
 			return err, true, 0
 		}
 		return err, false, 0
 	}
-	return err, true, num
+	return nil, true, num
 }
 
-func UpdateComment(username, txt string, movieNum, areaNum int) error {
-	sqlStr := "update comment set txt=? where movieNum = ? and username = ? and areaNum = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
+func UpdateComment(username, txt string, areaNum int) error {
+	tx := dB.Model(&model.Comment{}).Where("username = ? AND comment_id = ?", username, areaNum).Update("txt", txt)
+	if err := tx.Error; err != nil {
 		return err
 	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(txt, movieNum, username, areaNum)
-	if err != nil {
-		return err
-	}
-	return err
+	return nil
 }
 
 func UpdateCommentArea(username, txt string, movieNum int) error {
-	sqlStr := "update comment_Area set topic=? where movieNum = ? and username = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
+	tx := dB.Model(&model.CommentArea{}).Where("username = ? AND movie_num = ?", username, movieNum).Update("txt", txt)
+	if err := tx.Error; err != nil {
 		return err
 	}
+	return nil
+}
 
-	_, err = stmt.Exec(txt, movieNum, username)
-	if err != nil {
-		return err
-	}
+func DoNotLikeTopic(likeUser model.TopicLike) error {
+	// 事务开启
+	tx := dB.Begin()
+	var user model.TopicLike
 
-	err, _, areaNum := SelectArea(username, movieNum)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			err = nil
-			return err
+	// 检查是否点过赞
+	t := tx.Where("username = ? AND topic_id = ?", likeUser.Username, likeUser.TopicId).Find(&model.TopicLike{}).Scan(&user)
+	if t.Error != nil {
+		if t.Error == gorm.ErrRecordNotFound {
+			t.Error = nil
 		}
+		return t.Error
+	}
+
+	// 删除点赞记录
+	t = tx.Delete(&likeUser)
+	if err := t.Error; err != nil {
+		tx.Rollback()
 		return err
 	}
 
-	sqlStr = "DELETE FROM comment where areaNum = ? and movieNum = ?;"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(areaNum, movieNum)
-	if err != nil {
-		return err
-	}
-	return err
-}
-
-func DoNotLikeTopic(username string, areaNum int) error {
+	// 对点赞数进行减一并保存
 	var likeNum int
-	sqlStr := "select likeNum from comment_Area where num = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err
+	t = tx.Model(&model.CommentArea{}).Select("like_num").Where("id = ? AND topic_id = ?", likeUser.Username, likeUser.TopicId).Scan(&likeNum)
+	if t.Error != nil {
+		tx.Rollback()
+		return t.Error
 	}
 
-	err = stmt.QueryRow(areaNum).Scan(&likeNum)
-	if err != nil {
-		return err
+	likeNum -= 1
+	t = tx.Model(&model.CommentArea{}).Select("like_num").Where("id = ? AND topic_id = ?", likeUser.Username, likeUser.TopicId).Update("like_num", likeNum)
+	if t.Error != nil {
+		tx.Rollback()
+		return t.Error
 	}
-
-	var iUsername string
-	sqlStr = "select username from topic_Like where username = ? and topicNum = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-
-	err = stmt.QueryRow(username, areaNum).Scan(&iUsername)
-	if err != nil {
-		return err
-	}
-
-	sqlStr = "delete topic_Like where username = ? and topicNum = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-
-	_, err = stmt.Exec(username, areaNum)
-	if err != nil {
-		return err
-	}
-
-	likeNum = likeNum - 1
-	sqlStr = "update comment_Area set likeNum = ? where num = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(likeNum, areaNum)
-	return err
+	// 无误后提交
+	tx.Commit()
+	return nil
 }
 
-func DoNotLikeComment(username string, areaNum, commentNum int) error {
+func DoNotLikeComment(likeUser model.CommentLike) error {
+	// 事务开启
+	tx := dB.Begin()
+	var user model.CommentLike
+
+	// 检查是否点过赞
+	t := tx.Where("username = ? AND comment_id", likeUser.Username, likeUser.CommentId).Find(&model.CommentLike{}).Scan(&user)
+	if t.Error != nil {
+		if t.Error == gorm.ErrRecordNotFound {
+			t.Error = nil
+			return nil
+		}
+		return t.Error
+	}
+
+	// 删除点赞记录
+	t = tx.Where("username = ? AND comment_id", likeUser.Username, likeUser.CommentId).Delete(&likeUser)
+	if err := t.Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// 对点赞数进行减一并保存
 	var likeNum int
-	sqlStr := "select likeNum from comment where num = ? and no = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err
+	t = tx.Model(&model.Comment{}).Select("username = ? AND comment_id", likeUser.Username, likeUser.CommentId).First(&likeNum).Scan(&likeNum)
+	if t.Error != nil {
+		tx.Rollback()
+		return t.Error
 	}
 
-	err = stmt.QueryRow(areaNum, commentNum).Scan(&likeNum)
-	if err != nil {
-		return err
+	likeNum -= 1
+	t = tx.Model(&model.Comment{}).Select("username = ? AND comment_id", likeUser.Username, likeUser.CommentId).Update("like_num", likeNum)
+	if t.Error != nil {
+		tx.Rollback()
+		return t.Error
 	}
-
-	var iUsername string
-	sqlStr = "select username from comment_Like where username = ? and topicNum = ? and commentNum = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-
-	err = stmt.QueryRow(username, areaNum, commentNum).Scan(&iUsername)
-	if err != nil {
-		return err
-	}
-
-	sqlStr = "delete comment_Like where username = ? and topicNum = ? and commentNum = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-
-	_, err = stmt.Exec(username, areaNum, commentNum)
-	if err != nil {
-		return err
-	}
-
-	likeNum = likeNum - 1
-	sqlStr = "update comment set likeNum = ? where num = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(likeNum, areaNum)
-	return err
+	// 无误后提交
+	tx.Commit()
+	return nil
 }
 
-func DeleteComment(username string, movieNum, areaNum int) error {
-	var iMovieNum, iAreaNum, iCommentNum string
-	sqlStr := "select movieNum,num,no from comment where movieNum = ? and areaNum = ? and username = ? "
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
+func DeleteComment(user model.Comment) error {
+	tx := dB.Delete(&user)
+	if err := tx.Error; err != nil {
 		return err
 	}
-
-	err = stmt.QueryRow(movieNum, areaNum, username).Scan(&iMovieNum, &iAreaNum, &iCommentNum)
-	if err != nil {
-		return err
-	}
-
-	iMovieNum, iAreaNum, iCommentNum = iMovieNum+"已删除", iAreaNum+"已删除", iCommentNum+"已删除"
-	sqlStr = "update comment set movieNum = ?,num = ?,no = ? where movieNum = ? and areaNum = ? and username = ? "
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(iMovieNum, iAreaNum, iCommentNum, movieNum, areaNum, username)
-	if err != nil {
-		return err
-	}
-	return err
+	return nil
 }
 
-func DeleteCommentArea(movieNum, areaNum int) error {
-	var iAreaNum string
-	sqlStr := "select username from comment_Area where movieNum = ? and areaNum = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
+func DeleteCommentArea(userOp model.CommentArea) error {
+	tx := dB.Delete(&userOp)
+	if err := tx.Error; err != nil {
 		return err
 	}
-
-	err = stmt.QueryRow(movieNum, areaNum).Scan(&iAreaNum)
-	if err != nil {
-		return err
-	}
-
-	iAreaNum = iAreaNum + "已删除"
-	sqlStr = "update comment_Area set areaNum = ? where movieNum = ? and areaNum = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(iAreaNum, movieNum, areaNum)
-	if err != nil {
-		return err
-	}
-	return err
+	return nil
 }
 
-func GiveCommentLike(username, name string, movieNum, areaNum int) (error, bool) {
-	var iUsername string
-	sqlStr := "select username from comment_Like where  movieNum = ? and topicNum = ? and username = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err, false
+func GiveCommentLike(likeUser model.CommentLike) (error, bool) {
+	// 事务开启
+	tx := dB.Begin()
+	var user model.CommentLike
+
+	// 检查是否点过赞
+	t := tx.Where("username = ? AND movie_num = ? AND comment_id", likeUser.Username, likeUser.MovieNum, likeUser.CommentId).Find(&model.CommentLike{}).Scan(&user)
+	if t.Error != nil {
+		if t.Error == gorm.ErrRecordNotFound {
+			t.Error = nil
+		}
+		return t.Error, false
 	}
-	err = stmt.QueryRow(movieNum, areaNum, username).Scan(&iUsername)
-	switch err {
-	case nil:
-		return err, false
-	case sql.ErrNoRows:
-		err = nil
-	default:
+
+	// 如果有记录则是点过赞的，返回false
+	if user.Username != "" {
+		return nil, false
+	}
+
+	// 创建点赞记录
+	t = tx.Create(&likeUser)
+	if err := t.Error; err != nil {
+		tx.Rollback()
 		return err, false
 	}
 
-	sqlStr = "insert comment_Like (username,movieNum,topicNum) values (?,?,?)"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err, false
-	}
-
-	_, err = stmt.Exec(username, movieNum, areaNum)
-	if err != nil {
-		return err, false
-	}
-
+	// 对点赞数进行加一并保存
 	var likeNum int
-	sqlStr = "select likeNum from comment where movieNum = ? and num = ? and username = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err, false
+	t = tx.Model(&model.Comment{}).Select("like_num").Where("id = ? AND movie_num = ? AND comment_id", likeUser.Username, likeUser.MovieNum, likeUser.CommentId).First(&likeNum).Scan(&likeNum)
+	if t.Error != nil {
+		tx.Rollback()
+		return t.Error, false
 	}
 
-	err = stmt.QueryRow(movieNum, areaNum, name).Scan(&likeNum)
-	if err != nil {
-		return err, false
+	likeNum += 1
+	t = tx.Model(&model.Comment{}).Select("like_num").Where("id = ? AND movie_num = ? AND comment_id", likeUser.Username, likeUser.MovieNum, likeUser.CommentId).Update("like_num", likeNum)
+	if t.Error != nil {
+		tx.Rollback()
+		return t.Error, false
 	}
-	likeNum = likeNum + 1
-
-	sqlStr = "update comment set likeNum = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err, false
-	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(likeNum)
-	if err != nil {
-		return err, false
-	}
-	return err, true
+	// 无误后提交
+	tx.Commit()
+	return nil, true
 }
 
-func GiveTopicLike(username string, movieNum, num int) (error, bool) {
-	var iUsername string
-	sqlStr := "select username from topic_Like where username = ? and movieNum = ? and topicNum = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
+func GiveTopicLike(likeUser model.TopicLike) (error, bool) {
+	// 事务开启
+	tx := dB.Begin()
+	var user model.TopicLike
+
+	// 检查是否点过赞
+	t := tx.Where("username = ? AND movie_num = ?", likeUser.Username, likeUser.MovieNum).Scan(&user)
+	if t.Error != nil {
+		if t.Error == gorm.ErrRecordNotFound {
+			t.Error = nil
+		}
+		return t.Error, false
+	}
+
+	// 如果有记录则是点过赞的，返回false
+	if user.Username != "" {
+		return nil, false
+	}
+
+	// 创建点赞记录
+	t = tx.Create(&likeUser)
+	if err := t.Error; err != nil {
+		tx.Rollback()
 		return err, false
 	}
 
-	err = stmt.QueryRow(username, movieNum, num).Scan(&iUsername)
-	switch err {
-	case nil:
-		return err, false
-	case sql.ErrNoRows:
-		err = nil
-	default:
-		return err, false
-	}
-
-	sqlStr = "insert topic_Like (username,movieNum,topicNum) values (?,?,?)"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err, false
-	}
-
-	_, err = stmt.Exec(username, movieNum, num)
-	if err != nil {
-		return err, false
-	}
-
+	// 对点赞数进行加一并保存
 	var likeNum int
-	sqlStr = "select likeNum from comment_Area where movieNum = ? and num = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err, false
+	t = tx.Model(&model.CommentArea{}).Select("like_num").Where("id = ? AND movie_num = ?", likeUser.TopicId, likeUser.MovieNum).First(&likeNum).Scan(&likeNum)
+	if t.Error != nil {
+		tx.Rollback()
+		return t.Error, false
 	}
 
-	err = stmt.QueryRow(movieNum, num).Scan(&likeNum)
-	if err != nil {
-		return err, false
+	likeNum += 1
+	t = tx.Model(&model.CommentArea{}).Select("like_num").Where("id = ? AND movie_num = ?", likeUser.TopicId, likeUser.MovieNum).Update("like_num", likeNum)
+	if t.Error != nil {
+		tx.Rollback()
+		return t.Error, false
 	}
-	likeNum = likeNum + 1
-
-	sqlStr = "update comment_Area set LikeNum = ? where movieNum = ? and num = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err, false
-	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(likeNum, movieNum, num)
-	if err != nil {
-		return err, false
-	}
-	return err, true
+	// 无误后提交
+	tx.Commit()
+	return nil, true
 }
 
-func GiveComment(comment model.CommentArea) error {
-	sqlStr := "insert comment (areaNum,username,txt,movieNum) values (?,?,?,?)"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-
-	_, err = stmt.Exec(comment.Num, comment.Username, comment.Comment, comment.MovieNum)
-	if err != nil {
+func GiveComment(comment model.Comment) error {
+	tx := dB.Begin()
+	t := tx.Create(&comment)
+	if err := t.Error; err != nil {
+		tx.Rollback()
 		return err
 	}
 
 	var commentNum int
-	sqlStr = "select comment_Num from comment_Area where num = ? and movieNum = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err
+	t = tx.Model(&model.CommentArea{}).Select("comment_num").Where("id = ?", comment.CommentId).Scan(&commentNum)
+	if t.Error != nil {
+		tx.Rollback()
+		return t.Error
 	}
 
-	err = stmt.QueryRow(comment.Num, comment.MovieNum).Scan(&commentNum)
-	if err != nil {
-		return err
+	commentNum += 1
+	t = tx.Model(&model.CommentArea{}).Where("id = ?", comment.CommentId).Update("comment_num", commentNum)
+	if t.Error != nil {
+		tx.Rollback()
+		return t.Error
 	}
 
-	commentNum = commentNum + 1
-	sqlStr = "update comment_Area set commentNum = ? where num = ? and movieNum = ? "
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(commentNum, comment.Num, comment.MovieNum)
-	if err != nil {
-		return err
-	}
-
-	return err
+	tx.Commit()
+	return nil
 }
 
-func SetCommentArea(username, topic string, movieNum int) error {
-	sqlStr := "insert comment_Area (username,topic,movieNum) values (?,?,?)"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
+func SetCommentArea(area model.CommentArea) error {
+	tx := dB.Create(&area)
+	if err := tx.Error; err != nil {
 		return err
 	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(username, topic, movieNum)
-	if err != nil {
-		return err
-	}
-	return err
+	return nil
 }
 
-func GetCommentByNum(movieNum, areaNum int) (error, []model.CommentArea) {
-	var comments []model.CommentArea
-	sqlStr := "select username,txt,time,likeNum from comment where movieNum = ? and areaNum = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
+func GetCommentByNum(areaNum uint) (error, []model.Comment) {
+	var comments []model.Comment
+	t := dB.Where("comment_id = ?", areaNum).Find(&[]model.Comment{}).Scan(&comments)
+	if err := t.Error; err != nil {
 		return err, comments
 	}
-	defer stmt.Close()
-
-	rows, err := stmt.Query(movieNum, areaNum)
-	if err != nil {
-		return err, comments
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		var comment model.CommentArea
-		err = rows.Scan(&comment.Username, &comment.Comment, &comment.Time, &comment.LikeNum)
-		if err != nil {
-			return err, comments
-		}
-		comments = append(comments, comment)
-	}
-	return err, comments
+	return nil, comments
 }
 
 func GetCommentArea(movieNum int) (error, []model.CommentArea) {
 	var commentTopics []model.CommentArea
-	sqlStr1 := "select num,username,topic,time,likeNum,commentNum from comment_Area where movieNum = ?"
-	stmt, err := dB.Prepare(sqlStr1)
-	if err != nil {
+	t := dB.Where("movie_num = ?", movieNum).Find(&[]model.CommentArea{}).Scan(&commentTopics)
+	if err := t.Error; err != nil {
 		return err, commentTopics
 	}
-	defer stmt.Close()
-
-	rows, err := stmt.Query(movieNum)
-	if err != nil {
-		return err, commentTopics
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var commentTopic model.CommentArea
-		err := rows.Scan(&commentTopic.Num, &commentTopic.Username, &commentTopic.Topic, &commentTopic.Time, &commentTopic.LikeNum, &commentTopic.CommentNum)
-		if err != nil {
-			return err, commentTopics
-		}
-
-		commentTopics = append(commentTopics, commentTopic)
-	}
-
-	return err, commentTopics
+	return nil, commentTopics
 }

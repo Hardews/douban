@@ -7,6 +7,7 @@ import (
 	"douban/tool"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"strconv"
 )
 
@@ -50,21 +51,23 @@ func UpdateArea(c *gin.Context) {
 }
 
 func UpdateComment(c *gin.Context) {
+	var comment model.Comment
 	iUsername, _ := c.Get("username")
-	Username := iUsername.(string)
+	comment.Username = iUsername.(string)
 
-	txt := c.PostForm("comment")
+	var res bool
+	comment.Txt, res = c.GetPostForm("comment")
 
-	if txt == "" {
+	if !res {
 		tool.RespErrorWithDate(c, "评论为空")
 		return
 	}
-	res := service.CheckSensitiveWords(txt)
+	res = service.CheckSensitiveWords(comment.Txt)
 	if !res {
 		tool.RespErrorWithDate(c, "评论含有敏感词汇")
 		return
 	}
-	res = service.CheckTxtLengthL(txt)
+	res = service.CheckTxtLengthL(comment.Txt)
 	if !res {
 		tool.RespErrorWithDate(c, "评论长度不合法")
 		return
@@ -80,8 +83,9 @@ func UpdateComment(c *gin.Context) {
 		tool.RespInternetError(c)
 		return
 	}
+	comment.CommentId = areaNum
 
-	err = service.UpdateComment(Username, txt, movieNum, 4, areaNum)
+	err = service.UpdateComment(comment.Username, comment.Txt, movieNum, 4, areaNum)
 	if err != nil {
 		tool.RespInternetError(c)
 		fmt.Println("update comment failed,err :", err)
@@ -91,22 +95,24 @@ func UpdateComment(c *gin.Context) {
 }
 
 func doNotLikeComment(c *gin.Context) {
+	var user model.CommentLike
 	iUsername, _ := c.Get("username")
-	Username := iUsername.(string)
+	user.Username = iUsername.(string)
 	num2 := c.Param("areaNum")
 	num3, _ := c.GetPostForm("commentNum")
 
-	areaNum, err := strconv.Atoi(num2)
+	_, err := strconv.Atoi(num2)
 	commentNum, err := strconv.Atoi(num3)
 	if err != nil {
 		tool.RespInternetError(c)
 		fmt.Println(err)
 		return
 	}
+	user.CommentId = commentNum
 
-	err = service.DoNotLikeComment(Username, areaNum, commentNum)
+	err = service.DoNotLikeComment(user)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == gorm.ErrRecordNotFound {
 			tool.RespErrorWithDate(c, "无此点赞内容")
 			return
 		}
@@ -118,8 +124,9 @@ func doNotLikeComment(c *gin.Context) {
 }
 
 func doNotLike(c *gin.Context) {
+	var user model.TopicLike
 	iUsername, _ := c.Get("username")
-	Username := iUsername.(string)
+	user.Username = iUsername.(string)
 	num := c.Param("areaNum")
 
 	areaNum, err := strconv.Atoi(num)
@@ -128,8 +135,9 @@ func doNotLike(c *gin.Context) {
 		fmt.Println(err)
 		return
 	}
+	user.TopicId = areaNum
 
-	err = service.DoNotLikeTopic(Username, areaNum)
+	err = service.DoNotLikeTopic(user)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			tool.RespErrorWithDate(c, "无此点赞内容")
@@ -143,20 +151,22 @@ func doNotLike(c *gin.Context) {
 }
 
 func deleteComment(c *gin.Context) {
+	var userOp model.Comment
 	iUsername, _ := c.Get("username")
-	username := iUsername.(string)
+	userOp.Username = iUsername.(string)
 	num1 := c.Param("movieNum")
 	num2 := c.Param("areaNum")
 
-	movieNum, err := strconv.Atoi(num1)
+	_, err := strconv.Atoi(num1)
 	areaNum, err := strconv.Atoi(num2)
 	if err != nil {
 		tool.RespInternetError(c)
 		fmt.Println(err)
 		return
 	}
+	userOp.CommentId = areaNum
 
-	err, flag := service.DeleteComment(username, movieNum, areaNum)
+	err, flag := service.DeleteComment(userOp)
 	if err != nil {
 		fmt.Println("delete comment failed,err :", err)
 		tool.RespInternetError(c)
@@ -170,18 +180,21 @@ func deleteComment(c *gin.Context) {
 }
 
 func deleteCommentArea(c *gin.Context) {
+	var userOp model.CommentArea
 	num1 := c.Param("movieNum")
 	num2 := c.Param("areaNum")
 
 	movieNum, err := strconv.Atoi(num1)
 	areaNum, err := strconv.Atoi(num2)
+	userOp.MovieNum = movieNum
+	userOp.ID = uint(areaNum)
 	if err != nil {
 		tool.RespInternetError(c)
 		fmt.Println(err)
 		return
 	}
 
-	err, flag := service.DeleteCommentArea(movieNum, areaNum)
+	err, flag := service.DeleteCommentArea(userOp)
 	if err != nil {
 		fmt.Println("delete comment area failed,err:", err)
 		tool.RespInternetError(c)
@@ -205,7 +218,7 @@ func GetCommentArea(c *gin.Context) {
 
 	err, commentArea := service.GetCommentArea(movieNum)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == gorm.ErrEmptySlice {
 			tool.RespErrorWithDate(c, "无话题")
 			return
 		}
@@ -214,46 +227,27 @@ func GetCommentArea(c *gin.Context) {
 		return
 	}
 
-	if commentArea == nil {
-		tool.RespErrorWithDate(c, "无讨论区")
-		return
-	}
-
 	for i, _ := range commentArea {
-		c.JSON(200, gin.H{
-			"username":   commentArea[i].Username,
-			"topic":      commentArea[i].Topic,
-			"time":       commentArea[i].Time,
-			"commentNum": commentArea[i].CommentNum,
-			"likeNum":    commentArea[i].LikeNum,
-		})
-
-		if commentArea[i].CommentNum == 0 {
-			tool.RespSuccessfulWithDate(c, "无评论")
-			return
-		}
-		err, comment := service.GetCommentByNum(movieNum, commentArea[i].Num)
+		tool.RespSuccessfulWithDate(c, commentArea[i])
+		err, comment := service.GetCommentByNum(commentArea[i].ID)
 		if err != nil {
+			if err == gorm.ErrEmptySlice {
+				tool.RespSuccessfulWithDate(c, "无评论")
+				return
+			}
 			fmt.Println("get comment failed ,err:", err)
 			tool.RespInternetError(c)
 			return
 		}
-		for r, _ := range comment {
-			c.JSON(200, gin.H{
-				"username": comment[r].Username,
-				"comment":  comment[r].Comment,
-				"time":     comment[r].Time,
-				"likeNum":  comment[r].LikeNum,
-			})
-		}
-
+		tool.RespSuccessfulWithDate(c, comment)
 	}
 
 }
 
 func GiveTopicLike(c *gin.Context) {
+	var userLike model.TopicLike
 	iUsername, _ := c.Get("username")
-	Username := iUsername.(string)
+	userLike.Username = iUsername.(string)
 
 	Num1 := c.Param("movieNum")
 	Num2 := c.Param("areaNum")
@@ -264,8 +258,10 @@ func GiveTopicLike(c *gin.Context) {
 		tool.RespInternetError(c)
 		return
 	}
+	userLike.MovieNum = MovieNum
+	userLike.TopicId = areaNum
 
-	err, flag := service.GiveTopicLike(Username, MovieNum, areaNum)
+	err, flag := service.GiveTopicLike(userLike)
 	if err != nil {
 		fmt.Println("give like failed,err,", err)
 		tool.RespInternetError(c)
@@ -279,28 +275,29 @@ func GiveTopicLike(c *gin.Context) {
 }
 
 func GiveComment(c *gin.Context) {
-	var comment model.CommentArea
+	var comment model.Comment
 	var err error
 	iUsername, _ := c.Get("username")
 	comment.Username = iUsername.(string)
 
-	Num1 := c.Param("movieNum")
-	Num2 := c.Param("areaNum")
-	comment.MovieNum, err = strconv.Atoi(Num1)
-	comment.Num, err = strconv.Atoi(Num2)
+	// 只需获取讨论区相关的uid就行
+	Num := c.Param("areaNum")
+	comment.CommentId, err = strconv.Atoi(Num)
 	if err != nil {
 		fmt.Println("shift num failed,err,", err)
 		tool.RespInternetError(c)
 		return
 	}
-	comment.Comment, _ = c.GetPostForm("comment")
 
-	res := service.CheckSensitiveWords(comment.Comment)
+	// 获取用户评论内容
+	comment.Txt, _ = c.GetPostForm("comment")
+
+	res := service.CheckSensitiveWords(comment.Txt)
 	if !res {
 		tool.RespErrorWithDate(c, "评论含有敏感词汇")
 		return
 	}
-	res = service.CheckTxtLengthL(comment.Comment)
+	res = service.CheckTxtLengthL(comment.Txt)
 	if !res {
 		tool.RespErrorWithDate(c, "评论长度不合法")
 		return
@@ -317,21 +314,26 @@ func GiveComment(c *gin.Context) {
 }
 
 func GiveCommentLike(c *gin.Context) {
+	var like model.CommentLike
+	// 获取点赞人的用户名
 	iUsername, _ := c.Get("username")
-	Username := iUsername.(string)
+	like.Username = iUsername.(string)
 
-	name, _ := c.GetPostForm("username")
+	// 获取电影编号和讨论区的uid
 	Num1 := c.Param("movieNum")
 	Num2 := c.Param("areaNum")
+
 	MovieNum, err := strconv.Atoi(Num1)
 	areaNum, err := strconv.Atoi(Num2)
+	like.CommentId = areaNum
+	like.MovieNum = MovieNum
 	if err != nil {
 		fmt.Println("shift num failed,err,", err)
 		tool.RespInternetError(c)
 		return
 	}
 
-	err, flag := service.GiveCommentLike(Username, name, MovieNum, areaNum)
+	err, flag := service.GiveCommentLike(like)
 	if err != nil {
 		tool.RespInternetError(c)
 		fmt.Println("give comment like failed ,err:", err)
@@ -345,17 +347,17 @@ func GiveCommentLike(c *gin.Context) {
 }
 
 func SetCommentArea(c *gin.Context) {
+	var area model.CommentArea
 	iUsername, _ := c.Get("username")
-	username := iUsername.(string)
+	area.Username = iUsername.(string)
 	Num := c.Param("movieNum")
-	topic, _ := c.GetPostForm("topic")
-
-	if topic == "" {
+	topic, res := c.GetPostForm("topic")
+	if !res {
 		tool.RespErrorWithDate(c, "话题为空")
 		return
 	}
 
-	res := service.CheckSensitiveWords(topic)
+	res = service.CheckSensitiveWords(topic)
 	if !res {
 		tool.RespErrorWithDate(c, "话题含有敏感词汇")
 		return
@@ -372,8 +374,9 @@ func SetCommentArea(c *gin.Context) {
 		tool.RespInternetError(c)
 		return
 	}
+	area.MovieNum = movieNum
 
-	err, flag, _ := service.SelectComment(username, movieNum, 3, 0)
+	err, flag, _ := service.SelectComment(area.Username, area.MovieNum, 3, 0)
 	if err != nil {
 		tool.RespInternetError(c)
 		fmt.Println("select area failed,err:", err)
@@ -384,7 +387,7 @@ func SetCommentArea(c *gin.Context) {
 		return
 	}
 
-	err = service.SetCommentArea(username, topic, movieNum)
+	err = service.SetCommentArea(area)
 	if err != nil {
 		fmt.Println("set comment area failed,err =", err)
 		tool.RespInternetError(c)

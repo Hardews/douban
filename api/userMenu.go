@@ -1,18 +1,19 @@
 package api
 
 import (
-	"database/sql"
+	"douban/model"
 	"douban/service"
 	"douban/tool"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func WantSee(c *gin.Context) {
 	username := c.Param("username")
 	err, wantSee := service.GetUserWantSee(username)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == gorm.ErrEmptySlice {
 			tool.RespErrorWithDate(c, "暂时无内容")
 		}
 		tool.RespInternetError(c)
@@ -26,7 +27,7 @@ func Seen(c *gin.Context) {
 	username := c.Param("username")
 	err, seen := service.GetUserSeen(username)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == gorm.ErrEmptySlice {
 			tool.RespErrorWithDate(c, "暂时无内容")
 		}
 		tool.RespInternetError(c)
@@ -41,7 +42,7 @@ func GetUserComment(c *gin.Context) {
 	username := c.Param("username")
 	err, shortComments, longComments := service.GetUserComment(username)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == gorm.ErrEmptySlice {
 			tool.RespErrorWithDate(c, "该用户暂时无评论")
 			return
 		}
@@ -51,22 +52,24 @@ func GetUserComment(c *gin.Context) {
 }
 
 func SetIntroduce(c *gin.Context) {
+	var user model.UserMenu
 	iUsername, _ := c.Get("username")
-	username := iUsername.(string)
-	introduce, _ := c.GetPostForm("introduce")
+	user.Username = iUsername.(string)
+	user.Introduce, _ = c.GetPostForm("introduce")
 
-	flag := service.CheckSensitiveWords(introduce)
+	// 检查自我介绍长度和敏感词汇
+	flag := service.CheckSensitiveWords(user.Introduce)
 	if !flag {
 		tool.RespErrorWithDate(c, "输入的自我介绍含有敏感词汇")
 		return
 	}
-	res := service.CheckTxtLengthS(introduce)
+	res := service.CheckTxtLengthS(user.Introduce)
 	if !res {
 		tool.RespErrorWithDate(c, "自我介绍长度不合法")
 		return
 	}
 
-	err := service.SetIntroduce(username, introduce)
+	err := service.SetIntroduce(user)
 	if err != nil {
 		tool.RespInternetError(c)
 		fmt.Println("set introduce failed,err:", err)
@@ -76,11 +79,12 @@ func SetIntroduce(c *gin.Context) {
 }
 
 func GetUserInfo(c *gin.Context) {
-	username := c.Param("username")
+	var user model.UserMenu
+	user.Username = c.Param("username")
 
-	err, user := service.GetUserMenu(username)
+	err, user := service.GetUserMenu(user.Username)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == gorm.ErrRecordNotFound {
 			tool.RespErrorWithDate(c, "没有该用户的信息")
 			return
 		}
@@ -88,11 +92,5 @@ func GetUserInfo(c *gin.Context) {
 		fmt.Println("get menu info failed, err :", err)
 		return
 	}
-	c.JSON(200, gin.H{
-		"username":  username,
-		"nickName":  user.Nickname,
-		"introduce": user.Introduce,
-		"img":       user.Img,
-		"address":   user.ImgAddress,
-	})
+	tool.RespSuccessfulWithDate(c, user)
 }

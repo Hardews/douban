@@ -1,144 +1,100 @@
 package dao
 
 import (
-	"database/sql"
 	"douban/model"
 	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/gorm"
 )
 
-func UploadAvatar(username, loadString, fileAddress string) error {
-	sqlStr := "update user_Base_Data set avatar = ? ,address = ? where username = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	_, err = stmt.Exec(loadString, fileAddress, username)
-	if err != nil {
-		return err
+func UploadAvatar(user model.UserMenu) error {
+	tx := dB.Model(&model.UserMenu{}).Where("username = ?", user.Username).Update("avatar", user.Avatar)
+	if tx.Error != nil {
+		return tx.Error
 	}
-	return err
+	return nil
 }
 
-func SetQuestion(username, question, answer string) (error, bool) {
-	_, err := SelectQuestion(username)
+func SetQuestion(user model.UserEncrypted) (error, bool) {
+	// 判断是否有该用户
+	_, err := SelectQuestion(user.Username)
 	switch {
-	case err != nil && err == sql.ErrNoRows:
+	case err != nil && err == gorm.ErrRecordNotFound:
 		err = nil
 	case err == nil:
 		return err, false
 	}
 
-	sqlStr := "insert user_Encrypted (username,question,answer) values (?,?,?)"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
+	// 创建密保
+	t := dB.Create(&user)
+	if err := t.Error; err != nil {
 		return err, false
 	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(username, question, answer)
-	if err != nil {
-		return err, false
-	}
-	return err, true
+	return nil, true
 }
 
 func CheckAnswer(username string) (error, string) {
-	var answer string
-	sqlStr := "select answer from user_Encrypted where username = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err, ""
+	var question model.UserEncrypted
+	tx := dB.Where("username = ?", username).First(&model.UserEncrypted{}).Scan(&question)
+	if err := tx.Error; err != nil {
+		return err, question.Answer
 	}
-	defer stmt.Close()
-	err = stmt.QueryRow(username).Scan(&answer)
-	if err != nil {
-		return err, answer
-	}
-	return err, answer
+	return nil, question.Answer
 }
 
 func SelectQuestion(username string) (string, error) {
-	var question string
-	sqlStr := "select question from user_Encrypted where username = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return "", err
+	var user model.UserEncrypted
+	tx := dB.Where("username = ?", username).First(&model.UserEncrypted{}).Scan(&user)
+	if tx.Error != nil {
+		return "", tx.Error
 	}
-	defer stmt.Close()
-
-	err = stmt.QueryRow(username).Scan(&question)
-	if err != nil {
-		return question, err
-	}
-	return question, err
+	return user.Question, nil
 }
 
 func ChangePassword(user model.User) error {
-	sqlStr := "update user_Base_Data set password = ? where username = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
+	tx := dB.Model(&model.User{}).Where("username = ?", user.Username).Update("password", user.Password)
+	if err := tx.Error; err != nil {
 		return err
 	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(user.Password, user.Username)
-	if err != nil {
-		return err
-	}
-	return err
+	return nil
 }
 
-func CheckPassword(user model.User) (error, model.User) {
+func CheckPassword(user model.User) (error, string) {
 	var check model.User
-	sqlStr := "select username,password from user_Base_Data where username = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err, check
+	tx := dB.Where("username = ?", user.Username).First(&model.User{}).Scan(&check)
+	if err := tx.Error; err != nil {
+		return err, check.Password
 	}
-	defer stmt.Close()
-
-	err = stmt.QueryRow(user.Username).Scan(&check.Username, &check.Password)
-	if err != nil {
-		return err, check
-	}
-	return err, check
+	return nil, check.Password
 }
 
 func CheckUsername(user model.User) error {
-	var username string
-	sqlStr := "select username from user_Base_Data where username = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
+	var uUser model.User
+	tx := dB.Where("username = ?", user.Username).First(&model.User{}).Scan(&uUser)
+	if err := tx.Error; err != nil {
 		return err
 	}
-	defer stmt.Close()
-
-	err = stmt.QueryRow(user.Username).Scan(&username)
-	if err != nil {
-		return err
-	}
-	return err
+	return nil
 }
 
 func WriteIn(user model.User) error {
-	sqlStr := "insert into user_Base_Data (username,password,nickName) values (?,?,?)"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
+	tx := dB.Begin()
 
-	_, err = stmt.Exec(user.Username, user.Password, user.Nickname)
-	if err != nil {
+	t := tx.Create(&user)
+	if err := t.Error; err != nil {
+		tx.Rollback()
 		return err
 	}
 
-	sqlStr = "insert into user_Menu (username) values (?)"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
+	// 创建个人信息初始数据
+	var userMenu model.UserMenu
+	userMenu.Username = user.Username
+	t = tx.Create(&userMenu)
+	if err := t.Error; err != nil {
+		tx.Rollback()
 		return err
 	}
 
-	_, err = stmt.Exec(user.Username)
-	if err != nil {
-		return err
-	}
-	return err
+	tx.Commit()
+
+	return nil
 }

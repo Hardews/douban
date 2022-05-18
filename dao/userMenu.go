@@ -6,9 +6,9 @@ import (
 
 func GetWantSee(username string) (error, []model.UserWantSee) {
 	var wantSees []model.UserWantSee
-	TX := dB.Where("username = ?", username).Find(&[]model.UserWantSee{}).Scan(&wantSees)
-	if TX.Error != nil {
-		return TX.Error, wantSees
+	tx := dB.Where("username = ?", username).Find(&[]model.UserWantSee{}).Scan(&wantSees)
+	if tx.Error != nil {
+		return tx.Error, wantSees
 	}
 	return nil, wantSees
 }
@@ -43,10 +43,10 @@ func UserSeen(seen model.UserSeen) error {
 
 	// 人数加一并更新
 	movieExtra.SeenNum += 1
-	tX := tx.Model(&movieExtra).Update("seen_num", movieExtra.SeenNum)
-	if tX.Error != nil {
+	t = tx.Model(&movieExtra).Update("seen_num", movieExtra.SeenNum)
+	if t.Error != nil {
 		tx.Rollback()
-		return tX.Error
+		return t.Error
 	}
 
 	// 无错误提交
@@ -76,10 +76,10 @@ func UserWantSee(want model.UserWantSee) error {
 
 	// 人数加一并更新
 	movieExtra.WantSeeNum += 1
-	tX := tx.Model(&movieExtra).Update("want_see_num", movieExtra.WantSeeNum)
-	if tX.Error != nil {
+	t = tx.Model(&movieExtra).Update("want_see_num", movieExtra.WantSeeNum)
+	if t.Error != nil {
 		tx.Rollback()
-		return tX.Error
+		return t.Error
 	}
 
 	// 无错误提交
@@ -102,11 +102,7 @@ func GetUserComment(username string) (error, []model.ShortReview, []model.MovieR
 }
 
 func SetIntroduce(user model.UserMenu) error {
-	tx := dB.Model(&model.UserMenu{}).Where("username = ?", user.Username).Update("introduce", user.Introduce)
-	if tx.Error != nil {
-		return tx.Error
-	}
-	return nil
+	return dB.Model(&model.UserMenu{}).Where("username = ?", user.Username).Update("introduce", user.Introduce).Error
 }
 
 func UserMenuInfo(username string) (error, model.UserMenu) {

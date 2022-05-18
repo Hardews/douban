@@ -6,20 +6,21 @@ import (
 	"douban/model"
 )
 
-func UploadAvatar(username, loadString, fileAddress string) error {
-	err := dao.UploadAvatar(username, loadString, fileAddress)
+func UploadAvatar(user model.UserMenu) error {
+	err := dao.UploadAvatar(user)
 	if err != nil {
 		return err
 	}
 	return err
 }
 
-func SetQuestion(username, question, answer string) (error, bool) {
-	err, answer := Encryption(answer)
+func SetQuestion(user model.UserEncrypted) (error, bool) {
+	var err error
+	err, user.Answer = Encryption(user.Answer)
 	if err != nil {
 		return err, false
 	}
-	err, flag := dao.SetQuestion(username, question, answer)
+	err, flag := dao.SetQuestion(user)
 	if err != nil {
 		return err, false
 	}
@@ -61,7 +62,7 @@ func UpdateComment(username, txt string, movieNum, choose, areaNum int) error {
 			return err
 		}
 	case 4:
-		err := dao.UpdateComment(username, txt, movieNum, areaNum)
+		err := dao.UpdateComment(username, txt, areaNum)
 		if err != nil {
 			return err
 		}
@@ -69,7 +70,7 @@ func UpdateComment(username, txt string, movieNum, choose, areaNum int) error {
 	return nil
 }
 
-func GetUserWantSee(username string) (error, []model.UserHistory) {
+func GetUserWantSee(username string) (error, []model.UserWantSee) {
 	err, wantSee := dao.GetWantSee(username)
 	if err != nil {
 		return err, wantSee
@@ -77,7 +78,7 @@ func GetUserWantSee(username string) (error, []model.UserHistory) {
 	return err, wantSee
 }
 
-func GetUserSeen(username string) (error, []model.UserHistory) {
+func GetUserSeen(username string) (error, []model.UserSeen) {
 	err, seen := dao.GetSeen(username)
 	if err != nil {
 		return err, seen
@@ -85,28 +86,24 @@ func GetUserSeen(username string) (error, []model.UserHistory) {
 	return err, seen
 }
 
-func UserSeen(username, comment, label string, movieNum int) error {
-	err := dao.UserSeen(username, comment, label, movieNum)
+func UserSeen(user model.UserSeen) error {
+	err := dao.UserSeen(user)
 	if err != nil {
 		return err
 	}
 	return err
 }
 
-func UserWantSee(username, comment, label string, movieNum int) error {
-	err := dao.UserWantSee(username, comment, label, movieNum)
+func UserWantSee(user model.UserWantSee) error {
+	err := dao.UserWantSee(user)
 	if err != nil {
 		return err
 	}
 	return err
 }
 
-func GetUserComment(username string) (error, []model.UserComment, []model.UserComment) {
-	err, shortComments, longComments := dao.GetUserComment(username)
-	if err != nil {
-		return err, shortComments, longComments
-	}
-	return err, shortComments, longComments
+func GetUserComment(username string) (error, []model.ShortReview, []model.MovieReview) {
+	return dao.GetUserComment(username)
 }
 
 func SelectComment(username string, movieNum, choose, areaNum int) (error, bool, int) {
@@ -139,36 +136,20 @@ func SelectComment(username string, movieNum, choose, areaNum int) (error, bool,
 	return nil, false, 0
 }
 
-func CommentMovie(Txt, username, commentTopic string, movieNum int) error {
-	err := dao.CommentMovie(Txt, username, commentTopic, movieNum)
-	if err != nil {
-		return err
-	}
-	return err
+func CommentMovie(movie model.MovieReview) error {
+	return dao.CommentMovie(movie)
 }
 
-func Comment(Txt, username string, movieNum int) error {
-	err := dao.Comment(Txt, username, movieNum)
-	if err != nil {
-		return err
-	}
-	return err
+func Comment(movie model.ShortReview) error {
+	return dao.Comment(movie)
 }
 
-func SetIntroduce(username, introduce string) error {
-	err := dao.SetIntroduce(username, introduce)
-	if err != nil {
-		return err
-	}
-	return err
+func SetIntroduce(user model.UserMenu) error {
+	return dao.SetIntroduce(user)
 }
 
-func GetUserMenu(username string) (error, model.User) {
-	err, user := dao.UserMenuInfo(username)
-	if err != nil {
-		return err, user
-	}
-	return err, user
+func GetUserMenu(username string) (error, model.UserMenu) {
+	return dao.UserMenuInfo(username)
 }
 
 func ChangePassword(user model.User) error {
@@ -189,7 +170,7 @@ func CheckPassword(user model.User) (error, bool) {
 	if err != nil {
 		return err, false
 	}
-	err, res := Interpretation(check.Password, user.Password)
+	err, res := Interpretation(check, user.Password)
 	return err, res
 }
 

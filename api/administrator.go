@@ -14,17 +14,12 @@ import (
 func NewMovie(c *gin.Context) {
 	var movie model.MovieInfo
 	movie.Name, _ = c.GetPostForm("movieName")
-	movie.OtherName, _ = c.GetPostForm("otherName")
 	movie.Score, _ = c.GetPostForm("score")
-	movie.Starring, _ = c.GetPostForm("Starring")
-	movie.Area, _ = c.GetPostForm("Area")
-	movie.Time, _ = c.GetPostForm("Time")
-	movie.Director, _ = c.GetPostForm("Director")
-	movie.Types, _ = c.GetPostForm("Types")
-	movie.Introduce, _ = c.GetPostForm("Introduce")
-	year, _ := c.GetPostForm("Year")
-	movie.Year, _ = strconv.Atoi(year)
-	movie.Img, _ = c.GetPostForm("imgUrl")
+	movie.Area, _ = c.GetPostForm("area")
+	movie.Types, _ = c.GetPostForm("types")
+	movie.Introduce, _ = c.GetPostForm("introduce")
+	movie.Year, _ = c.GetPostForm("year")
+	movie.Img, _ = c.GetPostForm("img")
 
 	//借鉴B站教程
 	file, err := c.FormFile("img")
@@ -48,15 +43,12 @@ func NewMovie(c *gin.Context) {
 
 	//保存到本地
 	fileName := "./movieFile/" + strconv.FormatInt(time.Now().Unix(), 10) + fileSuffix
-	fileAddress := "/opt/gocode/src/douban" + fileName[1:]
 	err = c.SaveUploadedFile(file, fileName)
 	if err != nil {
 		tool.RespInternetError(c)
 		fmt.Println("保存错误,err", err)
 		return
 	}
-
-	movie.ImgAddress = fileAddress
 
 	err, movieNum := service.NewMovie(movie)
 	if err != nil {

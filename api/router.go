@@ -2,24 +2,28 @@ package api
 
 import (
 	"douban/middleware"
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 )
 
 func InitEngine() {
 	engine := gin.Default()
 
+	//处理跨域问题
 	engine.Use(middleware.Cors)
 
 	//部署前端静态网页
-	//engine.Use(static.Serve("/", static.LocalFile("./static", false)))
+	engine.Use(static.Serve("/", static.LocalFile("./static", false)))
 
 	engine.POST("/register", Register)
 	engine.POST("/login", Login)
 
-	// github第三方登录接口
-	engine.GET("/", Home)
-	engine.GET("/tLogin", LoginByThirdParty)
-	engine.GET("/callback", CallBack)
+	thirdPartyGroup := engine.Group("/")
+	{
+		thirdPartyGroup.GET("/", Home)
+		thirdPartyGroup.GET("/tLogin", LoginByThirdParty)
+		thirdPartyGroup.GET("/callback", CallBack)
+	}
 
 	userGroup := engine.Group("/user")
 	{

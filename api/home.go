@@ -3,10 +3,8 @@ package api
 import (
 	"douban/service"
 	"douban/tool"
-	"strconv"
-
-	"database/sql"
 	"fmt"
+	"gorm.io/gorm"
 	"math/rand"
 	"time"
 
@@ -16,9 +14,9 @@ import (
 func Find(c *gin.Context) {
 	Want := c.Param("find")
 
-	err, nums := service.Find(Want)
+	err, infos := service.Find(Want)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == gorm.ErrEmptySlice {
 			tool.RespErrorWithDate(c, "抱歉，暂时没有您想要的电影")
 			return
 		}
@@ -27,22 +25,7 @@ func Find(c *gin.Context) {
 		return
 	}
 
-	if nums == nil {
-		tool.RespErrorWithDate(c, "抱歉，暂时没有您想要的电影")
-		return
-	}
-
-	for i, _ := range nums {
-		err, info := service.GetAMovieInfo(nums[i])
-		movieNum := strconv.Itoa(nums[i])
-		info.Url = "http://49.235.99.195:8090/movieInfo/" + movieNum
-		if err != nil {
-			fmt.Println("find movie failed,err:", err)
-			tool.RespInternetError(c)
-			return
-		}
-		tool.RespSuccessfulWithDate(c, info)
-	}
+	tool.RespSuccessfulWithDate(c, infos)
 }
 
 func FindWithCategory(c *gin.Context) {

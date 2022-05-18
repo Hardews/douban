@@ -1,12 +1,12 @@
 package api
 
 import (
-	"database/sql"
 	"douban/middleware"
 	"douban/model"
 	"douban/service"
 	"douban/tool"
 	"fmt"
+	"gorm.io/gorm"
 	"path"
 	"strconv"
 	"time"
@@ -14,11 +14,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func uploadAvatar(c *gin.Context) {
-	iUsername, _ := c.Get("username")
-	username := iUsername.(string)
+const address = "localhost:8070"
 
-	//借鉴B站教程
+func uploadAvatar(c *gin.Context) {
+	var user model.UserMenu
+	iUsername, _ := c.Get("username")
+	user.Username = iUsername.(string)
+
+	// 借鉴B站教程
 	file, err := c.FormFile("avatar")
 	if err != nil {
 		fmt.Println("get file failed,err:", err)
@@ -28,7 +31,6 @@ func uploadAvatar(c *gin.Context) {
 
 	if file.Size > 1024*1024*5 {
 		tool.RespErrorWithDate(c, "文件大小不合适")
-
 		return
 	}
 
@@ -39,8 +41,7 @@ func uploadAvatar(c *gin.Context) {
 	}
 
 	//保存到本地
-	fileName := "./uploadFile/" + strconv.FormatInt(time.Now().Unix(), 10) + username + fileSuffix
-	fileAddress := "/opt/gocode/src/douban" + fileName[1:]
+	fileName := "./uploadFile/" + strconv.FormatInt(time.Now().Unix(), 10) + user.Username + fileSuffix
 	err = c.SaveUploadedFile(file, fileName)
 	if err != nil {
 		tool.RespInternetError(c)
@@ -48,10 +49,10 @@ func uploadAvatar(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(fileName[13:])
-	loadString := "http://49.235.99.195:8080/pictures/" + fileName[13:]
+	user.Avatar = "http://49.235.99.195:8080/pictures/" + fileName[13:]
 
-	err = service.UploadAvatar(username, loadString, fileAddress)
+	//上传头像信息到数据库
+	err = service.UploadAvatar(user)
 	if err != nil {
 		tool.RespErrorWithDate(c, "上传失败")
 		fmt.Println("upload avatar failed ,err :", err)
@@ -62,25 +63,29 @@ func uploadAvatar(c *gin.Context) {
 
 func SetQuestion(c *gin.Context) {
 	var user model.User
+	var set model.UserEncrypted
+	var res bool
 	iUsername, _ := c.Get("username")
 	user.Username = iUsername.(string)
 
-	user.Password, _ = c.GetPostForm("password")
-	question, _ := c.GetPostForm("question")
-	answer, _ := c.GetPostForm("answer")
-
-	if user.Password == "" {
+	// 检查输入的各项数据是否为空
+	user.Password, res = c.GetPostForm("password")
+	if !res {
 		tool.RespErrorWithDate(c, "密码为空")
 		return
 	}
-	if question == "" {
+	set.Question, res = c.GetPostForm("question")
+	if !res {
 		tool.RespErrorWithDate(c, "问题为空")
 		return
 	}
-	if answer == "" {
+	set.Answer, res = c.GetPostForm("answer")
+	if !res {
 		tool.RespErrorWithDate(c, "答案为空")
 		return
 	}
+
+	// 检查输入密码是否正确
 	err, flag := service.CheckPassword(user)
 	if err != nil {
 		tool.RespInternetError(c)
@@ -92,12 +97,16 @@ func SetQuestion(c *gin.Context) {
 		return
 	}
 
-	err, flag = service.SetQuestion(user.Username, question, answer)
+	// 向数据库插入密保问题和答案
+	set.Username = user.Username
+	err, flag = service.SetQuestion(set)
 	if err != nil {
 		fmt.Println("set question failed,err:", err)
 		tool.RespInternetError(c)
 		return
 	}
+
+	// 返回信息
 	if !flag {
 		tool.RespErrorWithDate(c, "已设置过密保")
 		return
@@ -106,15 +115,19 @@ func SetQuestion(c *gin.Context) {
 }
 
 func Retrieve(c *gin.Context) {
+	// 找回密码
 	username, _ := c.GetPostForm("username")
 
+	// 判断输入用户名是否为空值
 	if username == "" {
 		tool.RespErrorWithDate(c, "用户名为空")
 		return
 	}
+
+	// 检查是否设置有密保
 	question, err := service.SelectQuestion(username)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == gorm.ErrRecordNotFound {
 			tool.RespErrorWithDate(c, "该账号无密保，可通过申诉找回") //发我邮箱，我帮你查（滑稽
 			return
 		}
@@ -122,13 +135,18 @@ func Retrieve(c *gin.Context) {
 		tool.RespInternetError(c)
 		return
 	}
+
+	// 返回问题，让用户输入问题答案
 	tool.RespSuccessfulWithDate(c, question)
-	answer := c.PostForm("answer")
-	if answer == "" {
+
+	// 判断输入答案是否为空值
+	answer, res := c.GetPostForm("answer")
+	if !res {
 		tool.RespErrorWithDate(c, "答案为空")
 		return
 	}
 
+	// 检查答案是否正确
 	err, flag := service.CheckAnswer(username, answer)
 	if err != nil {
 		fmt.Println("check answer failed,err:", err)
@@ -139,6 +157,8 @@ func Retrieve(c *gin.Context) {
 		tool.RespErrorWithDate(c, "答案错误！")
 		return
 	}
+
+	// 答案正确用户输入新密码
 	var user model.User
 	user.Username = username
 	user.Password, _ = c.GetPostForm("newPassword")
@@ -158,23 +178,26 @@ func Retrieve(c *gin.Context) {
 
 func ChangePassword(ctx *gin.Context) {
 	var user model.User
+	var res bool
+
 	iUsername, _ := ctx.Get("username")
 	user.Username = iUsername.(string)
-	user.Password, _ = ctx.GetPostForm("oldPassword")
-	newPassword, _ := ctx.GetPostForm("newPassword")
 
-	if user.Password == "" {
+	user.Password, res = ctx.GetPostForm("oldPassword")
+	if !res {
 		tool.RespErrorWithDate(ctx, "旧密码为空")
 		return
 	}
-	if newPassword == "" {
+
+	newPassword, res := ctx.GetPostForm("newPassword")
+	if !res {
 		tool.RespErrorWithDate(ctx, "新密码为空")
 		return
 	}
 
 	err, res := service.CheckPassword(user)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == gorm.ErrRecordNotFound {
 			tool.RespErrorWithDate(ctx, "无此账号")
 			return
 		}
@@ -208,48 +231,36 @@ func ChangePassword(ctx *gin.Context) {
 
 func Login(ctx *gin.Context) {
 	var user model.User
-	var identity = "用户"
-	user.Username, _ = ctx.GetPostForm("logName")
-	user.Password, _ = ctx.GetPostForm("password")
-
-	if user.Username == "" {
+	var res bool
+	user.Username, res = ctx.GetPostForm("logName")
+	if !res {
 		tool.RespErrorWithDate(ctx, "输入的账号为空")
 		return
 	}
-	if user.Password == "" {
+	user.Password, res = ctx.GetPostForm("password")
+	if !res {
 		tool.RespErrorWithDate(ctx, "输入的密码为空")
 		return
 	}
-	flag := service.CheckAdministratorUsername(user.Username)
-	if flag {
-		identity = "管理员"
-	}
 
-	err, res := service.CheckPassword(user)
+	err, flag := service.CheckPassword(user)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			tool.RespErrorWithDate(ctx, "无此账号")
-			return
-		}
-		fmt.Println(err)
 		tool.RespInternetError(ctx)
+		fmt.Println("check password failed,err:", err)
 		return
 	}
-	if res {
-		token, flag := middleware.SetToken(user.Username, identity)
+
+	if !flag {
+		tool.RespErrorWithDate(ctx, "密码错误")
+		return
+	} else {
+		token, flag := middleware.SetToken(user.Username, "")
 		if !flag {
 			tool.RespInternetError(ctx)
 			return
 		}
-		ctx.JSON(200, gin.H{
-			"msg": token,
-		})
-		tool.RespSuccessful(ctx)
-	} else {
-		tool.RespErrorWithDate(ctx, "密码错误")
-		return
+		tool.RespSuccessfulWithDate(ctx, token)
 	}
-
 }
 
 func Register(ctx *gin.Context) {
@@ -267,48 +278,24 @@ func Register(ctx *gin.Context) {
 		return
 	}
 
-	res := service.CheckSensitiveWords(user.Username)
-	if !res {
-		tool.RespErrorWithDate(ctx, "用户名含有敏感词汇")
-		return
-	}
-	res = service.CheckSensitiveWords(user.Nickname)
-	if !res {
-		tool.RespErrorWithDate(ctx, "昵称含有敏感词汇")
-		return
-	}
-
 	err, flag := service.CheckUsername(user)
 	if err != nil {
 		tool.RespInternetError(ctx)
-		fmt.Println("check username failed, error: ", err)
-		return
-	}
-	if flag == false {
-		tool.RespErrorWithDate(ctx, "用户名已存在!")
+		fmt.Println("check username failed,err:", err)
 		return
 	}
 
-	res = service.CheckLength(user.Password)
-	if !res {
-		tool.RespErrorWithDate(ctx, "密码长度不合法")
-		return
-	}
-
-	err, user.Password = service.Encryption(user.Password)
-	if err != nil {
-		tool.RespInternetError(ctx)
-		fmt.Println("encryption failed , err :", err)
+	if !flag {
+		tool.RespErrorWithDate(ctx, "账号已存在")
 		return
 	}
 
 	err = service.WriteIn(user)
 	if err != nil {
 		tool.RespInternetError(ctx)
-		fmt.Println("register failed,err:", err)
+		fmt.Println("set new user failed,err:", err)
 		return
 	}
 
 	tool.RespSuccessful(ctx)
-
 }

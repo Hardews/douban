@@ -1,386 +1,188 @@
 package dao
 
 import (
-	"database/sql"
 	"douban/model"
-	"strconv"
 )
 
 func DeleteShortComment(username string, movieNum int) error {
-	var iUsername string
-	sqlStr := "select username from short_Comment where username = ? and movieNum = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
+	tx := dB.Begin()
 
-	err = stmt.QueryRow(username, movieNum).Scan(&iUsername)
-	if err != nil {
-		return err
+	t := tx.Where("username = ? and movie_num = ?", username, movieNum).Delete(&model.ShortReview{})
+	if t.Error != nil {
+		tx.Rollback()
+		return tx.Error
 	}
 
-	username = username + "已删除"
-	sqlStr = "update short_Comment set username = ? where username = ? and movieNum = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
+	tx.Commit()
 
-	_, err = stmt.Exec(username, iUsername, movieNum)
-	if err != nil {
-		return err
-	}
-	return err
+	return nil
 }
 
 func DeleteLongComment(username string, movieNum int) error {
-	var iUsername string
+	tx := dB.Begin()
 
-	//创建一个事务
-	sqlStr := "start transaction"
-	_, err := dB.Exec(sqlStr)
-	if err != nil {
-		return err
-	}
-
-	//查询影评
-	sqlStr = "select username from movie_Comment where username = ? and movieNum = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-	err = stmt.QueryRow(username, movieNum).Scan(&iUsername)
-	if err != nil {
-		return err
-	}
-
-	//删除影评
-	username = username + "已删除"
-	sqlStr = "update essay set username = ? where username = ? and movieNum = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-	_, err = stmt.Exec(username, iUsername, movieNum)
-	if err != nil {
-		return err
-	}
-
-	//查询相应影评数
-	sqlStr = "select commentNum from movie_Extra_Info where num = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-	var num int
-	err = stmt.QueryRow(movieNum).Scan(&num)
-	if err != nil {
-		return err
-	}
-
-	//更新影评数
-	num -= 1
-	sqlStr = "update movie_Extra_Info set commentNum = ? where num = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-	_, err = stmt.Exec(num, movieNum)
-	if err != nil {
-		return err
-	}
-
-	//无误后提交
-	sqlStr = "commit"
-	_, err = dB.Exec(sqlStr)
-	if err != nil {
-		return err
-	}
-	return err
-}
-
-func DeleteSeen(movieNum int, label, username string) error {
-	username = username + "已删除"
-	sqlStr := "update userSeen set username = ? where movieNum = ? and label = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-	_, err = stmt.Exec(username, movieNum, label)
-	if err != nil {
-		return err
-	}
-
-	sqlStr = "select seen from movie_Extra_Info where num = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err
+	t := tx.Where("username = ? and movie_num = ?", username, movieNum).Delete(&model.MovieReview{})
+	if t.Error != nil {
+		tx.Rollback()
+		return tx.Error
 	}
 
 	var num int
-	err = stmt.QueryRow(movieNum).Scan(&num)
-	if err != nil {
-		return err
+	t = tx.Select("comment_num").Where("num = ?", movieNum).First(&num).Scan(&num)
+	if t.Error != nil {
+		tx.Rollback()
+		return t.Error
 	}
 
 	num -= 1
-	sqlStr = "update movie_Extra_Info set wantSee = ? where num = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
+	t = tx.Select("comment_num").Where("num = ?", movieNum).Create(&num)
+	if err := t.Error; err != nil {
+		tx.Rollback()
 		return err
 	}
 
-	_, err = stmt.Exec(num, movieNum)
-	if err != nil {
-		return err
-	}
-	return err
+	tx.Commit()
+	return nil
 }
 
-func DeleteWantSee(movieNum int, label, username string) error {
-	username = username + "已删除"
-	sqlStr := "update user_Want_See set username = ? where movieNum = ? and label = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(username, movieNum, label)
-	if err != nil {
-		return err
+func DeleteSeen(seen model.UserSeen) error {
+	tx := dB.Begin()
+	t := tx.Where("username = ? AND movie_num = ?", seen.Username, seen.Num).Delete(&seen)
+	if t.Error != nil {
+		tx.Rollback()
+		return t.Error
 	}
 
-	sqlStr = "select wantSee from movie_Extra_Info where num = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
+	// 查找想看数
+	var seenNum int
+	tx.Select("seen_num").Where("num = ?", seen.Num).First(&seenNum).Scan(&seenNum)
+	if err := tx.Select("seen_num").Where("num = ?", seen.Num).First(&seenNum).Error; err != nil {
+		tx.Rollback()
 		return err
 	}
 
-	var num int
-	err = stmt.QueryRow(movieNum).Scan(&num)
-	if err != nil {
+	// 减一
+	seenNum -= 1
+	t = tx.Select("seen_num").Create(&seenNum)
+	if err := t.Error; err != nil {
+		tx.Rollback()
 		return err
 	}
 
-	num -= 1
-	sqlStr = "update movie_Extra_Info set wantSee = ? where num = ?"
-	stmt, err = dB.Prepare(sqlStr)
-	if err != nil {
-		return err
-	}
-
-	_, err = stmt.Exec(num, movieNum)
-	if err != nil {
-		return err
-	}
-	return err
+	tx.Commit()
+	return nil
 }
 
-func GetComment(num int) (error, []model.UserComment) {
-	var comments []model.UserComment
-	sqlStr := "select Username,Essay,TIME,commentTopic from movie_Comment where movieNum = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err, comments
+func DeleteWantSee(want model.UserWantSee) error {
+	tx := dB.Begin()
+	t := tx.Where("username = ? AND movie_num = ?", want.Username, want.Num).Delete(&want)
+	if t.Error != nil {
+		tx.Rollback()
+		return t.Error
 	}
-	defer stmt.Close()
 
-	rows, err := stmt.Query(num)
-	if err != nil {
-		return err, comments
+	// 查找想看数
+	var wantSeeNum int
+	t = tx.Select("want_see_num").Where("num = ?", want.Num).First(&wantSeeNum).Scan(&wantSeeNum)
+	if err := t.Error; err != nil {
+		tx.Rollback()
+		return err
 	}
-	defer rows.Close()
 
-	for rows.Next() {
-		var comment model.UserComment
-		err = rows.Scan(&comment.Username, &comment.Txt, &comment.Time, &comment.Topic)
-		if err != nil {
-			return err, comments
-		}
-		movieNum := strconv.Itoa(num)
-		comment.Url = "http://49.235.99.195:8090/movieInfo/" + movieNum
-		comments = append(comments, comment)
+	// 减一
+	wantSeeNum -= 1
+	t = tx.Select("want_see_num").Create(&wantSeeNum)
+	if err := t.Error; err != nil {
+		tx.Rollback()
+		return err
 	}
-	return err, comments
+
+	tx.Commit()
+	return nil
 }
 
-func GetMovieComment(num int) (error, []model.UserComment) {
-	var comments []model.UserComment
-	sqlStr := "select Username,FilmCritics,time from short_Comment where movieNum = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err, comments
+func GetComment(num int) (error, []model.MovieReview) {
+	var comments []model.MovieReview
+	tx := dB.Where("movie_num = ?", num).Find(&model.MovieReview{}).Scan(&comments)
+	if tx.Error != nil {
+		return tx.Error, comments
 	}
-	defer stmt.Close()
+	return nil, comments
+}
 
-	rows, err := stmt.Query(num)
-	if err != nil {
-		return err, comments
+func GetMovieComment(num int) (error, []model.ShortReview) {
+	var comments []model.ShortReview
+	tx := dB.Where("movie_num = ?", num).Find(&[]model.ShortReview{}).Scan(&comments)
+	if tx.Error != nil {
+		return tx.Error, comments
 	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var comment model.UserComment
-		comment.MovieNum = num
-		err = rows.Scan(&comment.Username, &comment.Txt, &comment.Time)
-		if err != nil {
-			return err, comments
-		}
-		movieNum := strconv.Itoa(num)
-		comment.Url = "http://49.235.99.195:8090/movieInfo/" + movieNum
-		comments = append(comments, comment)
-	}
-	return err, comments
+	return nil, comments
 }
 
 func UpdateShortComment(username, txt string, movieNum int) error {
-	sqlStr := "update short_Comment set FilmCritics = ? where username = ? and movieNum = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err
+	tx := dB.Model(&model.ShortReview{}).Select("txt").Where("username = ? AND movie_num = ?", username, movieNum).Update("txt", txt)
+	if tx.Error != nil {
+		return tx.Error
 	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(txt, username, movieNum)
-	if err != nil {
-		return err
-	}
-	return err
+	return nil
 }
 
 func SelectShortComment(username string, movieNum int) (error, bool) {
-	var iTxt string
-	sqlStr := "select FilmCritics from short_Comment where username = ? and movieNum = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err, false
+	var review model.ShortReview
+	tx := dB.Where("username = ? AND movie_num = ?", username, movieNum).First(&model.ShortReview{}).Scan(&review)
+	if tx.Error != nil {
+		return tx.Error, false
 	}
-	defer stmt.Close()
-
-	err = stmt.QueryRow(username, movieNum).Scan(&iTxt)
-	switch {
-	case err == nil:
-		return err, false
-	case err != nil && err == sql.ErrNoRows:
-		return nil, true
-	default:
-		return err, false
-	}
+	return nil, true
 }
 
-func Comment(Txt, username string, movieNum int) error {
-	sqlStr := "insert short_Comment (movieNum,Username,FilmCritics) values (?,?,?)"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
+func Comment(shortReview model.ShortReview) error {
+	tx := dB.Create(&shortReview)
+	if err := tx.Error; err != nil {
 		return err
 	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(movieNum, username, Txt)
-	if err != nil {
-		return err
-	}
-	return err
+	return nil
 }
 
 func UpdateLongComment(username, txt string, movieNum int) error {
-	sqlStr := "update movie_Comment set Essay = ? where username = ? and movieNum = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err
+	tx := dB.Model(&model.MovieReview{}).Select("txt").Where("username = ? AND movie_num = ?", username, movieNum).Update("txt", txt)
+	if tx.Error != nil {
+		return tx.Error
 	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(txt, username, movieNum)
-	if err != nil {
-		return err
-	}
-	return err
+	return nil
 }
 
 func SelectLongComment(username string, movieNum int) (error, bool) {
-	var iTxt string
-	sqlStr := "select Essay from movie_Comment where username = ? and movieNum = ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err, false
+	var review model.MovieReview
+	tx := dB.Where("username = ? AND movie_num = ?", username, movieNum).First(&model.MovieReview{}).Scan(&review)
+	if tx.Error != nil {
+		return tx.Error, false
 	}
-	defer stmt.Close()
-
-	err = stmt.QueryRow(username, movieNum).Scan(&iTxt)
-	if err != nil {
-		return err, false
-	}
-	return err, true
+	return nil, true
 }
 
-func CommentMovie(Txt, username, commentTopic string, movieNum int) error {
-	sqlStr := "insert movie_Comment (movieNum,Username,Essay,commentTopic) values (?,?,?,?)"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
+func CommentMovie(movieReview model.MovieReview) error {
+	t := dB.Create(&movieReview)
+	if err := t.Error; err != nil {
 		return err
 	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec(movieNum, username, Txt, commentTopic)
-	if err != nil {
-		return err
-	}
-	return err
+	return nil
 }
 
 func FindWithCategory(category string) (error, []model.MovieInfo) {
 	var movies []model.MovieInfo
-	sqlStr := "select num,ChineseName,otherName,score,area,year,types,starring,director,address from movie_Base_Info where types like ?"
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
+	tx := dB.Where("types = ?", category).Find(&[]model.MovieInfo{}).Scan(&movies)
+	if err := tx.Error; err != nil {
 		return err, movies
 	}
-	defer stmt.Close()
-
-	category = "%" + category + "%"
-	rows, err := stmt.Query(category)
-	if err != nil {
-		return err, movies
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var movie model.MovieInfo
-		err := rows.Scan(&movie.Num, &movie.Name, &movie.OtherName, &movie.Score, &movie.Area,
-			&movie.Year, &movie.Types, &movie.Starring, &movie.Director, &movie.ImgAddress)
-		if err != nil {
-			return err, movies
-		}
-		movieNum := strconv.Itoa(movie.Num)
-		movie.Url = "http://49.235.99.195:8090/movieInfo/" + movieNum
-		movies = append(movies, movie)
-	}
-	return err, movies
+	return nil, movies
 }
 
 func GetAMovieInfo(movieNum int) (error, model.MovieInfo) {
 	var movie model.MovieInfo
-	sqlStr := "select ChineseName,otherName,score,area,year,types,starring,director,commentNum,introduce,howLong,commentNum,seen,wantSee,img,address from movie_Base_Info,movie_Extra_Info where movie_Base_Info.num = ? and movie_Extra_Info.num = ?"
-
-	stmt, err := dB.Prepare(sqlStr)
-	if err != nil {
-		return err, movie
+	tx := dB.Where("num = ?", movieNum).First(&model.MovieInfo{}).Scan(&movie)
+	if tx.Error != nil {
+		return tx.Error, movie
 	}
-	defer stmt.Close()
-
-	err = stmt.QueryRow(movieNum, movieNum).Scan(&movie.Name, &movie.OtherName, &movie.Score, &movie.Area,
-		&movie.Year, &movie.Types, &movie.Starring, &movie.Director, &movie.CommentNum, &movie.Introduce,
-		&movie.Time, &movie.CommentNum, &movie.Seen, &movie.WantSee, &movie.Img, &movie.ImgAddress)
-	Num := strconv.Itoa(movieNum)
-	movie.Num = movieNum
-	movie.Url = "http://49.235.99.195:8090/movieInfo/" + Num
-	if err != nil {
-		return err, movie
-	}
-	return err, movie
+	return nil, movie
 }

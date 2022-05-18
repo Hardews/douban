@@ -5,7 +5,7 @@ import (
 	"douban/model"
 )
 
-func Find(keyword string) (error, []int) {
+func Find(keyword string) (error, []model.MovieInfo) {
 	err, movieNums := dao.Find(keyword)
 	if err != nil {
 		return err, movieNums
