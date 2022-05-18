@@ -2,16 +2,41 @@ package api
 
 import (
 	"douban/model"
-	"douban/service"
 	"douban/tool"
 	"fmt"
+	"github.com/MashiroC/begonia"
+	"github.com/MashiroC/begonia/app/client"
+	"github.com/MashiroC/begonia/app/option"
 	"github.com/gin-gonic/gin"
 	"path"
 	"strconv"
 	"time"
 )
 
+var (
+	admFunc client.RemoteFunSync // 远程调用函数
+)
+
+func Init() {
+	c := begonia.NewClient(option.Addr(":12306"))
+
+	// 获取管理员服务
+	s, err := c.Service("AdmServer")
+	if err != nil {
+		panic(err)
+	}
+
+	// 获取一个远程函数的同步调用
+	admFunc, err = s.FuncSync("NewMovie")
+	if err != nil {
+		panic(err)
+	}
+}
+
 func NewMovie(c *gin.Context) {
+	// 初始化
+	Init()
+
 	var movie model.MovieInfo
 	movie.Name, _ = c.GetPostForm("movieName")
 	movie.Score, _ = c.GetPostForm("score")
@@ -50,8 +75,8 @@ func NewMovie(c *gin.Context) {
 		return
 	}
 
-	err, movieNum := service.NewMovie(movie)
-	if err != nil {
+	flag, movieNum := admFunc(movie)
+	if !flag.(bool) {
 		tool.RespInternetError(c)
 		return
 	}
