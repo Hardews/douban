@@ -1,7 +1,6 @@
 package api
 
 import (
-	"context"
 	"douban/model"
 	"douban/proto"
 	"douban/service"
@@ -9,8 +8,9 @@ import (
 	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"gorm.io/gorm"
 	"log"
+
+	"gorm.io/gorm"
 	"path"
 	"strconv"
 	"time"
@@ -18,7 +18,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const address = "127.0.0.1:8070"
+const address = "localhost:8070"
 
 func uploadAvatar(c *gin.Context) {
 	var user model.UserMenu
@@ -234,13 +234,14 @@ func ChangePassword(ctx *gin.Context) {
 }
 
 func Login(ctx *gin.Context) {
+	var user *proto.LoginReq
 	var res bool
-	Username, res := ctx.GetPostForm("username")
+	user.Username, res = ctx.GetPostForm("logName")
 	if !res {
 		tool.RespErrorWithDate(ctx, "输入的账号为空")
 		return
 	}
-	Password, res := ctx.GetPostForm("password")
+	user.Password, res = ctx.GetPostForm("password")
 	if !res {
 		tool.RespErrorWithDate(ctx, "输入的密码为空")
 		return
@@ -251,29 +252,30 @@ func Login(ctx *gin.Context) {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-
 	c := proto.NewDoubanClient(conn)
 
-	resp, err := c.Login(context.Background(), &proto.User{UserName: Username, PassWord: Password, Nickname: ""})
+	resp, err := c.Login(ctx, user)
 	if err != nil && !resp.OK {
 		tool.RespInternetError(ctx)
 		fmt.Println(err)
 		return
 	}
-	tool.RespSuccessfulWithDate(ctx, resp.Token)
+
+	tool.RespSuccessfulWithDate(ctx, resp.Msg)
 
 }
 
 func Register(ctx *gin.Context) {
-	Username, _ := ctx.GetPostForm("signName")
-	Password, _ := ctx.GetPostForm("signPassword")
-	Nickname, _ := ctx.GetPostForm("nickName")
+	var user *proto.RegisterReq
+	user.Username, _ = ctx.GetPostForm("signName")
+	user.Password, _ = ctx.GetPostForm("signPassword")
+	user.Nickname, _ = ctx.GetPostForm("nickName")
 
-	if Username == "" {
+	if user.Username == "" {
 		tool.RespErrorWithDate(ctx, "用户名为空")
 		return
 	}
-	if Password == "" {
+	if user.Password == "" {
 		tool.RespErrorWithDate(ctx, "密码为空")
 		return
 	}
@@ -285,12 +287,12 @@ func Register(ctx *gin.Context) {
 	defer conn.Close()
 	c := proto.NewDoubanClient(conn)
 
-	resp, err := c.Register(ctx, &proto.User{UserName: Username, PassWord: Password, Nickname: Nickname})
+	resp, err := c.Register(ctx, user)
 	if err != nil && !resp.OK {
 		tool.RespInternetError(ctx)
 		fmt.Println(err)
 		return
 	}
 
-	tool.RespSuccessfulWithDate(ctx, resp.Token)
+	tool.RespSuccessfulWithDate(ctx, resp.Msg)
 }

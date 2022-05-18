@@ -1,0 +1,32 @@
+syntax = "proto3";  // 版本声明
+package server; // 包名，包名可以避免对message类型之间的名字冲突，同名的message可以通过package进行区分
+option go_package = "../proto"; // 生成的go文件的package名（基于一定规则生成）
+
+
+message SuccessfulResp{
+  bool OK = 1;
+  string Msg = 2;
+}
+
+message LoginReq{
+  string Username = 1;
+  string Password = 2;
+}
+
+message RegisterReq{
+  string Username = 1;
+  string Password = 2;
+  string Nickname = 3;
+}
+
+message ChangePasswordReq{
+  string Username = 1;
+  string NewPwd   = 2;
+  string OldPwd   = 3;
+}
+
+service Douban{
+  rpc Login(LoginReq) returns (SuccessfulResp){}
+  rpc Register(RegisterReq) returns (SuccessfulResp){}
+  rpc ChangePassword(ChangePasswordReq) returns (SuccessfulResp){}
+}
